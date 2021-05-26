@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CUEstion.BLL;
+using CUEstion.BLL.ModelsDTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +19,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				return Ok();
+				var list = QuestionManager.GetAllQuestions();
+				return Ok(list);
 			}
 			catch (Exception e)
 			{
@@ -44,7 +47,23 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				return Ok();
+				var question = QuestionManager.GetQuestion(questionId);
+				return Ok(question);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpPut]
+		//[Authorize]
+		public IActionResult CreateQuestion(QuestionDTO questionDto)
+		{
+			try
+			{
+				var question = QuestionManager.CreateQuestion(questionDto, 1);
+				return Ok(question);
 			}
 			catch (Exception e)
 			{
@@ -54,21 +73,8 @@ namespace CUEstion.WEB.Controllers
 
 
 		[HttpDelete("{questionId}")]
-		public IActionResult DeleteQuestion(int questionId)
-		{
-			try
-			{
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
-
-		[HttpPut]
 		[Authorize]
-		public IActionResult CreateQuestion()
+		public IActionResult DeleteQuestion(int questionId)
 		{
 			try
 			{

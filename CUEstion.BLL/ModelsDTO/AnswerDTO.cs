@@ -1,0 +1,32 @@
+﻿using CUEstion.DAL.Entities;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CUEstion.BLL.ModelsDTO
+{
+	public class AnswerDTO
+	{
+		public int Id { get; set; }
+
+		public string Text { get; set; }
+
+		public int Rate { get; set; }
+
+		public UserDTO Creator { get; set; }
+
+
+		public AnswerDTO()
+		{
+
+		}
+
+		public AnswerDTO(Answer answer)
+		{
+			Id = answer.Id;
+			Text = answer.Text;
+			Rate = answer.Rate;
+			Creator = new UserDTO(answer.Creator);
+		}
+	}
+}
