@@ -151,8 +151,9 @@ namespace CUEstion.WEB.Controllers
 		}
 
 		[HttpPut("{questionId}/comments")]
+		[HttpPut("{questionId}/answers/{answerId}/comments")]
 		[Authorize]
-		public IActionResult CreateCommentToQuestion(int questionId)
+		public IActionResult CreateComment(int questionId, int answerId = -1)
 		{
 			try
 			{
@@ -164,19 +165,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut("{questionId}/answers/{answerId}/comments")]
-		[Authorize]
-		public IActionResult CreateCommentToAnswer(int questionId, int answerId)
-		{
-			try
-			{
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
+
 
 		[HttpPut("{questionId}")]
 		[Authorize]
@@ -210,8 +199,9 @@ namespace CUEstion.WEB.Controllers
 
 
 		[HttpPut("{questionId}/comments/{commentId}")]
+		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult VoteForCommentToQuestion(int questionId, int commentId)
+		public IActionResult VoteForComment(int questionId, int commentId, int answerId = -1)
 		{
 			try
 			{	
@@ -224,24 +214,10 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
-		[Authorize]
-		public IActionResult VoteForCommentToAnswer(int questionId, int answerId, int commentId)
-		{
-			try
-			{
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
-
-
+		[HttpDelete("{questionId}/answers/comments/{commentId}")]
 		[HttpDelete("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult DeleteCommentToAnswer(int questionId, int answerId, int commentId)
+		public IActionResult DeleteComment(int questionId, int commentId, int answerId = -1)
 		{
 			try
 			{
@@ -252,22 +228,5 @@ namespace CUEstion.WEB.Controllers
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
-
-		[HttpDelete("{questionId}/answers/comments/{commentId}")]
-		[Authorize]
-		public IActionResult DeleteCommentToQuestion(int questionId, int commentId)
-		{
-			try
-			{
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
-
-
-
 	}
 }
