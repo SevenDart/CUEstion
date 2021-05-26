@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CUEstion.WEB.Controllers
 {
 	[ApiController]
-	[Route("Users")]
+	[Route("users")]
 	public class UsersController : ControllerBase
 	{
 		[HttpGet]
@@ -20,12 +20,12 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
 
-		[HttpGet("{userId:int}")]
+		[HttpGet("{userId}")]
 		public IActionResult GetUser(int userId)
 		{
 			try
@@ -34,7 +34,7 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
@@ -49,12 +49,12 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
 
-		[HttpDelete("{userId:int}")]
+		[HttpDelete("{userId}")]
 		[Authorize]
 		public IActionResult DeleteUser(int userId)
 		{
@@ -64,13 +64,13 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
 
 
-		[HttpPost("{userId:int}")]
+		[HttpPost("{userId}")]
 		[Authorize]
 		public IActionResult UpdateUserInfo(int userId)
 		{
@@ -80,13 +80,13 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
 
 
-		[HttpGet("{userId:int}/questions")]
+		[HttpGet("{userId}/questions")]
 		public IActionResult GetUsersQuestions(int userId)
 		{
 			try
@@ -95,7 +95,7 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}

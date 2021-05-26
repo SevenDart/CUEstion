@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CUEstion.WEB.Controllers
 {
 	[ApiController]
-	[Route("[controller]")]
+	[Route("questions")]
 	public class QuestionsController : ControllerBase
 	{
 		[HttpGet]
@@ -21,22 +21,15 @@ namespace CUEstion.WEB.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
 
 		[HttpGet("filter")]
-		public IActionResult GetQuestionsByTags()
+		public IActionResult GetQuestionsByTags(string[] tags)
 		{
 			try
 			{
-				var tags = new List<string>();
-				foreach (var queryElement in Request.Query)
-				{
-					if (queryElement.Key.StartsWith("tag"))
-						tags.Add(queryElement.Value);
-				}
 				return Ok();
 			}
 			catch (Exception e)
@@ -46,7 +39,7 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpGet("{questionId:int}")]
+		[HttpGet("{questionId}")]
 		public IActionResult GetQuestion(int questionId)
 		{
 			try
@@ -60,7 +53,7 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpDelete("{questionId:int}")]
+		[HttpDelete("{questionId}")]
 		public IActionResult DeleteQuestion(int questionId)
 		{
 			try
@@ -87,7 +80,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPost("{questionId:int}")]
+		[HttpPost("{questionId}")]
 		[Authorize]
 		public IActionResult UpdateQuestion(int questionId)
 		{
@@ -101,7 +94,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpGet("{questionId:int}/subscribe")]
+		[HttpGet("{questionId}/subscribe")]
 		[Authorize]
 		public IActionResult SubscribeToQuestion()
 		{
@@ -115,7 +108,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut("{questionId:int}/answers")]
+		[HttpPut("{questionId}/answers")]
 		[Authorize]
 		public IActionResult CreateAnswer(int questionId)
 		{
@@ -129,7 +122,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPost("{questionId:int}/answers/{answerId:int}")]
+		[HttpPost("{questionId}/answers/{answerId}")]
 		[Authorize]
 		public IActionResult UpdateAnswer(int questionId, int answerId)
 		{
@@ -143,7 +136,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpDelete("{questionId:int}/answers/{answerId:int}")]
+		[HttpDelete("{questionId}/answers/{answerId}")]
 		[Authorize]
 		public IActionResult DeleteAnswer(int questionId, int answerId)
 		{
@@ -157,7 +150,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut("{questionId:int}/comments")]
+		[HttpPut("{questionId}/comments")]
 		[Authorize]
 		public IActionResult CreateCommentToQuestion(int questionId)
 		{
@@ -171,7 +164,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut("{questionId:int}/answers/{answerId:int}/comments")]
+		[HttpPut("{questionId}/answers/{answerId}/comments")]
 		[Authorize]
 		public IActionResult CreateCommentToAnswer(int questionId, int answerId)
 		{
@@ -185,13 +178,12 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpOptions("{questionId:int}")]
+		[HttpPut("{questionId}")]
 		[Authorize]
 		public IActionResult VoteForQuestion(int questionId)
 		{
 			try
 			{
-				int mark = int.Parse(Request.Query["mark"]);
 				return Ok();
 			}
 			catch (Exception e)
@@ -200,7 +192,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpOptions("{questionId:int}/answers/{answerId:int}")]
+		[HttpPut("{questionId}/answers/{answerId}")]
 		[Authorize]
 		public IActionResult VoteForAnswer(int questionId, int answerId)
 		{
@@ -217,13 +209,12 @@ namespace CUEstion.WEB.Controllers
 
 
 
-		[HttpOptions("{questionId:int}/comments/{commentId:int}")]
+		[HttpPut("{questionId}/comments/{commentId}")]
 		[Authorize]
 		public IActionResult VoteForCommentToQuestion(int questionId, int commentId)
 		{
 			try
-			{
-				int mark = int.Parse(Request.Query["mark"]);
+			{	
 				return Ok();
 			}
 			catch (Exception e)
@@ -233,13 +224,12 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpOptions("{questionId:int}/answers/{answerId:int}/comments/{commentId:int}")]
+		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
 		public IActionResult VoteForCommentToAnswer(int questionId, int answerId, int commentId)
 		{
 			try
 			{
-				int mark = int.Parse(Request.Query["mark"]);
 				return Ok();
 			}
 			catch (Exception e)
@@ -249,7 +239,7 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpDelete("{questionId:int}/answers/{answerId:int}/comments/{commentId:int}")]
+		[HttpDelete("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
 		public IActionResult DeleteCommentToAnswer(int questionId, int answerId, int commentId)
 		{
@@ -263,7 +253,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpDelete("{questionId:int}/answers/comments/{commentId:int}")]
+		[HttpDelete("{questionId}/answers/comments/{commentId}")]
 		[Authorize]
 		public IActionResult DeleteCommentToQuestion(int questionId, int commentId)
 		{
