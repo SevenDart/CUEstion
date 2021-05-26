@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CUEstion.DAL.EF
 {
-	class ApplicationContext : DbContext
+	public class ApplicationContext : DbContext
 	{
 		public DbSet<User> Users { get; set; }
 		public DbSet<Question> Questions { get; set; }

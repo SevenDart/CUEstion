@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CUEstion.DAL.Entities
 {
-	class Answer
+	public class Answer
 	{
 		public int Id { get; set; }
 

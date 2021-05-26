@@ -5,17 +5,26 @@ using System.Text;
 
 namespace CUEstion.DAL.Entities
 {
-	class User
+	public class User
 	{
 		public int Id { get; set; }
 		
 		[Required]
-		[MaxLength(20)]
+		[MaxLength(30)]
 		public string Username { get; set; }
 
 		[Required]
-		[MaxLength(20)]
+		[MaxLength(30)]
 		public string Email { get; set; }
+
+
+		[Required]
+		[MaxLength(64)]
+		public string Password { get; set; }
+
+		[Required]
+		[MaxLength(128)]
+		public string Salt { get; set; }
 
 		[Required]
 		public int Rate { get; set; }
