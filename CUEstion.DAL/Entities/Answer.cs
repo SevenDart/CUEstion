@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CUEstion.DAL.Entities
@@ -15,10 +16,10 @@ namespace CUEstion.DAL.Entities
 
 		public int Rate { get; set; }
 
-		[Required]
-		public User Creator { get; set; }
+		public int? UserId { get; set; }
+		public User User { get; set; }
 
-		[Required]
+		public int QuestionId { get; set; }
 		public Question Question { get; set; }
 
 		public List<Comment> Comments { get; set; }

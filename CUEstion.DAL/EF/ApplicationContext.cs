@@ -14,7 +14,7 @@ namespace CUEstion.DAL.EF
 		public DbSet<Answer> Answers { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<Tag> Tags { get; set; }
-		public DbSet<FollowedQuestions> FollowedQuestions { get; set; }
+		public DbSet<FollowedQuestion> FollowedQuestions { get; set; }
 
 		public ApplicationContext() : base()
 		{
@@ -28,16 +28,12 @@ namespace CUEstion.DAL.EF
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<FollowedQuestions>().HasKey(fq => new { fq.UserId, fq.QuestionId});
-			modelBuilder.Entity<Answer>().Property("CreatorId").IsRequired();
-			modelBuilder.Entity<Answer>().Property("QuestionId").IsRequired();
-			modelBuilder.Entity<Comment>().Property("CreatorId").IsRequired();
-			modelBuilder.Entity<Question>().Property("CreatorId").IsRequired();
-			modelBuilder.Entity<Answer>().HasOne(a => a.Question).WithMany(q => q.Answers).OnDelete(DeleteBehavior.NoAction);
-			modelBuilder.Entity<Question>().HasMany(q => q.FollowedQuestions).WithOne(fq => fq.Question).OnDelete(DeleteBehavior.NoAction);
-			modelBuilder.Entity<User>().HasMany(u => u.FollowedQuestions).WithOne(fq => fq.User).OnDelete(DeleteBehavior.NoAction);
-			modelBuilder.Entity<FollowedQuestions>().HasOne(fq => fq.User).WithMany(u => u.FollowedQuestions).OnDelete(DeleteBehavior.NoAction);
-			modelBuilder.Entity<FollowedQuestions>().HasOne(fq => fq.Question).WithMany(q => q.FollowedQuestions).OnDelete(DeleteBehavior.NoAction);
+			modelBuilder.Entity<FollowedQuestion>().HasKey(fq => new { fq.UserId, fq.QuestionId});
+			modelBuilder.Entity<Answer>().HasOne(a => a.User).WithMany().OnDelete(DeleteBehavior.SetNull);
+			modelBuilder.Entity<Question>().HasOne(q => q.User).WithMany().OnDelete(DeleteBehavior.SetNull);
+			modelBuilder.Entity<Comment>().HasOne(c => c.User).WithMany().OnDelete(DeleteBehavior.SetNull);
+			modelBuilder.Entity<Comment>().HasOne(c => c.Answer).WithMany(a => a.Comments).HasForeignKey(c => c.AnswerId).OnDelete(DeleteBehavior.NoAction);
+			modelBuilder.Entity<Comment>().HasOne(c => c.Question).WithMany(q => q.Comments).HasForeignKey(c => c.QuestionId).OnDelete(DeleteBehavior.NoAction);
 		}
 
 	}

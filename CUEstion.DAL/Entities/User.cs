@@ -17,7 +17,6 @@ namespace CUEstion.DAL.Entities
 		[MaxLength(30)]
 		public string Email { get; set; }
 
-
 		[Required]
 		[MaxLength(64)]
 		public string Password { get; set; }
@@ -26,10 +25,9 @@ namespace CUEstion.DAL.Entities
 		[MaxLength(128)]
 		public string Salt { get; set; }
 
-		[Required]
 		public int Rate { get; set; }
 
 		public List<Tag> InterestedTags { get; set; }
-		public List<FollowedQuestions> FollowedQuestions { get; set; }
+		public List<FollowedQuestion> FollowedQuestions { get; set; }
 	}
 }

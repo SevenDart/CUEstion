@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CUEstion.DAL.Entities
 {
-	public class FollowedQuestions
+	public class FollowedQuestion
 	{
 		public int UserId { get; set; }
 		public User User { get; set; }
