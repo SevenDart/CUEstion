@@ -15,7 +15,8 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public int Rate { get; set; }
 
-		public UserDTO Creator { get; set; }
+		public int UserId { get; set; }
+		public UserDTO User { get; set; }
 
 		public List<AnswerDTO> Answers { get; set; }
 
@@ -31,7 +32,7 @@ namespace CUEstion.BLL.ModelsDTO
 			Header = question.Header;
 			Text = question.Text;
 			Rate = question.Rate;
-			Creator = new UserDTO(question.Creator);
+			User = new UserDTO(question.User);
 		}
 	}
 }

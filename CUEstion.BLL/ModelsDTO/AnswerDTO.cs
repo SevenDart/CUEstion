@@ -13,7 +13,7 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public int Rate { get; set; }
 
-		public UserDTO Creator { get; set; }
+		public UserDTO User { get; set; }
 
 
 		public AnswerDTO()
@@ -26,7 +26,7 @@ namespace CUEstion.BLL.ModelsDTO
 			Id = answer.Id;
 			Text = answer.Text;
 			Rate = answer.Rate;
-			Creator = new UserDTO(answer.Creator);
+			User = new UserDTO(answer.User);
 		}
 	}
 }

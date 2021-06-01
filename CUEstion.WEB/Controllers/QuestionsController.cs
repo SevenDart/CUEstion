@@ -14,12 +14,20 @@ namespace CUEstion.WEB.Controllers
 	[Route("questions")]
 	public class QuestionsController : ControllerBase
 	{
+
+		private QuestionManagerService _questionManagerService;
+
+		QuestionsController()
+		{
+			_questionManagerService = new QuestionManagerService();
+		}
+
 		[HttpGet]
 		public IActionResult GetAllQuestions()
 		{
 			try
 			{
-				var list = QuestionManager.GetAllQuestions();
+				var list = _questionManagerService.GetAllQuestions();
 				return Ok(list);
 			}
 			catch (Exception e)
@@ -47,7 +55,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				var question = QuestionManager.GetQuestion(questionId);
+				var question = _questionManagerService.GetQuestion(questionId);
 				return Ok(question);
 			}
 			catch (Exception e)
@@ -62,7 +70,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				var question = QuestionManager.CreateQuestion(questionDto, 1);
+				var question = _questionManagerService.CreateQuestion(questionDto, 1);
 				return Ok(question);
 			}
 			catch (Exception e)
