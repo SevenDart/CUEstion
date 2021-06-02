@@ -1,12 +1,9 @@
-﻿using CUEstion.BLL;
+﻿using System;
+using CUEstion.BLL;
 using CUEstion.BLL.ModelsDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CUEstion.WEB.Controllers
 {
@@ -62,8 +59,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				var question = QuestionManager.CreateQuestion(questionDto, 1);
-				return Ok(question);
+				_questionManagerService.CreateQuestion(questionDto);
+				return Ok();
 			}
 			catch (Exception e)
 			{
@@ -217,10 +214,11 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPut("{questionId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult VoteForCommentToQuestion(int questionId, int commentId)
+		public IActionResult VoteForCommentToQuestion(int questionId, int commentId, int mark)
 		{
 			try
 			{	
+
 				return Ok();
 			}
 			catch (Exception e)
