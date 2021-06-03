@@ -67,6 +67,7 @@ namespace CUEstion.BLL
 			{
 				Header = questionDto.Header,
 				Text = questionDto.Text,
+				CreateTime = DateTime.Now,
 				UserId = questionDto.User.Id
 			};
 
@@ -83,6 +84,8 @@ namespace CUEstion.BLL
 
 			if (questionDTO.Text != null) question.Text = questionDTO.Text;
 			if (questionDTO.Header != null) question.Header = questionDTO.Header;
+
+			question.UpdateTime = DateTime.Now;
 
 			context.SaveChanges();
 		}
@@ -150,6 +153,7 @@ namespace CUEstion.BLL
 			var answer = new Answer()
 			{
 				Text = answerDto.Text,
+				CreateTime = DateTime.Now,
 				QuestionId = questionId,
 				UserId = answerDto.User.Id
 			};
@@ -166,6 +170,8 @@ namespace CUEstion.BLL
 			var answer = context.Answers.Find(answerId);
 
 			if (answerDto.Text != null) answer.Text = answerDto.Text;
+
+			answer.UpdateTime = DateTime.Now;
 
 			context.SaveChanges();
 		}
@@ -212,6 +218,7 @@ namespace CUEstion.BLL
 			{
 				CommentType = (answerId == null),
 				Text = commentDto.Text,
+				CreateTime = DateTime.Now,
 				QuestionId = questionId,
 				AnswerId = answerId,
 				UserId = commentDto.User.Id
@@ -229,6 +236,8 @@ namespace CUEstion.BLL
 			var comment = context.Comments.Find(commentId);
 
 			if (commentDto.Text != null) comment.Text = commentDto.Text;
+
+			comment.UpdateTime = DateTime.Now;
 
 			context.SaveChanges();
 		}
