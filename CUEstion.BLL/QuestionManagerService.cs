@@ -36,9 +36,7 @@ namespace CUEstion.BLL
 			var questions = context.Questions.ToList();
 			foreach (var tag in tags)
 			{
-				questions = (from question in questions 
-							where (from tag in question.Tags select tag.Name).Contains(tag) 
-							select question).ToList();
+				questions = context.Questions.Where(q => q.Tags.Select(t => t.Name).Contains(tag)).ToList();
 			}
 
 			var questionsList = new List<QuestionDTO>();
@@ -52,7 +50,7 @@ namespace CUEstion.BLL
 		public IEnumerable<QuestionDTO> GetUsersQuestions(int userId)
 		{
 			using var context = new ApplicationContext();
-			var questions = from question in context.Questions where question.UserId == userId select question;
+			var questions = context.Questions.Where(q => q.UserId == userId);
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{
@@ -95,14 +93,17 @@ namespace CUEstion.BLL
 
 			var question = context.Questions.Find(questionId);
 
-			foreach (var answer in context.Answers.Where(a => a.QuestionId == questionId))
+			var questionAnswers = context.Answers.Where(a => a.QuestionId == questionId);
+			foreach (var answer in questionAnswers)
 			{
-				foreach (var comment in context.Comments.Where(c => c.AnswerId == answer.Id))
+				var answerComments = context.Comments.Where(c => c.AnswerId == answer.Id);
+				foreach (var comment in answerComments)
 					context.Comments.Remove(comment);
 				context.Answers.Remove(answer);
 			}
 
-			foreach (var comment in context.Comments.Where(c => c.QuestionId == questionId))
+			var questionComments = context.Comments.Where(c => c.QuestionId == questionId);
+			foreach (var comment in questionComments)
 			{
 				context.Comments.Remove(comment);
 			}
@@ -131,7 +132,7 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var answers = from answer in context.Answers where answer.QuestionId == questionId select answer;
+			var answers = context.Answers.Where(a => a.QuestionId == questionId);
 
 			var answersList = new List<AnswerDTO>();
 			foreach (var answer in answers)
@@ -175,7 +176,8 @@ namespace CUEstion.BLL
 
 			var answer = context.Answers.Find(answerId);
 
-			foreach (var comment in context.Comments.Where(c => c.AnswerId == answerId))
+			var answerComments = context.Comments.Where(c => c.AnswerId == answerId);
+			foreach (var comment in answerComments)
 			{
 				context.Comments.Remove(comment);
 			}
@@ -190,10 +192,7 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var comments = (from comment in context.Comments
-						   where comment.QuestionId == questionId
-						   where comment.AnswerId == answerId
-						   select comment).ToList();
+			var comments = context.Comments.Where(c => c.QuestionId == questionId && c.AnswerId == answerId);
 
 			var commentsList = new List<CommentDTO>();
 
@@ -208,8 +207,6 @@ namespace CUEstion.BLL
 		public void CreateComment(CommentDTO commentDto, int? questionId, int? answerId)
 		{
 			using var context = new ApplicationContext();
-
-			//
 
 			var comment = new Comment()
 			{
