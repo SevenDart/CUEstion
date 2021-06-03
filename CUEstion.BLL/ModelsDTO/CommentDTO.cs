@@ -19,6 +19,9 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public string Text { get; set; }
 
+		public DateTime CreateTime { get; set; }
+		public DateTime UpdateTime { get; set; }
+
 		public int? QuestionId { get; set; }
 
 		public int? AnswerId { get; set; }

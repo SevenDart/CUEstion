@@ -13,6 +13,9 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public int Rate { get; set; }
 
+		public DateTime CreateTime { get; set; }
+		public DateTime UpdateTime { get; set; }
+
 		public UserDTO User { get; set; }
 
 
