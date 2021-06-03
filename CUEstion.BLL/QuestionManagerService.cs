@@ -69,7 +69,7 @@ namespace CUEstion.BLL
 			{
 				Header = questionDto.Header,
 				Text = questionDto.Text,
-				User = context.Users.Find(questionDto.UserId)
+				UserId = questionDto.User.Id
 			};
 
 			context.Questions.Add(question);

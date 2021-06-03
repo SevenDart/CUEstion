@@ -15,7 +15,6 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public int Rate { get; set; }
 
-		public int UserId { get; set; }
 		public UserDTO User { get; set; }
 
 		public List<AnswerDTO> Answers { get; set; }
