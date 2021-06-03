@@ -216,7 +216,6 @@ namespace CUEstion.BLL
 
 			var comment = new Comment()
 			{
-				CommentType = (answerId == null),
 				Text = commentDto.Text,
 				CreateTime = DateTime.Now,
 				QuestionId = questionId,
