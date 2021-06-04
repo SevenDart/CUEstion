@@ -9,6 +9,8 @@ namespace CUEstion.BLL.ModelsDTO
 {
 	public class CommentDTO
 	{
+		public int Id { get; set; }
+
 		public CommentDTO(Comment comment)
 		{
 			Text = comment.Text;

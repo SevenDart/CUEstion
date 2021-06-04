@@ -163,11 +163,11 @@ namespace CUEstion.BLL
 			context.SaveChanges();
 		}
 
-		public void UpdateAnswer(AnswerDTO answerDto, int answerId)
+		public void UpdateAnswer(AnswerDTO answerDto)
 		{
 			using var context = new ApplicationContext();
 
-			var answer = context.Answers.Find(answerId);
+			var answer = context.Answers.Find(answerDto.Id);
 
 			if (answerDto.Text != null) answer.Text = answerDto.Text;
 
@@ -228,11 +228,11 @@ namespace CUEstion.BLL
 			context.SaveChanges();
 		}
 
-		public void UpdateComment(CommentDTO commentDto, int commentId)
+		public void UpdateComment(CommentDTO commentDto)
 		{
 			using var context = new ApplicationContext();
 
-			var comment = context.Comments.Find(commentId);
+			var comment = context.Comments.Find(commentDto.Id);
 
 			if (commentDto.Text != null) comment.Text = commentDto.Text;
 
