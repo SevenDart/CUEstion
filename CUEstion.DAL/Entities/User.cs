@@ -25,6 +25,8 @@ namespace CUEstion.DAL.Entities
 		[MaxLength(128)]
 		public string Salt { get; set; }
 
+		public string Role { get; set; }
+
 		public int Rate { get; set; }
 
 		public List<Tag> InterestedTags { get; set; }
