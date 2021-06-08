@@ -77,6 +77,17 @@ namespace CUEstion.BLL
 		}
 
 
+		public void UpdateUserInfo(UserDTO userDto)
+		{
+			using var context = new ApplicationContext();
+
+			var user = context.Users.Find(userDto.Id);
+
+			if (userDto.Username != null) user.Username = userDto.Username;
+			if (userDto.Email != null) user.Email = userDto.Email;
+		}
+
+
 		public UserDTO GetUser(int userId)
 		{
 			using var context = new ApplicationContext();
@@ -84,6 +95,44 @@ namespace CUEstion.BLL
 			var user = context.Users.Find(userId);
 
 			return new UserDTO(user);
+		}
+
+		public void DeleteUser(int userId)
+		{
+			using var context = new ApplicationContext();
+
+			var user = context.Users.Find(userId);
+
+			context.Users.Remove(user);
+
+			context.SaveChanges();
+		}
+
+		public IEnumerable<UserDTO> GetAllUsers()
+		{
+			using var context = new ApplicationContext();
+
+			var users = context.Users.ToList();
+			var list = new List<UserDTO>();
+			foreach (var user in users)
+			{
+				list.Add(new UserDTO(user));
+			}
+			return list;
+		}
+
+		public IEnumerable<QuestionDTO> GetUsersQuestions(int userId)
+		{
+			using var context = new ApplicationContext();
+
+			var questions = context.Questions.Where(q => q.UserId == userId);
+			var list = new List<QuestionDTO>();
+			foreach (var question in questions)
+			{
+				list.Add(new QuestionDTO(question));
+			}
+
+			return list;
 		}
 	}
 }

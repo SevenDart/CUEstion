@@ -251,5 +251,41 @@ namespace CUEstion.BLL
 
 			context.SaveChanges();
 		}
+
+		public void MarkQuestion(int questionId, int mark)
+		{
+			using var context = new ApplicationContext();
+
+			var question = context.Questions.Find(questionId);
+			var user = context.Users.Find(question.UserId);
+			question.Rate += mark;
+			user.Rate += mark;
+
+			context.SaveChanges();
+		}
+
+		public void MarkAnswer(int answerId, int mark)
+		{
+			using var context = new ApplicationContext();
+
+			var answer = context.Answers.Find(answerId);
+			var user = context.Users.Find(answer.UserId);
+			answer.Rate += mark;
+			user.Rate += mark;
+
+			context.SaveChanges();
+		}
+
+		public void MarkComment(int commentId, int mark)
+		{
+			using var context = new ApplicationContext();
+
+			var comment = context.Comments.Find(commentId);
+			var user = context.Users.Find(comment.UserId);
+			comment.Rate += mark;
+			user.Rate += mark;
+
+			context.SaveChanges();
+		}
 	}
 }

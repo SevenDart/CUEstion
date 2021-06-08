@@ -30,7 +30,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				return Ok();
+				var list = _userManagerService.GetAllUsers();
+				return Ok(list);
 			}
 			catch (Exception e)
 			{
@@ -44,7 +45,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				return Ok();
+				var user = _userManagerService.GetUser(userId);
+				return Ok(user);
 			}
 			catch (Exception e)
 			{
@@ -99,6 +101,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				_userManagerService.DeleteUser(userId);
 				return Ok();
 			}
 			catch (Exception e)
@@ -111,10 +114,11 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPut("{userId}")]
 		[Authorize]
-		public IActionResult UpdateUserInfo(int userId)
+		public IActionResult UpdateUserInfo(UserDTO userDto)
 		{
 			try
 			{
+				_userManagerService.UpdateUserInfo(userDto);
 				return Ok();
 			}
 			catch (Exception e)
@@ -130,7 +134,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				return Ok();
+				var list = _userManagerService.GetUsersQuestions(userId);
+				return Ok(list);
 			}
 			catch (Exception e)
 			{
@@ -138,6 +143,8 @@ namespace CUEstion.WEB.Controllers
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
+
+
 
 	}
 }

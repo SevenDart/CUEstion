@@ -249,6 +249,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				_questionManagerService.MarkQuestion(questionId, mark);
 				return Ok();
 			}
 			catch (Exception e)
@@ -263,7 +264,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				
+				_questionManagerService.MarkAnswer(answerId, mark);
 				return Ok();
 			}
 			catch (Exception e)
@@ -277,10 +278,11 @@ namespace CUEstion.WEB.Controllers
 		[HttpPut("{questionId}/comments/{commentId}")]
 		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult VoteForComment(int commentId)
+		public IActionResult VoteForComment(int commentId, int mark)
 		{
 			try
-			{	
+			{
+				_questionManagerService.MarkComment(commentId, mark);
 				return Ok();
 			}
 			catch (Exception e)
