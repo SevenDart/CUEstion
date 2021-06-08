@@ -16,7 +16,7 @@ namespace CUEstion.BLL.ModelsDTO
 		public int Rate { get; set; }
 
 		public DateTime CreateTime { get; set; }
-		public DateTime UpdateTime { get; set; }
+		public DateTime? UpdateTime { get; set; }
 
 		public UserDTO User { get; set; }
 
@@ -33,7 +33,10 @@ namespace CUEstion.BLL.ModelsDTO
 			Header = question.Header;
 			Text = question.Text;
 			Rate = question.Rate;
-			User = new UserDTO(question.User);
+			CreateTime = question.CreateTime;
+			UpdateTime = question.UpdateTime;
+			if (question.User != null) 
+				User = new UserDTO(question.User);
 		}
 	}
 }

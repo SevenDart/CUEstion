@@ -14,7 +14,7 @@ namespace CUEstion.BLL.ModelsDTO
 		public int Rate { get; set; }
 
 		public DateTime CreateTime { get; set; }
-		public DateTime UpdateTime { get; set; }
+		public DateTime? UpdateTime { get; set; }
 
 		public UserDTO User { get; set; }
 
@@ -29,7 +29,10 @@ namespace CUEstion.BLL.ModelsDTO
 			Id = answer.Id;
 			Text = answer.Text;
 			Rate = answer.Rate;
-			User = new UserDTO(answer.User);
+			CreateTime = answer.CreateTime;
+			UpdateTime = answer.UpdateTime;
+			if (answer.User != null)
+				User = new UserDTO(answer.User);
 		}
 	}
 }

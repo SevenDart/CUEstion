@@ -22,9 +22,11 @@ namespace CUEstion.DAL.Entities
 		public string Password { get; set; }
 
 		[Required]
-		[MaxLength(128)]
+		[StringLength(16)]
 		public string Salt { get; set; }
-
+		
+		[Required]
+		[MaxLength(10)]
 		public string Role { get; set; }
 
 		public int Rate { get; set; }

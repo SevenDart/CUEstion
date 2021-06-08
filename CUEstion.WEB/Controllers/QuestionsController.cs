@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using CUEstion.BLL;
 using CUEstion.BLL.ModelsDTO;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +16,7 @@ namespace CUEstion.WEB.Controllers
 
 		private QuestionManagerService _questionManagerService;
 
-		QuestionsController()
+		public QuestionsController()
 		{
 			_questionManagerService = new QuestionManagerService();
 		}
@@ -38,7 +40,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				return Ok();
+				var list = _questionManagerService.FilterQuestions(tags);
+				return Ok(list);
 			}
 			catch (Exception e)
 			{
@@ -62,7 +65,7 @@ namespace CUEstion.WEB.Controllers
 		}
 
 		[HttpPut]
-		//[Authorize]
+		[Authorize]
 		public IActionResult CreateQuestion(QuestionDTO questionDto)
 		{
 			try
@@ -83,6 +86,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				_questionManagerService.DeleteQuestion(questionId);
 				return Ok();
 			}
 			catch (Exception e)
@@ -93,10 +97,11 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPost("{questionId}")]
 		[Authorize]
-		public IActionResult UpdateQuestion(int questionId)
+		public IActionResult UpdateQuestion(QuestionDTO questionDto)
 		{
 			try
 			{
+				_questionManagerService.UpdateQuestion(questionDto);
 				return Ok();
 			}
 			catch (Exception e)
@@ -107,11 +112,27 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpGet("{questionId}/subscribe")]
 		[Authorize]
-		public IActionResult SubscribeToQuestion()
+		public IActionResult SubscribeToQuestion(int questionId)
 		{
 			try
 			{
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.SubscribeToQuestion(questionId, userId);
 				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpGet("{questionId}/answers")]
+		public IActionResult GetAnswers(int questionId)
+		{
+			try
+			{
+				var list = _questionManagerService.GetAnswers(questionId);
+				return Ok(list);
 			}
 			catch (Exception e)
 			{
@@ -121,10 +142,11 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPut("{questionId}/answers")]
 		[Authorize]
-		public IActionResult CreateAnswer(int questionId)
+		public IActionResult CreateAnswer(AnswerDTO answerDto, int questionId)
 		{
 			try
 			{
+				_questionManagerService.CreateAnswer(answerDto, questionId);
 				return Ok();
 			}
 			catch (Exception e)
@@ -135,10 +157,11 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPost("{questionId}/answers/{answerId}")]
 		[Authorize]
-		public IActionResult UpdateAnswer(int questionId, int answerId)
+		public IActionResult UpdateAnswer(AnswerDTO answerDto)
 		{
 			try
 			{
+				_questionManagerService.UpdateAnswer(answerDto);
 				return Ok();
 			}
 			catch (Exception e)
@@ -149,11 +172,32 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpDelete("{questionId}/answers/{answerId}")]
 		[Authorize]
-		public IActionResult DeleteAnswer(int questionId, int answerId)
+		public IActionResult DeleteAnswer(int answerId)
 		{
 			try
 			{
+				_questionManagerService.DeleteAnswer(answerId);
 				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpGet("{questionId}/comments")]
+		[HttpGet("{questionId}/answers/{answerId}/comments")]
+		[Authorize]
+		public IActionResult GetComments(int questionId, int? answerId)
+		{
+			try
+			{
+				IEnumerable<CommentDTO> list;
+				if (answerId == null)
+					list = _questionManagerService.GetComments(questionId, null);
+				else
+					list = _questionManagerService.GetComments(null, answerId);
+				return Ok(list);
 			}
 			catch (Exception e)
 			{
@@ -164,10 +208,14 @@ namespace CUEstion.WEB.Controllers
 		[HttpPut("{questionId}/comments")]
 		[HttpPut("{questionId}/answers/{answerId}/comments")]
 		[Authorize]
-		public IActionResult CreateComment(int questionId, int? answerId)
+		public IActionResult CreateComment(CommentDTO commentDto, int questionId, int? answerId)
 		{
 			try
 			{
+				if (answerId == null)
+					_questionManagerService.CreateComment(commentDto, questionId, null);
+				else
+					_questionManagerService.CreateComment(commentDto, null, answerId);
 				return Ok();
 			}
 			catch (Exception e)
@@ -180,10 +228,11 @@ namespace CUEstion.WEB.Controllers
 		[HttpPost("{questionId}/comments/{commentId}")]
 		[HttpPost("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult UpdateComment(int questionId, int commentId, int? answerId)
+		public IActionResult UpdateComment(CommentDTO commentDto)
 		{
 			try
 			{
+				_questionManagerService.UpdateComment(commentDto);
 				return Ok();
 			}
 			catch (Exception e)
@@ -196,7 +245,7 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPut("{questionId}")]
 		[Authorize]
-		public IActionResult VoteForQuestion(int questionId)
+		public IActionResult VoteForQuestion(int questionId, int mark)
 		{
 			try
 			{
@@ -210,11 +259,11 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpPut("{questionId}/answers/{answerId}")]
 		[Authorize]
-		public IActionResult VoteForAnswer(int questionId, int answerId)
+		public IActionResult VoteForAnswer(int answerId, int mark)
 		{
 			try
 			{
-				int mark = int.Parse(Request.Query["mark"]);
+				
 				return Ok();
 			}
 			catch (Exception e)
@@ -228,7 +277,7 @@ namespace CUEstion.WEB.Controllers
 		[HttpPut("{questionId}/comments/{commentId}")]
 		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult VoteForComment(int questionId, int commentId, int? answerId)
+		public IActionResult VoteForComment(int commentId)
 		{
 			try
 			{	
@@ -241,13 +290,14 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpDelete("{questionId}/answers/comments/{commentId}")]
+		[HttpDelete("{questionId}/comments/{commentId}")]
 		[HttpDelete("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
-		public IActionResult DeleteComment(int questionId, int commentId, int? answerId)
+		public IActionResult DeleteComment(int commentId)
 		{
 			try
 			{
+				_questionManagerService.DeleteComment(commentId);
 				return Ok();
 			}
 			catch (Exception e)

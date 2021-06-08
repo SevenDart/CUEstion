@@ -11,18 +11,27 @@ namespace CUEstion.BLL.ModelsDTO
 	{
 		public int Id { get; set; }
 
+		public CommentDTO()
+		{
+
+		}
+
 		public CommentDTO(Comment comment)
 		{
+			Id = comment.Id;
 			Text = comment.Text;
 			QuestionId = comment.QuestionId;
 			AnswerId = comment.AnswerId;
-			User = new UserDTO(comment.User);
+			CreateTime = comment.CreateTime;
+			UpdateTime = comment.UpdateTime;
+			if (comment.User != null)
+				User = new UserDTO(comment.User);
 		}
 
 		public string Text { get; set; }
 
 		public DateTime CreateTime { get; set; }
-		public DateTime UpdateTime { get; set; }
+		public DateTime? UpdateTime { get; set; }
 
 		public int? QuestionId { get; set; }
 
