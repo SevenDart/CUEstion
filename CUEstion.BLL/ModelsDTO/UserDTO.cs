@@ -23,7 +23,8 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public UserDTO(User user)
 		{
-			Id = user.Id; 
+			Id = user.Id;
+			Email = user.Email;
 			Username = user.Username;
 		}
 	}

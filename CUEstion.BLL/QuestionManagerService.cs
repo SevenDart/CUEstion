@@ -10,8 +10,6 @@ namespace CUEstion.BLL
 {
 	public class QuestionManagerService
 	{
-		
-		
 		public IEnumerable<QuestionDTO> GetAllQuestions()
 		{
 			using var context = new ApplicationContext();

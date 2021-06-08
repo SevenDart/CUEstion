@@ -12,13 +12,15 @@ namespace CUEstion.BLL.ModelsDTO
 		public string Header { get; set; }
 
 		public string Text { get; set; }
-		
+
 		public int Rate { get; set; }
 
 		public DateTime CreateTime { get; set; }
 		public DateTime? UpdateTime { get; set; }
 
 		public UserDTO User { get; set; }
+
+		public List<Tag> Tags { get; set; }
 
 		public List<AnswerDTO> Answers { get; set; }
 

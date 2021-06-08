@@ -85,6 +85,8 @@ namespace CUEstion.BLL
 
 			if (userDto.Username != null) user.Username = userDto.Username;
 			if (userDto.Email != null) user.Email = userDto.Email;
+
+			context.SaveChanges();
 		}
 
 
