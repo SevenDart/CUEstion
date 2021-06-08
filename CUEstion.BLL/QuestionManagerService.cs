@@ -13,7 +13,7 @@ namespace CUEstion.BLL
 		public IEnumerable<QuestionDTO> GetAllQuestions()
 		{
 			using var context = new ApplicationContext();
-			var questions = context.Questions.ToList();
+			var questions = context.Questions.Include(q => q.Tags).ToList();
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{
@@ -25,17 +25,53 @@ namespace CUEstion.BLL
 		public QuestionDTO GetQuestion(int questionId)
 		{
 			using var context = new ApplicationContext();
-			return new QuestionDTO(context.Questions.Find(questionId));
+			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q => q.Id == questionId);
+			return new QuestionDTO(question);
+		}
+
+		public IEnumerable<QuestionDTO> Search(string query)
+		{
+			using var context = new ApplicationContext();
+
+			var words = query.Split(" .,:?!");
+			var subseqs = new List<string>();
+			for (int length = 1; length <= words.Length; length++)
+			{
+				for (int i = 0; i <= words.Length - length; i++)
+				{
+					string subseq = words[i];
+					for (int j = i + 1; j < i + length; j++)
+						subseq += " " + words[j];
+					subseqs.Add(subseq);
+				}
+			}
+
+			var questions = context.Questions.ToList().Where(q => 
+				subseqs.Any(s => 
+					q.Header.Contains(s, StringComparison.OrdinalIgnoreCase) 
+					|| q.Text.Contains(s, StringComparison.OrdinalIgnoreCase)
+					)
+				);
+
+			var questionsList = new List<QuestionDTO>();
+			foreach (var question in questions)
+			{
+				questionsList.Add(new QuestionDTO(question));
+			}
+			return questionsList;
+
 		}
 
 		public IEnumerable<QuestionDTO> FilterQuestions(string[] tags)
 		{
 			using var context = new ApplicationContext();
-			var questions = context.Questions.ToList();
-			foreach (var tag in tags)
-			{
-				questions = context.Questions.Where(q => q.Tags.Select(t => t.Name).Contains(tag)).ToList();
-			}
+
+			var questions = context.Questions.Include(q => q.Tags).ToList()
+				.Where(q => 
+					tags.Any(t => 
+						q.Tags.Select(t => t.Name)
+						.Contains(t, StringComparer.OrdinalIgnoreCase))
+				).ToList();
 
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
@@ -48,7 +84,7 @@ namespace CUEstion.BLL
 		public IEnumerable<QuestionDTO> GetUsersQuestions(int userId)
 		{
 			using var context = new ApplicationContext();
-			var questions = context.Questions.Where(q => q.UserId == userId);
+			var questions = context.Questions.Include(t => t.Tags).Where(q => q.UserId == userId);
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{
@@ -69,21 +105,52 @@ namespace CUEstion.BLL
 				UserId = questionDto.User.Id
 			};
 
+			question.Tags = new List<Tag>();
+			foreach (var tag in questionDto.Tags)
+			{
+				//rewrite case-insensitive
+				if (context.Tags.Select(t => t.Name).Any(t => EF.Functions.Like(t, tag)))
+				{
+					question.Tags.Add(context.Tags.First(t => StringComparer.OrdinalIgnoreCase.Compare(t.Name, tag) == 0));
+				}
+				else
+				{
+					var dbTag = new Tag() { Name = tag };
+					context.Tags.Add(dbTag);
+					question.Tags.Add(dbTag);
+				}
+			}
+
 			context.Questions.Add(question);
 
 			context.SaveChanges();
 		}
 
-		public void UpdateQuestion(QuestionDTO questionDTO)
+		public void UpdateQuestion(QuestionDTO questionDto)
 		{
 			using var context = new ApplicationContext();
 
-			var question = context.Questions.Find(questionDTO.Id);
+			var question = context.Questions.Find(questionDto.Id);
 
-			if (questionDTO.Text != null) question.Text = questionDTO.Text;
-			if (questionDTO.Header != null) question.Header = questionDTO.Header;
+			if (questionDto.Text != null) question.Text = questionDto.Text;
+			if (questionDto.Header != null) question.Header = questionDto.Header;
 
 			question.UpdateTime = DateTime.Now;
+
+			foreach (var tag in questionDto.Tags)
+			{
+				//rewrite case-insensitive
+				if (context.Tags.Select(t => t.Name).Any(t => EF.Functions.Like(t, tag)))
+				{
+					question.Tags.Add(context.Tags.First(t => StringComparer.OrdinalIgnoreCase.Compare(t.Name, tag) == 0));
+				}
+				else
+				{
+					var dbTag = new Tag() { Name = tag };
+					context.Tags.Add(dbTag);
+					question.Tags.Add(dbTag);
+				}
+			}
 
 			context.SaveChanges();
 		}

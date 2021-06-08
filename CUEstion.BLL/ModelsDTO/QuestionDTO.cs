@@ -1,6 +1,7 @@
 ﻿using CUEstion.DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CUEstion.BLL.ModelsDTO
@@ -20,7 +21,7 @@ namespace CUEstion.BLL.ModelsDTO
 
 		public UserDTO User { get; set; }
 
-		public List<Tag> Tags { get; set; }
+		public List<string> Tags { get; set; }
 
 		public List<AnswerDTO> Answers { get; set; }
 
@@ -37,6 +38,8 @@ namespace CUEstion.BLL.ModelsDTO
 			Rate = question.Rate;
 			CreateTime = question.CreateTime;
 			UpdateTime = question.UpdateTime;
+			if (question.Tags != null)
+				Tags = question.Tags.Select(t => t.Name).ToList();
 			if (question.User != null) 
 				User = new UserDTO(question.User);
 		}

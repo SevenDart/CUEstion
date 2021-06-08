@@ -36,11 +36,25 @@ namespace CUEstion.WEB.Controllers
 		}
 
 		[HttpGet("filter")]
-		public IActionResult GetQuestionsByTags(string[] tags)
+		public IActionResult GetQuestionsByTags([FromQuery] string[] tags)
 		{
 			try
 			{
 				var list = _questionManagerService.FilterQuestions(tags);
+				return Ok(list);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpGet("search")]
+		public IActionResult Search(string query)
+		{
+			try
+			{
+				var list = _questionManagerService.Search(query);
 				return Ok(list);
 			}
 			catch (Exception e)
