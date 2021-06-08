@@ -54,7 +54,7 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpPut]
+		[HttpPut("login")]
 		public IActionResult Login(AuthDTO authDto)
 		{
 			try
@@ -63,31 +63,8 @@ namespace CUEstion.WEB.Controllers
 				if (authDto == null)
 					return StatusCode(401, "There is no user with such email and password");
 
-				var claims = new List<Claim>
-				{
-					new Claim(ClaimTypes.Email, authDto.Email),
-					new Claim(ClaimTypes.Sid, authDto.Id.ToString()),
-					new Claim(ClaimsIdentity.DefaultRoleClaimType, authDto.Role)
-				};
-
-				var claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimTypes.Email, ClaimTypes.Role);
-
-				var now = DateTime.UtcNow;
-				var jwt = new JwtSecurityToken(
-					issuer: AuthOptions.ISSUER,
-					audience: AuthOptions.AUDIENCE,
-					notBefore: now,
-					claims: claimsIdentity.Claims,
-					expires: now.Add(TimeSpan.FromHours(AuthOptions.LIFETIME)),
-					signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
-					SecurityAlgorithms.HmacSha256)
-				);
-
-				var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-				return Ok(new
-				{
-					token = encodedJwt,
+				return Ok(new {
+					token = Tools.CreateToken(authDto.Email, authDto.Id, authDto.Role),
 					role = authDto.Role
 				});
 			}
@@ -104,30 +81,8 @@ namespace CUEstion.WEB.Controllers
 			{
 				authDto = _userManagerService.CreateUser(authDto);
 
-				var claims = new List<Claim>
-				{
-					new Claim(ClaimTypes.Email, authDto.Email),
-					new Claim(ClaimTypes.Sid, authDto.Id.ToString()),
-					new Claim(ClaimsIdentity.DefaultRoleClaimType, authDto.Role)
-				};
-
-				var claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimTypes.Email, ClaimTypes.Role);
-
-				var now = DateTime.UtcNow;
-				var jwt = new JwtSecurityToken(
-					issuer: AuthOptions.ISSUER,
-					audience: AuthOptions.AUDIENCE,
-					notBefore: now,
-					claims: claimsIdentity.Claims,
-					expires: now.Add(TimeSpan.FromHours(AuthOptions.LIFETIME)),
-					signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), 
-					SecurityAlgorithms.HmacSha256)
-				);
-
-				var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
 				return Ok(new {
-					token = encodedJwt,
+					token = Tools.CreateToken(authDto.Email, authDto.Id, authDto.Role),
 					role = authDto.Role
 				});	
 			}
@@ -136,7 +91,7 @@ namespace CUEstion.WEB.Controllers
 				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
-		}
+			}
 
 		[HttpDelete("{userId}")]
 		[Authorize]

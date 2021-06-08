@@ -8,6 +8,7 @@ using CUEstion.BLL.ModelsDTO;
 using CUEstion.DAL.Entities;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Text.RegularExpressions;
 
 namespace CUEstion.BLL
 {
@@ -29,12 +30,13 @@ namespace CUEstion.BLL
 				prf: KeyDerivationPrf.HMACSHA1,
 				iterationCount: 10000,
 				numBytesRequested: 256 / 8
-				));
+			));
 
 
 			var user = new User()
 			{
-				Email = authDto.Email, 
+				Email = authDto.Email,
+				Username = new Regex("@.+").Replace(authDto.Email, ""),
 				Password = hashed,
 				Salt = saltHash,
 				Role = "User"
@@ -45,6 +47,7 @@ namespace CUEstion.BLL
 			context.SaveChanges();
 
 			authDto.Id = context.Users.FirstOrDefault(u => u.Email == authDto.Email).Id;
+			authDto.Role = "User";
 
 			return authDto;
 		}
@@ -53,10 +56,23 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var user = context.Users.FirstOrDefault(u => u.Email == authDto.Email && u.Password == authDto.Password);
+			var user = context.Users.FirstOrDefault(u => u.Email == authDto.Email);
 
-			if (user != null)
+			var salt = Encoding.Unicode.GetBytes(user.Salt);
+			string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+				password: authDto.Password,
+				salt: salt,
+				prf: KeyDerivationPrf.HMACSHA1,
+				iterationCount: 10000,
+				numBytesRequested: 256 / 8
+			));
+
+			if (user.Password != hashed)
+				authDto = null;
+			else
 				authDto.Role = user.Role;
+
+
 			return authDto;
 		}
 
