@@ -96,7 +96,7 @@ namespace CUEstion.BLL
 
 			var user = context.Users.Find(userId);
 
-			return new UserDTO(user);
+			return (user != null) ? new UserDTO(user) : null;
 		}
 
 		public void DeleteUser(int userId)

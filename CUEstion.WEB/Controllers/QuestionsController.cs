@@ -70,7 +70,7 @@ namespace CUEstion.WEB.Controllers
 			try
 			{
 				var question = _questionManagerService.GetQuestion(questionId);
-				return Ok(question);
+				return question != null? Ok(question) : StatusCode(404, new { Message = "No such question." });
 			}
 			catch (Exception e)
 			{

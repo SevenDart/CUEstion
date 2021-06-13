@@ -27,7 +27,7 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q => q.Id == questionId);
-			return new QuestionDTO(question);
+			return question != null ? new QuestionDTO(question) : null;
 		}
 
 		public IEnumerable<QuestionDTO> Search(string query)

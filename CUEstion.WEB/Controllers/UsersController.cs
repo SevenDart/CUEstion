@@ -46,7 +46,7 @@ namespace CUEstion.WEB.Controllers
 			try
 			{
 				var user = _userManagerService.GetUser(userId);
-				return Ok(user);
+				return user != null ? Ok(user) : StatusCode(404, new { Message = "No such user." });
 			}
 			catch (Exception e)
 			{
