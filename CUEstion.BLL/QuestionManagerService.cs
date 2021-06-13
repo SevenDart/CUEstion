@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using CUEstion.DAL.Entities;
 using System.Collections.Generic;
 using CUEstion.BLL.ModelsDTO;
+using System.Text.RegularExpressions;
 
 namespace CUEstion.BLL
 {
@@ -33,25 +34,35 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var words = query.Split(" .,:?!");
+			var words = query.Split(' ', '.', ',', ':', '?', '!');
 			var subseqs = new List<string>();
+
 			for (int length = 1; length <= words.Length; length++)
 			{
-				for (int i = 0; i <= words.Length - length; i++)
+				int wordsCount = 0;
+				string subseq = "";
+				for (int i = 0; i < words.Length; i++)
 				{
-					string subseq = words[i];
-					for (int j = i + 1; j < i + length; j++)
-						subseq += " " + words[j];
-					subseqs.Add(subseq);
+					if (wordsCount >= length)
+					{
+						wordsCount--;
+						subseq = subseq.Substring(words[i - length].Length + ((subseq[^1] == ' ') ? 1 : 0));
+					}
+					if (subseq != "") subseq += " ";
+					subseq += words[i];
+					wordsCount++;
+					if (wordsCount == length) subseqs.Add(subseq);
 				}
 			}
 
-			var questions = context.Questions.ToList().Where(q => 
-				subseqs.Any(s => 
-					q.Header.Contains(s, StringComparison.OrdinalIgnoreCase) 
-					|| q.Text.Contains(s, StringComparison.OrdinalIgnoreCase)
-					)
-				);
+
+			var questions = context.Questions.ToList().Where(q =>
+				subseqs.Any(s => {
+					var regex = new Regex(@"\b" + s + @"\b", RegexOptions.IgnoreCase);
+					return regex.IsMatch(q.Header) || regex.IsMatch(q.Text);
+				})
+			).ToList();
+
 
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
@@ -67,11 +78,7 @@ namespace CUEstion.BLL
 			using var context = new ApplicationContext();
 
 			var questions = context.Questions.Include(q => q.Tags).ToList()
-				.Where(q => 
-					tags.Any(t => 
-						q.Tags.Select(t => t.Name)
-						.Contains(t, StringComparer.OrdinalIgnoreCase))
-				).ToList();
+				.Where(q => tags.Any(t => q.Tags.Any(qTag => qTag.Name.ToLower() == t.ToLower())));
 
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
@@ -109,9 +116,9 @@ namespace CUEstion.BLL
 			foreach (var tag in questionDto.Tags)
 			{
 				//rewrite case-insensitive
-				if (context.Tags.Select(t => t.Name).Any(t => EF.Functions.Like(t, tag)))
+				if (context.Tags.Any(t => t.Name.ToLower() == tag.ToLower()))
 				{
-					question.Tags.Add(context.Tags.First(t => StringComparer.OrdinalIgnoreCase.Compare(t.Name, tag) == 0));
+					question.Tags.Add(context.Tags.First(t => t.Name.ToLower() == tag.ToLower()));
 				}
 				else
 				{
@@ -140,9 +147,9 @@ namespace CUEstion.BLL
 			foreach (var tag in questionDto.Tags)
 			{
 				//rewrite case-insensitive
-				if (context.Tags.Select(t => t.Name).Any(t => EF.Functions.Like(t, tag)))
+				if (context.Tags.Any(t => t.Name.ToLower() == tag.ToLower()))
 				{
-					question.Tags.Add(context.Tags.First(t => StringComparer.OrdinalIgnoreCase.Compare(t.Name, tag) == 0));
+					question.Tags.Add(context.Tags.First(t => t.Name.ToLower() == tag.ToLower()));
 				}
 				else
 				{
