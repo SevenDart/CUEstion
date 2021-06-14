@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using CUEstion.BLL;
 using CUEstion.BLL.ModelsDTO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace CUEstion.WEB.Controllers
 {
@@ -70,7 +69,9 @@ namespace CUEstion.WEB.Controllers
 			try
 			{
 				var question = _questionManagerService.GetQuestion(questionId);
-				return question != null? Ok(question) : StatusCode(404, new { Message = "No such question." });
+				return question != null
+					? Ok(question) 
+					: StatusCode(404, new { Message = "No such question." });
 			}
 			catch (Exception e)
 			{

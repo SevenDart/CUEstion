@@ -1,11 +1,11 @@
-﻿using CUEstion.DAL.EF;
-using System;
+﻿using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using CUEstion.DAL.Entities;
 using System.Collections.Generic;
-using CUEstion.BLL.ModelsDTO;
 using System.Text.RegularExpressions;
+using CUEstion.DAL.Entities;
+using CUEstion.DAL.EF;
+using CUEstion.BLL.ModelsDTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace CUEstion.BLL
 {
@@ -27,7 +27,9 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q => q.Id == questionId);
-			return question != null ? new QuestionDTO(question) : null;
+			return question != null 
+				? new QuestionDTO(question) 
+				: null;
 		}
 
 		public IEnumerable<QuestionDTO> Search(string query)
@@ -116,9 +118,10 @@ namespace CUEstion.BLL
 			foreach (var tag in questionDto.Tags)
 			{
 				//rewrite case-insensitive
-				if (context.Tags.Any(t => t.Name.ToLower() == tag.ToLower()))
+				var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+				if (foundTag != null)
 				{
-					question.Tags.Add(context.Tags.First(t => t.Name.ToLower() == tag.ToLower()));
+					question.Tags.Add(foundTag);
 				}
 				else
 				{
@@ -147,9 +150,10 @@ namespace CUEstion.BLL
 			foreach (var tag in questionDto.Tags)
 			{
 				//rewrite case-insensitive
-				if (context.Tags.Any(t => t.Name.ToLower() == tag.ToLower()))
+				var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+				if (foundTag != null)
 				{
-					question.Tags.Add(context.Tags.First(t => t.Name.ToLower() == tag.ToLower()));
+					question.Tags.Add(foundTag);
 				}
 				else
 				{

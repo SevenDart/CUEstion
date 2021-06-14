@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using CUEstion.DAL.Entities;
-using Microsoft.Extensions.Configuration;
+
 
 namespace CUEstion.DAL.EF
 {

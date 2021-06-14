@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CUEstion.DAL.EF;
 using CUEstion.BLL.ModelsDTO;
 using CUEstion.DAL.Entities;
-using System.Security.Cryptography;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Text.RegularExpressions;
 
 namespace CUEstion.BLL
 {
@@ -96,7 +95,9 @@ namespace CUEstion.BLL
 
 			var user = context.Users.Find(userId);
 
-			return (user != null) ? new UserDTO(user) : null;
+			return user != null 
+				? new UserDTO(user) 
+				: null;
 		}
 
 		public void DeleteUser(int userId)

@@ -1,7 +1,4 @@
 ﻿using CUEstion.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CUEstion.BLL.ModelsDTO
 {
@@ -19,7 +16,6 @@ namespace CUEstion.BLL.ModelsDTO
 		{
 
 		}
-
 
 		public UserDTO(User user)
 		{

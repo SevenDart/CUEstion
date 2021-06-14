@@ -1,7 +1,5 @@
-﻿using CUEstion.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using CUEstion.DAL.Entities;
 
 namespace CUEstion.BLL.ModelsDTO
 {
