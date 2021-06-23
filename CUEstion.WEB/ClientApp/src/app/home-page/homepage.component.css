@@ -1,0 +1,21 @@
+.intro {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro__header {
+  font: 700 72px Roboto, "Helvetica Neue", sans-serif;
+  color: black;
+  display: block;
+}
+
+.intro__search-field {
+  width: 50%;
+  transition: width 1s;
+}
+
+.intro__search-field:focus-within {
+  width: 75%;
+}
