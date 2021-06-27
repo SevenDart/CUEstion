@@ -1,12 +1,19 @@
 <form>
-    <input type="text"
+    <input
            class="form-control"
            placeholder="Search..."
            [formControl]="searchControl"
            [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="RedirectToPage($event)" [displayWith]="Display">
       <mat-option *ngFor="let result of results | async" [value]="result">
-        {{result}}
+        <div class="result">
+          {{result.header}}
+          <small class="rate"
+                 [class.positive]="result.rate > 0"
+                 [class.negative]="result.rate < 0">
+            {{result.rate}}
+          </small>
+        </div>
       </mat-option>
     </mat-autocomplete>
 </form>

@@ -3,5 +3,9 @@
 }
 
 .navbar {
-  padding-left: 2%;
+  padding-left: 30px;
+}
+
+.search-field {
+  width: 25%;
 }
