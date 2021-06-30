@@ -14,11 +14,16 @@ import {FooterBarComponent} from './footer-bar/footer-bar.component';
 import {HomePageComponent} from './home-page/homepage.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
+import {QuestionPageComponent} from './question-page/question-page.component';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatDividerModule} from '@angular/material/divider';
 
 
 const routes: Routes = [
-  {path: 'Home', component: HomePageComponent},
-  {path: '', redirectTo: 'Home'}
+  {path: 'home', component: HomePageComponent},
+  {path: 'question/:id', component: QuestionPageComponent},
+  {path: '', redirectTo: 'home'}
 ];
 
 
@@ -28,7 +33,8 @@ const routes: Routes = [
     NavigationBarComponent,
     SearchFieldComponent,
     FooterBarComponent,
-    HomePageComponent
+    HomePageComponent,
+    QuestionPageComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +46,10 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     MatButtonModule,
     HttpClientModule,
-    MatTableModule
+    MatTableModule,
+    MatChipsModule,
+    MatExpansionModule,
+    MatDividerModule
   ],
   exports: [RouterModule],
   bootstrap: [AppComponent]

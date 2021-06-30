@@ -22,7 +22,7 @@ export class SearchFieldComponent implements OnInit {
 
   ngOnInit() {
     this.results = this.searchControl.valueChanges.pipe(
-      debounceTime(2000),
+      debounceTime(1000),
       distinctUntilChanged(),
       startWith(''),
       switchMap(value => this.Search(value))
@@ -42,7 +42,8 @@ export class SearchFieldComponent implements OnInit {
 
   RedirectToPage(event: MatAutocompleteSelectedEvent) {
     const question: Question = event.option.value;
-    this.router.navigate([`/questions/`, question.id]);
+    this.router.navigate([`/question/`, question.id]);
+    this.searchControl.setValue('');
   }
 
 }

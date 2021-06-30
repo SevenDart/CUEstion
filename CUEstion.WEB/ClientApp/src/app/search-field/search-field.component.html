@@ -8,11 +8,11 @@
       <mat-option *ngFor="let result of results | async" [value]="result">
         <div class="result">
           {{result.header}}
-          <small class="rate"
+          <span class="badge rate"
                  [class.positive]="result.rate > 0"
                  [class.negative]="result.rate < 0">
             {{result.rate}}
-          </small>
+          </span>
         </div>
       </mat-option>
     </mat-autocomplete>

@@ -1,0 +1,56 @@
+<div class="page-container">
+
+  <h1 class="question__header">{{(question | async).header}}</h1>
+  <span class="badge rate"
+     [class.positive]="(question | async).rate > 0"
+     [class.negative]="(question | async).rate < 0">{{(question | async).rate}}</span>
+  <p class="date">{{(question | async).createTime | date}}</p>
+  <p class="text">{{(question | async).text}}</p>
+  <mat-chip-list>
+    <mat-chip class="question__tag" *ngFor="let tag of (question | async).tags" selected [color]="'primary'">
+      {{tag}}
+    </mat-chip>
+  </mat-chip-list>
+  <mat-expansion-panel class="comment-panel">
+    <mat-expansion-panel-header class="comment-panel-header">
+      <mat-panel-title>
+        {{(questionComments | async).length}} Comments
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="comment" *ngFor="let comment of questionComments | async">
+      <span class="badge rate"
+             [class.positive]="comment.rate > 0"
+             [class.negative]="comment.rate < 0">{{comment.rate}}</span>
+      <p class="text">{{comment.text}}</p>
+      <p class="date">{{comment.createTime | date}}</p>
+      <mat-divider></mat-divider>
+    </div>
+  </mat-expansion-panel>
+
+
+  <h1 class="answers__header">{{(answers | async).length}} Answers</h1>
+  <div class="answer" *ngFor="let answer of answers | async">
+    <p class="text">{{answer.text}}</p>
+    <span class="badge rate"
+       [class.positive]="answer.rate > 0"
+       [class.negative]="answer.rate < 0">{{answer.rate}}</span>
+    <p class="date">{{answer.createTime | date}}</p>
+
+    <mat-expansion-panel class="comment-panel">
+      <mat-expansion-panel-header class="comment-panel-header">
+        <mat-panel-title>
+          {{(answerComments[answer.id] | async).length}} Comments
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="comment" *ngFor="let comment of (answerComments[answer.id] | async)">
+      <span class="badge rate"
+            [class.positive]="comment.rate > 0"
+            [class.negative]="comment.rate < 0">{{comment.rate}}</span>
+        <p class="text">{{comment.text}}</p>
+        <p class="date">{{comment.createTime | date}}</p>
+        <mat-divider></mat-divider>
+      </div>
+    </mat-expansion-panel>
+
+  </div>
+</div>

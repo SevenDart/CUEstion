@@ -2,20 +2,30 @@
   <h1 class="intro__header">Any question. Any time.</h1>
   <div class="intro__search-field"><search-field></search-field></div>
   <h2 class="intro__subheader">Didn't find?</h2>
-  <a mat-raised-button href="/questions/create" class="button">Create question!</a>
+  <a mat-raised-button href="/question/create" class="button">Create question!</a>
 </div>
 
 <div class="popular-questions">
   <h1 class="popular-questions__header">Hot questions</h1>
   <table mat-table [dataSource]="popularQuestions | async" class="mat-elevation-z8 popular-questions-table">
     <ng-container matColumnDef="rate">
-      <td mat-cell *matCellDef="let question"><p class="rate"
+      <td mat-cell *matCellDef="let question"><span class="badge rate"
                                                  [class.positive]="question.rate > 0"
-                                                 [class.negative]="question.rate < 0">{{question.rate}}</p></td>
+                                                 [class.negative]="question.rate < 0">{{question.rate}}</span></td>
     </ng-container>
 
     <ng-container matColumnDef="header">
-      <td mat-cell *matCellDef="let question"><a href="/questions/{{question.id}}" class="question__header">{{question.header}}</a></td>
+      <td mat-cell *matCellDef="let question">
+        <a routerLink="/question/{{question.id}}" class="question__header">{{question.header}}</a>
+        <mat-chip-list>
+          <mat-chip *ngFor="let tag of question.tags" selected [color]="'primary'" class="tag">{{tag}}</mat-chip>
+        </mat-chip-list>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tags">
+      <td mat-cell *matCellDef="let question">
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="last-update">

@@ -7,6 +7,8 @@ namespace CUEstion.BLL.ModelsDTO
 	{
 		public int Id { get; set; }
 
+		public int Rate { get; set; }
+
 		public CommentDTO()
 		{
 
@@ -16,6 +18,7 @@ namespace CUEstion.BLL.ModelsDTO
 		{
 			Id = comment.Id;
 			Text = comment.Text;
+			Rate = comment.Rate;
 			QuestionId = comment.QuestionId;
 			AnswerId = comment.AnswerId;
 			CreateTime = comment.CreateTime;

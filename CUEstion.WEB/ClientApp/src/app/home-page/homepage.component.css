@@ -43,7 +43,7 @@
 .popular-questions-table {
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
+  width: 70%;
 }
 
 .question__header {
@@ -51,23 +51,27 @@
   color: black;
   font-size: 18px;
   line-height: normal;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.mat-column-header {
+  padding: 8px 0px;
 }
 
 .mat-column-last-update {
   text-align: right;
 }
 
-.mat-column-rate {
-  vertical-align: bottom;
+.tag {
+  font-size: 12px;
+  min-height: 24px;
 }
 
 .rate {
-  color: white;
-  padding: 2px 2px;
-  border-radius: 25%;
-  text-align: center;
   background-color: gray;
-  margin-right: 20px;
+  font-size: 14px;
+  margin-right: 5px;
 }
 
 .positive {

@@ -34,6 +34,20 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
+		[HttpGet("Hot")]
+		public IActionResult GetHotQuestions(int count)
+		{
+			try
+			{
+				var list = _questionManagerService.GetNewestQuestions(count);
+				return Ok(list);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
 		[HttpGet("filter")]
 		public IActionResult GetQuestionsByTags([FromQuery] string[] tags)
 		{
@@ -202,7 +216,6 @@ namespace CUEstion.WEB.Controllers
 
 		[HttpGet("{questionId}/comments")]
 		[HttpGet("{questionId}/answers/{answerId}/comments")]
-		[Authorize]
 		public IActionResult GetComments(int questionId, int? answerId)
 		{
 			try

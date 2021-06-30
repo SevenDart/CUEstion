@@ -23,6 +23,22 @@ namespace CUEstion.BLL
 			return questionsList;
 		}
 
+		public IEnumerable<QuestionDTO> GetNewestQuestions(int count)
+		{
+			using var context = new ApplicationContext();
+			var questions = context.Questions.Include(q => q.Tags)
+				.OrderByDescending(q => q.CreateTime)
+				.ThenByDescending(q => q.UpdateTime)
+				.ThenByDescending(q => q.Rate)
+				.Take(count);
+			var questionList = new List<QuestionDTO>();
+			foreach (var question in questions)
+			{
+				questionList.Add(new QuestionDTO(question));
+			}
+			return questionList;
+		}
+
 		public QuestionDTO GetQuestion(int questionId)
 		{
 			using var context = new ApplicationContext();
