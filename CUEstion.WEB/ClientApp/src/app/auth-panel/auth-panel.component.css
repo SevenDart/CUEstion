@@ -1,0 +1,33 @@
+.auth__button {
+  font-size: 14px;
+  color: white;
+  background-color: #201729;
+}
+
+.rate {
+  border: 1px solid black;
+  background-color: gray;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.negative {
+  background-color: red;
+}
+
+.positive {
+  background-color: green;
+}
+
+.logout {
+  background-color: #d27d00;
+  color: white;
+  font-size: 16px;
+}
+
+.username {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  margin-right: 7px;
+}

@@ -2,14 +2,8 @@
 using CUEstion.BLL.ModelsDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
+
 
 namespace CUEstion.WEB.Controllers
 {
@@ -69,7 +63,8 @@ namespace CUEstion.WEB.Controllers
 
 				return Ok(new {
 					token = Tools.CreateToken(authDto.Email, authDto.Id, authDto.Role),
-					role = authDto.Role
+					role = authDto.Role,
+					id = authDto.Id
 				});
 			}
 			catch (Exception e)
@@ -87,7 +82,8 @@ namespace CUEstion.WEB.Controllers
 
 				return Ok(new {
 					token = Tools.CreateToken(authDto.Email, authDto.Id, authDto.Role),
-					role = authDto.Role
+					role = authDto.Role,
+					id = authDto.Id
 				});	
 			}
 			catch (Exception e)

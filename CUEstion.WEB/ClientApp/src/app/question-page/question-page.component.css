@@ -5,7 +5,7 @@
   padding: 20px;
   background-color: white;
   box-shadow: -1px 1px 20px grey;
-  margin-top: 80px;
+  margin-top: 30px;
 }
 
 .question__header {
@@ -98,4 +98,8 @@
 
 .positive {
   background-color: green;
+}
+
+.loader {
+  margin: 0 auto;
 }

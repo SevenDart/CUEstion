@@ -18,7 +18,9 @@
       <td mat-cell *matCellDef="let question">
         <a routerLink="/question/{{question.id}}" class="question__header">{{question.header}}</a>
         <mat-chip-list>
-          <mat-chip *ngFor="let tag of question.tags" selected [color]="'primary'" class="tag">{{tag}}</mat-chip>
+          <mat-chip *ngFor="let tag of question.tags | slice:0:4; let i=index" selected [color]="'primary'" class="tag">
+              {{tag}}
+          </mat-chip>
         </mat-chip-list>
       </td>
     </ng-container>

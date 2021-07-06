@@ -1,0 +1,12 @@
+.register-form {
+  margin: 0 auto;
+}
+
+.field {
+  display: block;
+}
+
+input {
+  line-height: normal;
+}
+

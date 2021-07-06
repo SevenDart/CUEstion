@@ -1,0 +1,10 @@
+<ng-container *ngIf="user | async as user; else authWindow">
+  <span class="badge rate"
+        [class.positive]="user.rate > 0"
+        [class.negative]="user.rate < 0">{{user.rate}}</span>
+  <a class="username">{{user.username}}</a>
+  <button mat-flat-button class="logout" (click)="logout()">LOG OUT</button>
+</ng-container>
+<ng-template #authWindow>
+  <button mat-flat-button class="auth__button" (click)="openWindow()" >SIGN IN/UP</button>
+</ng-template>

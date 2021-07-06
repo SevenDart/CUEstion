@@ -19,7 +19,7 @@ export class QuestionPageComponent implements OnInit {
   question: Observable<Question>;
   questionComments: Observable<AppComment[]>;
   answers: Observable<Answer[]>;
-  answerComments: Observable<AppComment[]>[];
+  answerComments: Observable<AppComment[]>[] = [];
 
   constructor(private questionService: QuestionsService, private activatedRoute: ActivatedRoute) {
   }

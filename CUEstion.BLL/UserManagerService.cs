@@ -57,6 +57,11 @@ namespace CUEstion.BLL
 
 			var user = context.Users.FirstOrDefault(u => u.Email == authDto.Email);
 
+			if (user == null)
+			{
+				return null;
+			}
+
 			var salt = Encoding.Unicode.GetBytes(user.Salt);
 			string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
 				password: authDto.Password,
@@ -69,7 +74,10 @@ namespace CUEstion.BLL
 			if (user.Password != hashed)
 				authDto = null;
 			else
+			{
 				authDto.Role = user.Role;
+				authDto.Id = user.Id;
+			}
 
 
 			return authDto;

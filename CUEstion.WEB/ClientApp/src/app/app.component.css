@@ -1,15 +1,6 @@
 .main-content {
-  margin-top: 54px;
+  padding-top: 54px;
   min-height: 80%;
-}
-
-.main-content::before {
-  content: "";
-  background: url("src/app/resources/intro-background.jpg") center;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  z-index: -1;
-  opacity: 0.4;
+  padding-bottom: 30px;
+  background: url("src/app/resources/background.png");
 }

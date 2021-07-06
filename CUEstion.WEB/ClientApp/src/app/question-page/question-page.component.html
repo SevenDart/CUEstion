@@ -1,56 +1,65 @@
 <div class="page-container">
 
-  <h1 class="question__header">{{(question | async).header}}</h1>
-  <span class="badge rate"
-     [class.positive]="(question | async).rate > 0"
-     [class.negative]="(question | async).rate < 0">{{(question | async).rate}}</span>
-  <p class="date">{{(question | async).createTime | date}}</p>
-  <p class="text">{{(question | async).text}}</p>
-  <mat-chip-list>
-    <mat-chip class="question__tag" *ngFor="let tag of (question | async).tags" selected [color]="'primary'">
-      {{tag}}
-    </mat-chip>
-  </mat-chip-list>
-  <mat-expansion-panel class="comment-panel">
-    <mat-expansion-panel-header class="comment-panel-header">
-      <mat-panel-title>
-        {{(questionComments | async).length}} Comments
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="comment" *ngFor="let comment of questionComments | async">
-      <span class="badge rate"
-             [class.positive]="comment.rate > 0"
-             [class.negative]="comment.rate < 0">{{comment.rate}}</span>
-      <p class="text">{{comment.text}}</p>
-      <p class="date">{{comment.createTime | date}}</p>
-      <mat-divider></mat-divider>
-    </div>
-  </mat-expansion-panel>
-
-
-  <h1 class="answers__header">{{(answers | async).length}} Answers</h1>
-  <div class="answer" *ngFor="let answer of answers | async">
-    <p class="text">{{answer.text}}</p>
+  <ng-container *ngIf="(question | async) as question; else loading">
+    <h1 class="question__header">{{question.header}}</h1>
     <span class="badge rate"
-       [class.positive]="answer.rate > 0"
-       [class.negative]="answer.rate < 0">{{answer.rate}}</span>
-    <p class="date">{{answer.createTime | date}}</p>
+       [class.positive]="question.rate > 0"
+       [class.negative]="question.rate < 0">{{question.rate}}</span>
+    <p class="date">{{question.createTime | date}}</p>
+    <p class="text">{{question.text}}</p>
+    <mat-chip-list>
+      <mat-chip class="question__tag" *ngFor="let tag of question.tags" selected [color]="'primary'">
+        {{tag}}
+      </mat-chip>
+    </mat-chip-list>
 
-    <mat-expansion-panel class="comment-panel">
-      <mat-expansion-panel-header class="comment-panel-header">
-        <mat-panel-title>
-          {{(answerComments[answer.id] | async).length}} Comments
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="comment" *ngFor="let comment of (answerComments[answer.id] | async)">
+    <ng-container *ngIf="(questionComments | async) as comments; else loading">
+      <mat-expansion-panel class="comment-panel">
+        <mat-expansion-panel-header class="comment-panel-header">
+          <mat-panel-title>
+            {{comments.length}} Comments
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="comment" *ngFor="let comment of comments">
+          <span class="badge rate"
+                [class.positive]="comment.rate > 0"
+                [class.negative]="comment.rate < 0">{{comment.rate}}</span>
+          <p class="text">{{comment.text}}</p>
+          <p class="date">{{comment.createTime | date}}</p>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-expansion-panel>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="(answers | async) as answers; else loading">
+    <h1 class="answers__header">{{answers.length}} Answers</h1>
+    <div class="answer" *ngFor="let answer of answers">
+      <p class="text">{{answer.text}}</p>
       <span class="badge rate"
-            [class.positive]="comment.rate > 0"
-            [class.negative]="comment.rate < 0">{{comment.rate}}</span>
-        <p class="text">{{comment.text}}</p>
-        <p class="date">{{comment.createTime | date}}</p>
-        <mat-divider></mat-divider>
-      </div>
-    </mat-expansion-panel>
+            [class.positive]="answer.rate > 0"
+            [class.negative]="answer.rate < 0">{{answer.rate}}</span>
+      <p class="date">{{answer.createTime | date}}</p>
 
-  </div>
+      <ng-container *ngIf="(answerComments[answer.id] | async) as comments; else loading">
+        <mat-expansion-panel class="comment-panel">
+          <mat-expansion-panel-header class="comment-panel-header">
+            <mat-panel-title>
+              {{comments.length}} Comments
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="comment" *ngFor="let comment of comments">
+        <span class="badge rate"
+              [class.positive]="comment.rate > 0"
+              [class.negative]="comment.rate < 0">{{comment.rate}}</span>
+            <p class="text">{{comment.text}}</p>
+            <p class="date">{{comment.createTime | date}}</p>
+            <mat-divider></mat-divider>
+          </div>
+        </mat-expansion-panel>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-template #loading><mat-spinner class="loader"></mat-spinner></ng-template>
 </div>
