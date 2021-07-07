@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Question} from '../Models/Question';
 import {Observable, of} from 'rxjs';
 import {Answer} from '../Models/Answer';
@@ -21,6 +21,8 @@ export class QuestionPageComponent implements OnInit {
   answers: Observable<Answer[]>;
   answerComments: Observable<AppComment[]>[] = [];
 
+  isOwner: boolean;
+
   constructor(private questionService: QuestionsService, private activatedRoute: ActivatedRoute) {
   }
 
@@ -28,6 +30,9 @@ export class QuestionPageComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe((map: ParamMap) => {
       const id: number = Number(map.get('id'));
       this.question = this.questionService.GetQuestion(id);
+      this.question.subscribe((question: Question) => {
+        this.isOwner = question.user.id === Number(localStorage.getItem('userId'));
+      });
       this.questionComments = this.questionService.GetCommentsForQuestion(id);
       this.answers = this.questionService.GetAnswersForQuestion(id);
       this.answers.subscribe((answers: Answer[]) => {

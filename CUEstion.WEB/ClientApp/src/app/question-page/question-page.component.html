@@ -1,18 +1,18 @@
 <div class="page-container">
-
   <ng-container *ngIf="(question | async) as question; else loading">
     <h1 class="question__header">{{question.header}}</h1>
     <span class="badge rate"
        [class.positive]="question.rate > 0"
        [class.negative]="question.rate < 0">{{question.rate}}</span>
+    <p class="username">{{question.user.username}}</p>
     <p class="date">{{question.createTime | date}}</p>
+    <a routerLink="/question/{{question.id}}/edit" *ngIf="isOwner" class="fas fa-pen edit-icon"></a>
     <p class="text">{{question.text}}</p>
     <mat-chip-list>
       <mat-chip class="question__tag" *ngFor="let tag of question.tags" selected [color]="'primary'">
         {{tag}}
       </mat-chip>
     </mat-chip-list>
-
     <ng-container *ngIf="(questionComments | async) as comments; else loading">
       <mat-expansion-panel class="comment-panel">
         <mat-expansion-panel-header class="comment-panel-header">
@@ -25,6 +25,7 @@
                 [class.positive]="comment.rate > 0"
                 [class.negative]="comment.rate < 0">{{comment.rate}}</span>
           <p class="text">{{comment.text}}</p>
+          <p class="username">{{comment.user.username}}</p>
           <p class="date">{{comment.createTime | date}}</p>
           <mat-divider></mat-divider>
         </div>
@@ -39,8 +40,8 @@
       <span class="badge rate"
             [class.positive]="answer.rate > 0"
             [class.negative]="answer.rate < 0">{{answer.rate}}</span>
+      <p class="username">{{answer.user.username}}</p>
       <p class="date">{{answer.createTime | date}}</p>
-
       <ng-container *ngIf="(answerComments[answer.id] | async) as comments; else loading">
         <mat-expansion-panel class="comment-panel">
           <mat-expansion-panel-header class="comment-panel-header">

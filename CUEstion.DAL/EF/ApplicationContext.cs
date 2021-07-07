@@ -31,6 +31,7 @@ namespace CUEstion.DAL.EF
 			modelBuilder.Entity<Comment>().HasOne(c => c.User).WithMany().OnDelete(DeleteBehavior.SetNull);
 			modelBuilder.Entity<Comment>().HasOne(c => c.Answer).WithMany(a => a.Comments).HasForeignKey(c => c.AnswerId).OnDelete(DeleteBehavior.NoAction);
 			modelBuilder.Entity<Comment>().HasOne(c => c.Question).WithMany(q => q.Comments).HasForeignKey(c => c.QuestionId).OnDelete(DeleteBehavior.NoAction);
+			modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 		}
 
 	}

@@ -23,6 +23,13 @@ namespace CUEstion.BLL
 			return questionsList;
 		}
 
+		public IEnumerable<String> GetAllTags()
+		{
+			using var context = new ApplicationContext();
+			var tags = context.Tags.Select(t => t.Name).ToList();
+			return tags;
+		}
+
 		public IEnumerable<QuestionDTO> GetNewestQuestions(int count)
 		{
 			using var context = new ApplicationContext();
@@ -43,6 +50,7 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q => q.Id == questionId);
+			question.User = context.Users.Find(question.UserId);
 			return question != null 
 				? new QuestionDTO(question) 
 				: null;
@@ -150,13 +158,15 @@ namespace CUEstion.BLL
 			context.Questions.Add(question);
 
 			context.SaveChanges();
+
+			questionDto.Id = context.Questions.Max(question => question.Id);
 		}
 
 		public void UpdateQuestion(QuestionDTO questionDto)
 		{
 			using var context = new ApplicationContext();
 
-			var question = context.Questions.Find(questionDto.Id);
+			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q=> q.Id == questionDto.Id);
 
 			if (questionDto.Text != null) question.Text = questionDto.Text;
 			if (questionDto.Header != null) question.Header = questionDto.Header;
@@ -227,7 +237,7 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var answers = context.Answers.Where(a => a.QuestionId == questionId);
+			var answers = context.Answers.Include(a => a.User).Where(a => a.QuestionId == questionId);
 
 			var answersList = new List<AnswerDTO>();
 			foreach (var answer in answers)
@@ -290,7 +300,7 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var comments = context.Comments.Where(c => c.QuestionId == questionId && c.AnswerId == answerId);
+			var comments = context.Comments.Include(c => c.User).Where(c => c.QuestionId == questionId && c.AnswerId == answerId);
 
 			var commentsList = new List<CommentDTO>();
 

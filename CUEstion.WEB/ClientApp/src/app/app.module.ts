@@ -28,12 +28,19 @@ import {LogInComponent} from './auth-panel/sign-dialog/log-in/log-in.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {SnackBarContentComponent} from './auth-panel/sign-dialog/snack-bar-content/snack-bar-content.component';
 import {RegisterFormComponent} from './auth-panel/sign-dialog/register-form/register-form.component';
+import {CreateQuestionComponent} from './create-question/create-question.component';
+import {TextFieldModule} from '@angular/cdk/text-field';
+import {AuthorizationGuard} from './guards/authorization.guard';
+import {UpdateQuestionComponent} from './update-question/update-question.component';
 
 
 const routes: Routes = [
   {path: 'home', component: HomePageComponent},
+  {path: 'question/create', component: CreateQuestionComponent, canActivate: [AuthorizationGuard]},
   {path: 'question/:id', component: QuestionPageComponent},
-  {path: '', redirectTo: 'home'}
+  {path: 'question/:id/edit', component: UpdateQuestionComponent, canActivate: [AuthorizationGuard]},
+  {path: '', redirectTo: 'home'},
+  {path: '/', redirectTo: 'home'}
 ];
 
 
@@ -49,7 +56,9 @@ const routes: Routes = [
     SignDialogComponent,
     LogInComponent,
     SnackBarContentComponent,
-    RegisterFormComponent
+    RegisterFormComponent,
+    CreateQuestionComponent,
+    UpdateQuestionComponent
   ],
   imports: [
     BrowserModule,
@@ -69,8 +78,10 @@ const routes: Routes = [
     MatDialogModule,
     MatTabsModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TextFieldModule
   ],
+  providers: [AuthorizationGuard],
   exports: [RouterModule],
   bootstrap: [AppComponent]
 })

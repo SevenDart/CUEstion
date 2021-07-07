@@ -34,6 +34,20 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
+		[HttpGet("tags")]
+		public IActionResult GetAllTags()
+		{
+			try
+			{
+				var list = _questionManagerService.GetAllTags();
+				return Ok(list);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
 		[HttpGet("Hot")]
 		public IActionResult GetHotQuestions(int count)
 		{
@@ -100,7 +114,7 @@ namespace CUEstion.WEB.Controllers
 			try
 			{
 				_questionManagerService.CreateQuestion(questionDto);
-				return Ok();
+				return Ok(questionDto.Id);
 			}
 			catch (Exception e)
 			{

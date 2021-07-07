@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {QuestionsService} from '../services/questions.service';
 import {Observable} from 'rxjs';
 import {Question} from '../Models/Question';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ActivatedRoute} from '@angular/router';
 
 
 @Component({

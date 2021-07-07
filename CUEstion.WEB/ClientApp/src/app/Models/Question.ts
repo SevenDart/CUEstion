@@ -1,4 +1,5 @@
 import {AppComment} from './AppComment';
+import {User} from './User';
 
 export interface Question {
   id: number;
@@ -8,5 +9,6 @@ export interface Question {
   createTime: Date;
   updateTime: Date;
   tags: string[];
+  user: User;
   comments: AppComment[];
 }

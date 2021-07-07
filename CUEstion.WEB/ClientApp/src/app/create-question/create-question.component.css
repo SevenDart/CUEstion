@@ -1,0 +1,63 @@
+.page-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  padding: 20px;
+  background-color: white;
+  box-shadow: -1px 1px 20px grey;
+  margin-top: 30px;
+}
+
+.page__header {
+  font-size: 50px;
+  font-weight: bold;
+  line-height: normal;
+  text-align: center;
+}
+
+.question__header {
+  font-size: 30px;
+  font-weight: bold;
+  line-height: normal;
+}
+
+.field {
+  display: block;
+}
+
+.text {
+  text-align: justify;
+  line-height: normal;
+  width: 95%;
+}
+
+.description {
+  font-size: 16px;
+}
+
+.hint-label {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.tag-select {
+  width: 100%;
+}
+
+.chip {
+  background-color: #6A1B9A;
+  color: white;
+}
+
+mat-chip .chip__close-icon  {
+  color: white;
+  opacity: 1;
+  margin-top: 2px;
+}
+
+.create-button {
+  font-size: 30px;
+  line-height: normal;
+  margin: 0 auto;
+  display: block;
+}

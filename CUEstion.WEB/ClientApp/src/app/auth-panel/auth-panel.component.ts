@@ -20,7 +20,7 @@ export class AuthPanelComponent {
 
   checkId() {
     const id = localStorage.getItem('userId');
-    if (!isNaN(Number(id))) {
+    if (id) {
       this.user = this.userService.getUser(Number(id));
     }
   }

@@ -1,0 +1,54 @@
+<div class="page-container">
+	<h1 class="page__header">Create Your Question</h1>
+	<form [formGroup]="questionForm" (ngSubmit)="createQuestion()">
+				<mat-form-field appearance="outline" class="field">
+              <mat-label class="text hint-label">Print your question</mat-label>
+							<input matInput
+                     formControlName="header"
+                     type="text"
+                     placeholder="Enter your question"
+                     class="text question__header">
+								<mat-error *ngIf="!questionForm.controls['header'].valid && questionForm.controls['header'].touched">
+                  Question must contain at least 15 symbols.
+                </mat-error>
+					</mat-form-field>
+				<mat-form-field appearance="outline" class="field">
+          <mat-label>Describe your problem</mat-label>
+	  			<textarea
+            matInput
+            cdkTextareaAutosize
+            formControlName="description"
+            class="text description">
+          </textarea>
+	  			<mat-error *ngIf="!questionForm.controls['description'].valid && questionForm.controls['description'].touched">
+            Description must contain at least 60 symbols.
+          </mat-error>
+			</mat-form-field>
+    <mat-form-field appearance="outline" class="tag-select">
+      <mat-label>Tags</mat-label>
+      <mat-chip-list #chipList>
+        <mat-chip *ngFor="let tag of selectedTags" selectable removable (removed)="remove(tag)" class="chip">
+          {{tag}}
+          <mat-icon matChipRemove class="chip__close-icon">cancel</mat-icon>
+        </mat-chip>
+        <input placeholder="Add tag..."
+               formControlName="tagSearch"
+               [disabled]="selectedTags.length >= 7"
+               [matAutocomplete]="auto"
+               [matChipInputFor]="chipList"
+               (matChipInputTokenEnd)="addTag($event)"
+               #tagInput>
+      </mat-chip-list>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag" [disabled]="selectedTags.length >= 7">
+          {{tag}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button mat-raised-button
+            type="submit"
+            [color]="'primary'"
+            class="create-button"
+            [disabled]="!questionForm.valid">CREATE</button>
+	</form>
+</div>

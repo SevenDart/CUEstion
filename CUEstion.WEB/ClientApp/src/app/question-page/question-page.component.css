@@ -15,6 +15,14 @@
   margin-bottom: 0;
 }
 
+.username {
+  margin-left: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: gray;
+  display: inline;
+}
+
 .text {
   font-size: 18px;
   text-align: justify;
@@ -30,6 +38,7 @@
 }
 
 .date {
+  margin-left: 5px;
   font-size: 16px;
   color: gray;
   display: inline;
@@ -102,4 +111,15 @@
 
 .loader {
   margin: 0 auto;
+}
+
+.edit-icon {
+  color: gray;
+  font-size: 16px;
+  margin-left: 5px;
+  text-decoration: none;
+}
+
+.update-header {
+  display: inline;
 }
