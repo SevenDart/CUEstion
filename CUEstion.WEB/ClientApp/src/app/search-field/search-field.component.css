@@ -17,3 +17,32 @@
 .result {
 
 }
+
+.tagPanel {
+  height: 0;
+  overflow: hidden;
+  background-color: white;
+  transition: height 0.5s linear;
+}
+
+.expanded {
+  height: 79px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.chip {
+  background-color: #6A1B9A;
+  color: white;
+}
+
+mat-chip .chip__close-icon  {
+  color: white;
+  opacity: 1;
+  margin-top: 2px;
+}
+
+.tag-select {
+  margin: 2px 0;
+  width: 98%;
+}
+

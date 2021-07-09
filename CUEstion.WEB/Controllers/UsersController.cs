@@ -91,7 +91,7 @@ namespace CUEstion.WEB.Controllers
 				
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
-			}
+		}
 
 		[HttpDelete("{userId}")]
 		[Authorize]

@@ -3,16 +3,6 @@
     <h1 class="page__header">Update Question</h1>
     <form [formGroup]="questionForm" (ngSubmit)="updateQuestion()">
       <h1 class="question__header">{{question.header}}</h1>
-      <mat-form-field appearance="outline" class="field update-header">
-        <mat-label class="text hint-label">Update your question</mat-label>
-        <input matInput
-               formControlName="header"
-               type="text"
-               class="text question__header">
-        <h1 matPrefix class="text question__header prefix">[UPD.]&nbsp;</h1>
-        <mat-error *ngIf="!questionForm.get('header').valid && questionForm.get('header').touched">Header can't be longer than 50 symbols.</mat-error>
-      </mat-form-field>
-
       <p class="text">{{question.text}}</p>
       <mat-form-field appearance="outline" class="field">
         <mat-label>Update description</mat-label>
@@ -20,6 +10,7 @@
         <textarea
           matInput
           cdkTextareaAutosize
+          cdkAutosizeMinRows="10"
           formControlName="description"
           class="text description">
         </textarea>

@@ -39,6 +39,7 @@ export class AuthPanelComponent {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('role');
+    UsersService.userId = null;
   }
 }
 

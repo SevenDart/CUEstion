@@ -118,8 +118,53 @@
   font-size: 16px;
   margin-left: 5px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .update-header {
   display: inline;
+}
+
+.new-answer {
+  margin-top: 40px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.new-answer-button {
+  display: block;
+  margin: 0 auto;
+  font-size: 16px;
+}
+
+.new-answer-field {
+  width: 100%;
+}
+
+.prefix {
+  position: relative;
+  top: -50px;
+}
+
+.new-comment-field {
+  display: inline;
+  width: 50%;
+}
+
+.new-comment-button {
+  display: inline;
+  position: relative;
+  top: -4px;
+  margin-left: 5px;
+  padding: 4px;
+}
+
+.comment-form {
+  width: 91%;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.comment-text {
+  font-size: 16px;
 }

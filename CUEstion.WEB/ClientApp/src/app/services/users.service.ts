@@ -1,13 +1,16 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../Models/User';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class UsersService {
-  private _serverAddress = 'https://localhost:44376';
 
   constructor(private http: HttpClient) {
   }
+
+  public static userId: number = localStorage.getItem('userId') ? Number(localStorage.getItem('userId')) : null;
+  private _serverAddress = 'https://localhost:44376';
 
   login(email: string, password: string) {
     const authData = {

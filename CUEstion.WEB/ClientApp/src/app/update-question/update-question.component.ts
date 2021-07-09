@@ -38,7 +38,6 @@ export class UpdateQuestionComponent {
       this.question = this.questionService.GetQuestion(id);
       this.question.subscribe((question: Question) => {
         this.selectedTags = question.tags;
-        this.questionForm.get('header').setValidators([Validators.maxLength(50 - question.header.length)]);
         this.questionForm.get('description').setValidators([Validators.maxLength(500 - question.text.length)]);
       });
     });
@@ -70,8 +69,9 @@ export class UpdateQuestionComponent {
   updateQuestion() {
     this.question.subscribe((question: Question) => {
       this.questionService.UpdateQuestion(question.id,
-        question.header + ' [UPD.] ' + this.questionForm.get('header').value,
-        question.text + '\n [UPD.] \n' + this.questionForm.get('description').value,
+        question.text + (this.questionForm.get('description').value.length > 0
+          ? ' [UPD.] ' + this.questionForm.get('description').value
+          : ''),
         this.selectedTags).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 500) {

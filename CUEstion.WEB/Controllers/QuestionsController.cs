@@ -77,11 +77,12 @@ namespace CUEstion.WEB.Controllers
 		}
 
 		[HttpGet("search")]
-		public IActionResult Search(string query)
+		public IActionResult Search(string query, [FromQuery]string[] tags)
 		{
 			try
 			{
-				var list = _questionManagerService.Search(query);
+				if (query == null) query = "";
+				var list = _questionManagerService.Search(query, tags);
 				return Ok(list);
 			}
 			catch (Exception e)
@@ -107,7 +108,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut]
+		[HttpPost]
 		[Authorize]
 		public IActionResult CreateQuestion(QuestionDTO questionDto)
 		{
@@ -138,7 +139,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPost("{questionId}")]
+		[HttpPut("{questionId}")]
 		[Authorize]
 		public IActionResult UpdateQuestion(QuestionDTO questionDto)
 		{
@@ -183,7 +184,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut("{questionId}/answers")]
+		[HttpPost("{questionId}/answers")]
 		[Authorize]
 		public IActionResult CreateAnswer(AnswerDTO answerDto, int questionId)
 		{
@@ -198,7 +199,7 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPost("{questionId}/answers/{answerId}")]
+		[HttpPut("{questionId}/answers/{answerId}")]
 		[Authorize]
 		public IActionResult UpdateAnswer(AnswerDTO answerDto)
 		{
@@ -247,8 +248,8 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-		[HttpPut("{questionId}/comments")]
-		[HttpPut("{questionId}/answers/{answerId}/comments")]
+		[HttpPost("{questionId}/comments")]
+		[HttpPost("{questionId}/answers/{answerId}/comments")]
 		[Authorize]
 		public IActionResult CreateComment(CommentDTO commentDto, int questionId, int? answerId)
 		{
@@ -267,8 +268,8 @@ namespace CUEstion.WEB.Controllers
 		}
 
 
-		[HttpPost("{questionId}/comments/{commentId}")]
-		[HttpPost("{questionId}/answers/{answerId}/comments/{commentId}")]
+		[HttpPut("{questionId}/comments/{commentId}")]
+		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
 		public IActionResult UpdateComment(CommentDTO commentDto)
 		{
@@ -283,57 +284,6 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
-
-
-		[HttpPut("{questionId}")]
-		[Authorize]
-		public IActionResult VoteForQuestion(int questionId, int mark)
-		{
-			try
-			{
-				_questionManagerService.MarkQuestion(questionId, mark);
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
-
-		[HttpPut("{questionId}/answers/{answerId}")]
-		[Authorize]
-		public IActionResult VoteForAnswer(int answerId, int mark)
-		{
-			try
-			{
-				_questionManagerService.MarkAnswer(answerId, mark);
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
-
-
-
-		[HttpPut("{questionId}/comments/{commentId}")]
-		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
-		[Authorize]
-		public IActionResult VoteForComment(int commentId, int mark)
-		{
-			try
-			{
-				_questionManagerService.MarkComment(commentId, mark);
-				return Ok();
-			}
-			catch (Exception e)
-			{
-				return StatusCode(500, new { Message = "Server ERROR occured." });
-			}
-		}
-
-
 		[HttpDelete("{questionId}/comments/{commentId}")]
 		[HttpDelete("{questionId}/answers/{answerId}/comments/{commentId}")]
 		[Authorize]
@@ -342,6 +292,102 @@ namespace CUEstion.WEB.Controllers
 			try
 			{
 				_questionManagerService.DeleteComment(commentId);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+
+
+		[HttpPut("{questionId}/upvote")]
+		[Authorize]
+		public IActionResult UpvoteForQuestion(int questionId)
+		{
+			try
+			{
+				_questionManagerService.MarkQuestion(questionId, 1);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpPut("{questionId}/downvote")]
+		[Authorize]
+		public IActionResult DownvoteForQuestion(int questionId)
+		{
+			try
+			{
+				_questionManagerService.MarkQuestion(questionId, -1);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpPut("{questionId}/answers/{answerId}/upvote")]
+		[Authorize]
+		public IActionResult UpvoteForAnswer(int answerId)
+		{
+			try
+			{
+				_questionManagerService.MarkAnswer(answerId, 1);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpPut("{questionId}/answers/{answerId}/downvote")]
+		[Authorize]
+		public IActionResult DownvoteForAnswer(int answerId)
+		{
+			try
+			{
+				_questionManagerService.MarkAnswer(answerId, -1);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+
+
+		[HttpPut("{questionId}/comments/{commentId}/upvote")]
+		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}/upvote")]
+		[Authorize]
+		public IActionResult UpvoteForComment(int commentId)
+		{
+			try
+			{
+				_questionManagerService.MarkComment(commentId, 1);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpPut("{questionId}/comments/{commentId}/downvote")]
+		[HttpPut("{questionId}/answers/{answerId}/comments/{commentId}/downvote")]
+		[Authorize]
+		public IActionResult DownvoteForComment(int commentId)
+		{
+			try
+			{
+				_questionManagerService.MarkComment(commentId, -1);
 				return Ok();
 			}
 			catch (Exception e)

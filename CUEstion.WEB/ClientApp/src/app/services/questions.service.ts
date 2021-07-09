@@ -11,8 +11,12 @@ export class QuestionsService {
   constructor(private http: HttpClient) {
   }
 
-  SearchQuestions(query: string) {
-    return this.http.get<Question[]>(this._serverAddress + '/questions/search' + `?query=${query}`);
+  SearchQuestions(query: string, tags: string[]) {
+    let url = this._serverAddress + '/questions/search' + `?query=${query}`;
+    for (const tag of tags) {
+      url += `&tags=${tag}`;
+    }
+    return this.http.get<Question[]>(url);
   }
 
   GetHotQuestions(count: number) {
@@ -55,13 +59,12 @@ export class QuestionsService {
       })
     };
 
-    return this.http.put(this._serverAddress + '/questions', question, options);
+    return this.http.post(this._serverAddress + '/questions', question, options);
   }
 
-  UpdateQuestion(id: number, header: string, description: string, tags: string[]) {
+  UpdateQuestion(id: number, description: string, tags: string[]) {
     const question = {
       id: id,
-      header: header,
       text: description,
       tags: tags,
       user: {
@@ -75,6 +78,86 @@ export class QuestionsService {
       })
     };
 
-    return this.http.post(this._serverAddress + `/questions/${id}`, question, options);
+    return this.http.put(this._serverAddress + `/questions/${id}`, question, options);
+  }
+
+  AddAnswer(questionId: number, text: string) {
+    const answer = {
+      text: text,
+      user: {
+        id: Number(localStorage.getItem('userId'))
+      }
+    };
+
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.post(this._serverAddress + `/questions/${questionId}/answers`, answer, options);
+  }
+
+  UpdateAnswer(answerId: number, text: string) {
+    const answer = {
+      id: answerId,
+      text: text,
+      user: {
+        id: Number(localStorage.getItem('userId'))
+      }
+    };
+
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}`, answer, options);
+  }
+
+  CreateComment(questionId: number, answerId: number, text: string) {
+    const comment = {
+      text: text,
+      questionId: questionId,
+      answerId: answerId,
+      user: {
+        id: Number(localStorage.getItem('userId'))
+      }
+    };
+
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    if (answerId != null) {
+      return this.http.post(this._serverAddress + `/questions/0/answers/${answerId}/comments`, comment, options);
+    } else {
+      return this.http.post(this._serverAddress + `/questions/${questionId}/comments`, comment, options);
+    }
+  }
+
+  UpdateComment(questionId: number, answerId: number, commentId: number, text: string) {
+    const comment = {
+      id: commentId,
+      text: text,
+      user: {
+        id: Number(localStorage.getItem('userId'))
+      }
+    };
+
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    if (answerId != null) {
+      return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/comments/${commentId}`, comment, options);
+    } else {
+      return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, comment, options);
+    }
   }
 }

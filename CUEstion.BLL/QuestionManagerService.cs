@@ -56,7 +56,7 @@ namespace CUEstion.BLL
 				: null;
 		}
 
-		public IEnumerable<QuestionDTO> Search(string query)
+		public IEnumerable<QuestionDTO> Search(string query, string[] tags)
 		{
 			using var context = new ApplicationContext();
 
@@ -81,8 +81,10 @@ namespace CUEstion.BLL
 				}
 			}
 
+			var questions = context.Questions.Include(q => q.Tags).ToList()
+				.Where(q => tags.All(t => q.Tags.Any(qTag => qTag.Name.ToLower() == t.ToLower()))).ToList();
 
-			var questions = context.Questions.ToList().Where(q =>
+			questions = questions.Where(q =>
 				subseqs.Any(s => {
 					var regex = new Regex(@"\b" + s + @"\b", RegexOptions.IgnoreCase);
 					return regex.IsMatch(q.Header) || regex.IsMatch(q.Text);
@@ -104,7 +106,7 @@ namespace CUEstion.BLL
 			using var context = new ApplicationContext();
 
 			var questions = context.Questions.Include(q => q.Tags).ToList()
-				.Where(q => tags.Any(t => q.Tags.Any(qTag => qTag.Name.ToLower() == t.ToLower())));
+				.Where(q => tags.All(t => q.Tags.Any(qTag => qTag.Name.ToLower() == t.ToLower())));
 
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
@@ -141,7 +143,6 @@ namespace CUEstion.BLL
 			question.Tags = new List<Tag>();
 			foreach (var tag in questionDto.Tags)
 			{
-				//rewrite case-insensitive
 				var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 				if (foundTag != null)
 				{
@@ -173,9 +174,11 @@ namespace CUEstion.BLL
 
 			question.UpdateTime = DateTime.Now;
 
-			foreach (var tag in questionDto.Tags)
+			var deleteTags = question.Tags.Where(t => questionDto.Tags.FirstOrDefault(tag => tag.ToLower() == t.Name.ToLower()) == null).ToList();
+			var addTags = questionDto.Tags.Where(t => question.Tags.FirstOrDefault(tag => tag.Name.ToLower() == t.ToLower()) == null).ToList();
+
+			foreach (var tag in addTags)
 			{
-				//rewrite case-insensitive
 				var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 				if (foundTag != null)
 				{
@@ -187,6 +190,11 @@ namespace CUEstion.BLL
 					context.Tags.Add(dbTag);
 					question.Tags.Add(dbTag);
 				}
+			}
+
+			foreach (var tag in deleteTags)
+			{
+				question.Tags.Remove(tag);
 			}
 
 			context.SaveChanges();

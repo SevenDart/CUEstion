@@ -50,6 +50,7 @@ export class LogInComponent {
       )
       .subscribe((data: any) => {
         if (data) {
+          UsersService.userId = data.id;
           localStorage.setItem('token', data.token);
           localStorage.setItem('role', data.role);
           localStorage.setItem('userId', data.id);

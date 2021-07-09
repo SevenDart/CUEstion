@@ -27,13 +27,41 @@
           <p class="text">{{comment.text}}</p>
           <p class="username">{{comment.user.username}}</p>
           <p class="date">{{comment.createTime | date}}</p>
+
+          <i *ngIf="commentForms[comment.id].isOwner" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
+          <ng-container *ngIf="commentForms[comment.id].isEditing">
+            <mat-form-field appearance="outline" class="comment-form">
+              <mat-label>Edit comment</mat-label>
+              <p matPrefix class="text prefix">[UPD.]&nbsp;</p>
+              <input matInput [formControl]="commentForms[comment.id].editFormControl" class="comment-text">
+              <mat-error *ngIf="!commentForms[comment.id].editFormControl.valid && commentForms[comment.id].editFormControl.dirty">Comment's length must be between 10 and 200 symbols.</mat-error>
+            </mat-form-field>
+            <button mat-raised-button
+                    (click)="updateComment(question.id, null, comment.id, comment.text)"
+                    [disabled]="!commentForms[comment.id].editFormControl.valid"
+                    class="new-comment-button"
+                    [color]="'primary'">ADD</button>
+          </ng-container>
+
           <mat-divider></mat-divider>
         </div>
+        <ng-container *ngIf="isAuthed">
+          <mat-form-field appearance="outline" class="comment-form">
+            <mat-label>Add a comment</mat-label>
+            <input matInput [formControl]="commentControl" class="comment-text">
+            <mat-error *ngIf="!commentControl.valid && commentControl.dirty">Comment's length must be between 10 and 200 symbols.</mat-error>
+          </mat-form-field>
+          <button mat-raised-button
+                  (click)="addComment(question.id, null, commentControl)"
+                  [disabled]="!commentControl.valid"
+                  class="new-comment-button"
+                  [color]="'primary'">ADD</button>
+        </ng-container>
       </mat-expansion-panel>
     </ng-container>
   </ng-container>
-
   <ng-container *ngIf="(answers | async) as answers; else loading">
+
     <h1 class="answers__header">{{answers.length}} Answers</h1>
     <div class="answer" *ngFor="let answer of answers">
       <p class="text">{{answer.text}}</p>
@@ -42,6 +70,19 @@
             [class.negative]="answer.rate < 0">{{answer.rate}}</span>
       <p class="username">{{answer.user.username}}</p>
       <p class="date">{{answer.createTime | date}}</p>
+      <i *ngIf="answersForms[answer.id].isOwner" class="fas fa-pen edit-icon" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
+      <ng-container *ngIf="answersForms[answer.id].isEditing">
+        <mat-form-field appearance="outline" class="text new-answer-field">
+          <mat-label>Update your answer</mat-label>
+          <p matPrefix class="text prefix">[UPD.]&nbsp;</p>
+          <textarea matInput
+                    [formControl] = "answersForms[answer.id].editFormControl"
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="3"></textarea>
+          <mat-error *ngIf="!answersForms[answer.id].editFormControl.valid && answersForms[answer.id].editFormControl.dirty">Answer's length must be between 30 and 500 symbols.</mat-error>
+        </mat-form-field>
+        <button mat-raised-button (click)="updateAnswer(answer.id, answer.text)" [disabled]="!answersForms[answer.id].editFormControl.valid || !answersForms[answer.id].editFormControl.dirty" class="new-answer-button" [color]="'primary'">UPDATE</button>
+      </ng-container>
       <ng-container *ngIf="(answerComments[answer.id] | async) as comments; else loading">
         <mat-expansion-panel class="comment-panel">
           <mat-expansion-panel-header class="comment-panel-header">
@@ -50,17 +91,59 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="comment" *ngFor="let comment of comments">
-        <span class="badge rate"
+            <span class="badge rate"
               [class.positive]="comment.rate > 0"
               [class.negative]="comment.rate < 0">{{comment.rate}}</span>
             <p class="text">{{comment.text}}</p>
+            <p class="username">{{comment.user.username}}</p>
             <p class="date">{{comment.createTime | date}}</p>
+
+            <i *ngIf="commentForms[comment.id].isOwner" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
+            <ng-container *ngIf="commentForms[comment.id].isEditing">
+              <mat-form-field appearance="outline" class="comment-form">
+                <mat-label>Edit comment</mat-label>
+                <p matPrefix class="text">[UPD.]&nbsp;</p>
+                <input matInput [formControl]="commentForms[comment.id].editFormControl" class="comment-text">
+                <mat-error *ngIf="!commentForms[comment.id].editFormControl.valid && commentForms[comment.id].editFormControl.dirty">Comment's length must be between 10 and 200 symbols.</mat-error>
+              </mat-form-field>
+              <button mat-raised-button
+                      (click)="updateComment(null, answer.id, comment.id, comment.text)"
+                      [disabled]="!commentForms[comment.id].editFormControl.valid"
+                      class="new-comment-button"
+                      [color]="'primary'">ADD</button>
+            </ng-container>
+
             <mat-divider></mat-divider>
           </div>
+          <ng-container *ngIf="isAuthed">
+            <mat-form-field appearance="outline" class="comment-form">
+              <mat-label>Add a comment</mat-label>
+              <input matInput [formControl]="answersForms[answer.id].addCommentFormControl" class="comment-text">
+              <mat-error *ngIf="!answersForms[answer.id].addCommentFormControl.valid && answersForms[answer.id].addCommentFormControl.dirty">Comment's length must be between 10 and 200 symbols.</mat-error>
+            </mat-form-field>
+            <button mat-raised-button
+                    (click)="addComment(null, answer.id, answersForms[answer.id].addCommentFormControl)"
+                    [disabled]="!answersForms[answer.id].addCommentFormControl.valid"
+                    class="new-comment-button"
+                    [color]="'primary'">ADD</button>
+          </ng-container>
         </mat-expansion-panel>
       </ng-container>
+
     </div>
   </ng-container>
-
-  <ng-template #loading><mat-spinner class="loader"></mat-spinner></ng-template>
+  <ng-container *ngIf="isAuthed">
+    <h3 class="new-answer">Add your answer!</h3>
+    <mat-form-field appearance="outline" class="text new-answer-field">
+      <mat-label>Enter your answer</mat-label>
+      <textarea matInput
+                [formControl] = "answerControl"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3">
+      </textarea>
+      <mat-error *ngIf="!answerControl.valid && answerControl.dirty">Answer's length must be between 15 and 500 symbols.</mat-error>
+    </mat-form-field>
+    <button mat-raised-button (click)="addAnswer()" [disabled]="!answerControl.valid" class="new-answer-button" [color]="'primary'">ADD</button>
+  </ng-container>
 </div>
+<ng-template #loading><mat-spinner class="loader"></mat-spinner></ng-template>
