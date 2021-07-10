@@ -25,27 +25,7 @@
             Description must contain at least 60 symbols.
           </mat-error>
 			</mat-form-field>
-    <mat-form-field appearance="outline" class="tag-select">
-      <mat-label>Tags</mat-label>
-      <mat-chip-list #chipList>
-        <mat-chip *ngFor="let tag of selectedTags" selectable removable (removed)="remove(tag)" class="chip">
-          {{tag}}
-          <mat-icon matChipRemove class="chip__close-icon">cancel</mat-icon>
-        </mat-chip>
-        <input placeholder="Add tag..."
-               formControlName="tagSearch"
-               [disabled]="selectedTags.length >= 7"
-               [matAutocomplete]="auto"
-               [matChipInputFor]="chipList"
-               (matChipInputTokenEnd)="addTag($event)"
-               #tagInput>
-      </mat-chip-list>
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag" [disabled]="selectedTags.length >= 7">
-          {{tag}}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+    <tag-select [selectedTags]="selectedTags"></tag-select>
     <button mat-raised-button
             type="submit"
             [color]="'primary'"

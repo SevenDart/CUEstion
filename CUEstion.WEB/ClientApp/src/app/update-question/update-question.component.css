@@ -19,6 +19,8 @@
   font-size: 30px;
   font-weight: bold;
   line-height: normal;
+  display: inline-block;
+  margin-bottom: 15px;
 }
 
 .field {
@@ -69,4 +71,15 @@ mat-chip .chip__close-icon  {
 .prefix {
   position: relative;
   top: -8px;
+}
+
+.delete-icon {
+  font-size: 30px;
+  display: inline;
+  text-decoration: none;
+  color: gray;
+  margin-left: 10px;
+  position: relative;
+  top: 2px;
+  cursor: pointer;
 }

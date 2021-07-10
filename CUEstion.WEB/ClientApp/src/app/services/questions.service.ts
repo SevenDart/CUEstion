@@ -81,6 +81,16 @@ export class QuestionsService {
     return this.http.put(this._serverAddress + `/questions/${id}`, question, options);
   }
 
+  DeleteQuestion(questionId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.delete(this._serverAddress + `/questions/${questionId}`, options);
+  }
+
   AddAnswer(questionId: number, text: string) {
     const answer = {
       text: text,
@@ -114,6 +124,16 @@ export class QuestionsService {
     };
 
     return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}`, answer, options);
+  }
+
+  DeleteAnswer(answerId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.delete(this._serverAddress + `/questions/0/answers/${answerId}`, options);
   }
 
   CreateComment(questionId: number, answerId: number, text: string) {
@@ -158,6 +178,20 @@ export class QuestionsService {
       return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/comments/${commentId}`, comment, options);
     } else {
       return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, comment, options);
+    }
+  }
+
+  DeleteComment(questionId: number, answerId: number, commentId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    if (answerId != null) {
+      return this.http.delete(this._serverAddress + `/questions/0/answers/${answerId}/comments/${commentId}`, options);
+    } else {
+      return this.http.delete(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, options);
     }
   }
 }

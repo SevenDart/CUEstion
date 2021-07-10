@@ -19,7 +19,7 @@
         <a routerLink="/question/{{question.id}}" class="question__header">{{question.header}}</a>
         <mat-chip-list>
           <mat-chip *ngFor="let tag of question.tags | slice:0:4; let i=index" selected [color]="'primary'" class="tag">
-              {{tag}}
+            {{tag}}
           </mat-chip>
         </mat-chip-list>
       </td>

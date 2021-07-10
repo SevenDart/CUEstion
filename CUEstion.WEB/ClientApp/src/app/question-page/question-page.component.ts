@@ -10,6 +10,8 @@ import {UsersService} from '../services/users.service';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 
 @Component({
@@ -22,7 +24,7 @@ export class QuestionPageComponent implements OnInit {
 
   constructor(private questionService: QuestionsService,
               private activatedRoute: ActivatedRoute,
-              private router: Router, private snackBar: MatSnackBar) {
+              private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {
   }
 
   get isAuthed() {
@@ -131,6 +133,46 @@ export class QuestionPageComponent implements OnInit {
     );
   }
 
+  deleteComment(questionId: number, answerId: number, commentId: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        header: 'Do you want to delete this comment?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.questionService.DeleteComment(questionId, answerId, commentId).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 500) {
+              const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
+                panelClass: ['mat-toolbar', 'mat-warn'],
+              });
+              bar._dismissAfter(3 * 1000);
+              return of([]);
+            }
+            if (error.status === 0) {
+              this.snackBar.open('Something is wrong, try, please, later.', '', {
+                panelClass: ['mat-toolbar', 'mat-warn']
+              });
+              return throwError(() => {
+                return new Error('something is wrong');
+              });
+            }
+          })
+        ).subscribe( (data) => {
+          if (data === null) {
+            if (questionId != null) {
+              this.updateQuestionComments(questionId);
+            } else {
+              this.updateAnswerComments(answerId);
+            }
+          }
+        });
+      }
+    });
+  }
+
 
   updateAnswer(answerId: number, originText: string) {
     this.questionService.UpdateAnswer(answerId,
@@ -164,6 +206,44 @@ export class QuestionPageComponent implements OnInit {
         }
       }
     );
+  }
+
+  deleteAnswer(answerId: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        header: 'Do you want to delete this answer?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.questionService.DeleteAnswer(answerId).pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 500) {
+              const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
+                panelClass: ['mat-toolbar', 'mat-warn'],
+              });
+              bar._dismissAfter(3 * 1000);
+              return of([]);
+            }
+            if (error.status === 0) {
+              this.snackBar.open('Something is wrong, try, please, later.', '', {
+                panelClass: ['mat-toolbar', 'mat-warn']
+              });
+              return throwError(() => {
+                return new Error('something is wrong');
+              });
+            }
+          })
+        ).subscribe( (data) => {
+          if (data === null) {
+            this.question.subscribe((question: Question) => {
+              this.updateAnswers(question.id);
+            });
+          }
+        });
+      }
+    });
   }
 
   addComment(questionId: number, answerId: number, commentControl: FormControl) {

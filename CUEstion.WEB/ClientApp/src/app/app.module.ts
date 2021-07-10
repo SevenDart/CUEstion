@@ -32,6 +32,8 @@ import {CreateQuestionComponent} from './create-question/create-question.compone
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {AuthorizationGuard} from './guards/authorization.guard';
 import {UpdateQuestionComponent} from './update-question/update-question.component';
+import {TagSelectComponent} from './tag-select/tag-select.component';
+import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 
 
 const routes: Routes = [
@@ -58,7 +60,9 @@ const routes: Routes = [
     SnackBarContentComponent,
     RegisterFormComponent,
     CreateQuestionComponent,
-    UpdateQuestionComponent
+    UpdateQuestionComponent,
+    TagSelectComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,

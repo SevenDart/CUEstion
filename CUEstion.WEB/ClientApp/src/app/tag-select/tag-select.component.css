@@ -1,0 +1,15 @@
+.chip {
+  background-color: #6A1B9A;
+  color: white;
+}
+
+mat-chip .chip__close-icon  {
+  color: white;
+  opacity: 1;
+  margin-top: 2px;
+}
+
+.tag-select {
+  margin: 2px 0;
+  width: 98%;
+}

@@ -5,7 +5,7 @@ import {debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxj
 import {QuestionsService} from '../services/questions.service';
 import {Question} from '../Models/Question';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {MatChipInputEvent} from '@angular/material/chips';
 
 @Component({
@@ -16,53 +16,26 @@ import {MatChipInputEvent} from '@angular/material/chips';
 })
 export class SearchFieldComponent implements OnInit {
   searchControl = new FormControl();
-  tagSearch = new FormControl();
   results: Observable<Question[]>;
 
   @Input() isExpandable = true;
 
   tagPanelExpanded = false;
 
-  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
-
-  filteredTags: Observable<string[]>;
-  allTags: string[] = [];
   selectedTags: string[] = [];
 
-  constructor(private questionsService: QuestionsService, private router: Router) {
-    this.questionsService.GetAllTags().subscribe((tags: string[]) => {
-      this.allTags = tags;
-    });
-    this.filteredTags = this.tagSearch.valueChanges.pipe(
-      startWith(null),
-      map((tag: string | null) => tag ? this._filter(tag) : this.allTags.slice()));
-  }
-
-  addTag(event: MatChipInputEvent) {
-    if (event.value) {
-      this.selectedTags.push(event.value);
-    }
-    event.chipInput.clear();
-    this.tagSearch.setValue(null);
-  }
-
-  remove(tag: string): void {
-    const index = this.selectedTags.indexOf(tag);
-
-    if (index >= 0) {
-      this.selectedTags.splice(index, 1);
-    }
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedTags.push(event.option.viewValue);
-    this.tagInput.nativeElement.value = '';
-    this.tagSearch.setValue(null);
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
+  constructor(private questionsService: QuestionsService, private router: Router, activatedRoute: ActivatedRoute) {
+      activatedRoute.queryParams.subscribe((params: Params) => {
+        if (this.isExpandable) {
+          if (params.tags !== undefined) {
+            if (params.tags instanceof Array) {
+              this.selectedTags = params.tags;
+            } else {
+              this.selectedTags.push(params.tags);
+            }
+          }
+        }
+      });
   }
 
   ngOnInit() {

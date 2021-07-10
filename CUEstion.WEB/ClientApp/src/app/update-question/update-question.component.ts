@@ -10,6 +10,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Question} from '../Models/Question';
 import {Answer} from '../Models/Answer';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'update-question',
@@ -20,19 +22,14 @@ import {Answer} from '../Models/Answer';
 export class UpdateQuestionComponent {
   questionForm: FormGroup = new FormGroup({
     header: new FormControl(''),
-    description: new FormControl(''),
-    tagSearch: new FormControl()
+    description: new FormControl('')
   });
 
   question: Observable<Question>;
-  filteredTags: Observable<string[]>;
-  allTags: string[] = [];
   selectedTags: string[] = [];
 
-  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
-
   constructor(private questionService: QuestionsService, private snackBar: MatSnackBar, private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute, private dialog: MatDialog) {
     this.activatedRoute.paramMap.subscribe((paramMap: ParamMap) => {
       const id: number = Number(paramMap.get('id'));
       this.question = this.questionService.GetQuestion(id);
@@ -41,29 +38,6 @@ export class UpdateQuestionComponent {
         this.questionForm.get('description').setValidators([Validators.maxLength(500 - question.text.length)]);
       });
     });
-
-    this.questionService.GetAllTags().subscribe((tags: string[]) => {
-      this.allTags = tags;
-    });
-    this.filteredTags = this.questionForm.get('tagSearch').valueChanges.pipe(
-      startWith(null),
-      map((tag: string | null) => tag ? this._filter(tag) : this.allTags.slice()));
-  }
-
-  addTag(event: MatChipInputEvent) {
-    if (event.value) {
-      this.selectedTags.push(event.value);
-    }
-    event.chipInput.clear();
-    this.questionForm.get('tagSearch').setValue(null);
-  }
-
-  remove(tag: string): void {
-    const index = this.selectedTags.indexOf(tag);
-
-    if (index >= 0) {
-      this.selectedTags.splice(index, 1);
-    }
   }
 
   updateQuestion() {
@@ -98,14 +72,39 @@ export class UpdateQuestionComponent {
     });
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedTags.push(event.option.viewValue);
-    this.tagInput.nativeElement.value = '';
-    this.questionForm.get('tagSearch').setValue(null);
-  }
+  deleteQuestion(questionId: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        header: 'Do you want to delete this question?'
+      }
+    });
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.questionService.DeleteQuestion(questionId).pipe(
+          catchError((error: HttpErrorResponse) => {
+              if (error.status === 500) {
+                const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
+                  panelClass: ['mat-toolbar', 'mat-warn'],
+                });
+                bar._dismissAfter(3 * 1000);
+                return of([]);
+              }
+              if (error.status === 0) {
+                this.snackBar.open('Something is wrong, try, please, later.', '', {
+                  panelClass: ['mat-toolbar', 'mat-warn']
+                });
+                return throwError(() => {
+                  return new Error('something is wrong');
+                });
+              }
+            })
+        ).subscribe( (data) => {
+          if (data === null) {
+            this.router.navigate(['home']);
+          }
+        });
+      }
+    });
   }
 }

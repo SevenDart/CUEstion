@@ -18,39 +18,14 @@ import {Router} from '@angular/router';
 export class CreateQuestionComponent {
   questionForm: FormGroup = new FormGroup({
     header: new FormControl('', [Validators.required, Validators.minLength(15), Validators.maxLength(50)]),
-    description: new FormControl('', [Validators.required, Validators.minLength(30), Validators.maxLength(500)]),
-    tagSearch: new FormControl()
+    description: new FormControl('', [Validators.required, Validators.minLength(30), Validators.maxLength(500)])
   });
 
-  filteredTags: Observable<string[]>;
-  allTags: string[] = [];
   selectedTags: string[] = [];
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   constructor(private questionService: QuestionsService, private snackBar: MatSnackBar, private router: Router) {
-    this.questionService.GetAllTags().subscribe((tags: string[]) => {
-      this.allTags = tags;
-    });
-    this.filteredTags = this.questionForm.get('tagSearch').valueChanges.pipe(
-      startWith(null),
-      map((tag: string | null) => tag ? this._filter(tag) : this.allTags.slice()));
-  }
-
-  addTag(event: MatChipInputEvent) {
-    if (event.value) {
-      this.selectedTags.push(event.value);
-    }
-    event.chipInput.clear();
-    this.questionForm.get('tagSearch').setValue(null);
-  }
-
-  remove(tag: string): void {
-    const index = this.selectedTags.indexOf(tag);
-
-    if (index >= 0) {
-      this.selectedTags.splice(index, 1);
-    }
   }
 
   createQuestion() {
@@ -80,16 +55,5 @@ export class CreateQuestionComponent {
         this.router.navigate(['/question/', data]);
       }
     });
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedTags.push(event.option.viewValue);
-    this.tagInput.nativeElement.value = '';
-    this.questionForm.get('tagSearch').setValue(null);
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 }

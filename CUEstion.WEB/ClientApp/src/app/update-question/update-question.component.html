@@ -3,6 +3,7 @@
     <h1 class="page__header">Update Question</h1>
     <form [formGroup]="questionForm" (ngSubmit)="updateQuestion()">
       <h1 class="question__header">{{question.header}}</h1>
+      <a class="fas fa-times delete-icon" (click)="deleteQuestion(question.id)"></a>
       <p class="text">{{question.text}}</p>
       <mat-form-field appearance="outline" class="field">
         <mat-label>Update description</mat-label>
@@ -18,29 +19,7 @@
           Description can't be longer than 500 symbols.
         </mat-error>
       </mat-form-field>
-
-      <mat-form-field appearance="outline" class="tag-select">
-        <mat-label>Tags</mat-label>
-        <mat-chip-list #chipList>
-          <mat-chip *ngFor="let tag of selectedTags" selectable removable (removed)="remove(tag)" class="chip">
-            {{tag}}
-            <mat-icon matChipRemove class="chip__close-icon">cancel</mat-icon>
-          </mat-chip>
-          <input placeholder="Add tag..."
-                 formControlName="tagSearch"
-                 [matAutocomplete]="auto"
-                 [disabled]="selectedTags.length >= 7"
-                 [matChipInputFor]="chipList"
-                 (matChipInputTokenEnd)="addTag($event)"
-                 #tagInput>
-        </mat-chip-list>
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag" [disabled]="selectedTags.length >= 7">
-            {{tag}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
+      <tag-select [selectedTags]="selectedTags"></tag-select>
       <button mat-raised-button
               type="submit"
               [color]="'primary'"

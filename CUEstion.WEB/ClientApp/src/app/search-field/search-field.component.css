@@ -23,6 +23,7 @@
   overflow: hidden;
   background-color: white;
   transition: height 0.5s linear;
+  width: 100%;
 }
 
 .expanded {
