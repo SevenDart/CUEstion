@@ -395,5 +395,51 @@ namespace CUEstion.WEB.Controllers
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}
+
+		[HttpPost("tags")]
+		[Authorize(Roles = "admin")]
+		public IActionResult CreateTag([FromQuery] string tag)
+		{
+			try
+			{
+				_questionManagerService.CreateTag(tag);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpPut("tags")]
+		[Authorize(Roles = "admin")]
+		public IActionResult UpdateTag([FromQuery] string oldTag, string newTag)
+		{
+			try
+			{
+				_questionManagerService.UpdateTag(oldTag, newTag);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+
+		[HttpDelete("tags")]
+		[Authorize(Roles = "admin")]
+		public IActionResult DeleteTag([FromQuery] string tag)
+		{
+			try
+			{
+				_questionManagerService.DeleteTag(tag);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
 	}
 }

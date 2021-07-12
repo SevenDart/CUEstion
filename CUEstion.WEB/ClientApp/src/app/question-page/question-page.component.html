@@ -1,9 +1,11 @@
 <div class="page-container">
   <ng-container *ngIf="(question | async) as question; else loading">
     <h1 class="question__header">{{question.header}}</h1>
+    
     <span class="badge rate"
        [class.positive]="question.rate > 0"
        [class.negative]="question.rate < 0">{{question.rate}}</span>
+
     <p class="username">{{question.user.username}}</p>
     <p class="date">{{question.createTime | date}}</p>
     <a routerLink="/question/{{question.id}}/edit" *ngIf="isOwner" class="fas fa-pen edit-icon"></a>

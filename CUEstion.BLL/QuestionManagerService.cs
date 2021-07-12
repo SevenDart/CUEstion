@@ -397,5 +397,56 @@ namespace CUEstion.BLL
 
 			context.SaveChanges();
 		}
+
+
+		public void CreateTag(string tag)
+		{
+			using var context = new ApplicationContext();
+
+			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+			if (foundTag == null)
+			{
+				var dbTag = new Tag() { Name = tag };
+				context.Tags.Add(dbTag);
+			}
+
+			context.SaveChanges();
+		}
+
+
+		public void UpdateTag(string oldTag, string newTag)
+		{
+			using var context = new ApplicationContext();
+
+			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == oldTag.ToLower());
+			if (foundTag == null)
+			{
+				throw new Exception();
+			}
+			else
+			{
+				foundTag.Name = newTag;
+			}
+
+			context.SaveChanges();
+		}
+
+
+		public void DeleteTag(string tag)
+		{
+			using var context = new ApplicationContext();
+
+			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+			if (foundTag == null)
+			{
+				throw new Exception();
+			}
+			else
+			{
+				context.Tags.Remove(foundTag);
+			}
+
+			context.SaveChanges();
+		}
 	}
 }
