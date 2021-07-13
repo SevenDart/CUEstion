@@ -1,11 +1,15 @@
 .auth__button {
-  font-size: 14px;
+  font-size: 24px;
   color: white;
-  background-color: #201729;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
+.auth__button:hover {
+  color: lightgray;
 }
 
 .rate {
-  border: 1px solid black;
   background-color: gray;
   font-size: 14px;
   margin-right: 5px;
@@ -20,14 +24,21 @@
 }
 
 .logout {
-  background-color: #d27d00;
-  color: white;
-  font-size: 16px;
+  width: 100%;
+}
+
+.text {
+  color: black;
 }
 
 .username {
-  text-decoration: none;
+  text-align: right;
   color: white;
   font-size: 18px;
-  margin-right: 7px;
+  margin-right: 20px;
+}
+
+.user-icon {
+  font-size: 24px;
+  margin-right: 5px;
 }

@@ -1,13 +1,21 @@
 <div class="page-container">
-  <ng-container *ngIf="(question | async) as question; else loading">
+  <ng-container *ngIf="question; else loading">
     <h1 class="question__header">{{question.header}}</h1>
-    
-    <span class="badge rate"
-       [class.positive]="question.rate > 0"
-       [class.negative]="question.rate < 0">{{question.rate}}</span>
+
+    <div class="badge rate"
+         (click)="questionVotingExpanded = !questionVotingExpanded"
+         [class.positive]="question.rate > 0"
+         [class.negative]="question.rate < 0">
+      {{question.rate}}
+      <div class="vote-buttons" [class.expanded]="questionVotingExpanded">
+        <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(question.id, null, null)"></i>
+        <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(question.id, null, null)"></i>
+      </div>
+    </div>
 
     <p class="username">{{question.user.username}}</p>
-    <p class="date">{{question.createTime | date}}</p>
+    <p class="date">created at {{question.createTime | date}}</p>
+    <p class="date" *ngIf="question.updateTime">updated at {{question.updateTime | date}}</p>
     <a routerLink="/question/{{question.id}}/edit" *ngIf="isOwner" class="fas fa-pen edit-icon"></a>
     <p class="text">{{question.text}}</p>
     <mat-chip-list>
@@ -23,12 +31,20 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div class="comment" *ngFor="let comment of comments">
-          <span class="badge rate"
-                [class.positive]="comment.rate > 0"
-                [class.negative]="comment.rate < 0">{{comment.rate}}</span>
+          <div class="badge rate"
+               (click)="commentForms[comment.id].votingExpanded = !commentForms[comment.id].votingExpanded"
+               [class.positive]="commentForms[comment.id].rate > 0"
+               [class.negative]="commentForms[comment.id].rate < 0">
+            {{commentForms[comment.id].rate}}
+            <div class="vote-buttons" [class.expanded]="commentForms[comment.id].votingExpanded">
+              <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(null, null, comment.id)"></i>
+              <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(null, null, comment.id)"></i>
+            </div>
+          </div>
           <p class="text">{{comment.text}}</p>
           <p class="username">{{comment.user.username}}</p>
-          <p class="date">{{comment.createTime | date}}</p>
+          <p class="date">created at {{comment.createTime | date}}</p>
+          <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
           <i *ngIf="commentForms[comment.id].isOwner" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
           <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon" (click)="deleteComment(question.id, null, comment.id)"></a>
@@ -63,16 +79,24 @@
       </mat-expansion-panel>
     </ng-container>
   </ng-container>
-  <ng-container *ngIf="(answers | async) as answers; else loading">
+  <ng-container *ngIf="(answersObs | async) as answers; else loading">
 
     <h1 class="answers__header">{{answers.length}} Answers</h1>
     <div class="answer" *ngFor="let answer of answers">
       <p class="text">{{answer.text}}</p>
-      <span class="badge rate"
-            [class.positive]="answer.rate > 0"
-            [class.negative]="answer.rate < 0">{{answer.rate}}</span>
+      <div class="badge rate"
+           (click)="answersForms[answer.id].votingExpanded = !answersForms[answer.id].votingExpanded"
+           [class.positive]="answersForms[answer.id].rate > 0"
+           [class.negative]="answersForms[answer.id].rate < 0">
+        {{answersForms[answer.id].rate}}
+        <div class="vote-buttons" [class.expanded]="answersForms[answer.id].votingExpanded">
+          <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(null, answer.id, null)"></i>
+          <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(null, answer.id, null)"></i>
+        </div>
+      </div>
       <p class="username">{{answer.user.username}}</p>
-      <p class="date">{{answer.createTime | date}}</p>
+      <p class="date">created at {{answer.createTime | date}}</p>
+      <p class="date" *ngIf="answer.updateTime">updated at {{answer.updateTime | date}}</p>
       <i *ngIf="answersForms[answer.id].isOwner" class="fas fa-pen edit-icon" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
       <a *ngIf="answersForms[answer.id].isEditing" class="fas fa-times edit-icon" (click)="deleteAnswer(answer.id)"></a>
       <ng-container *ngIf="answersForms[answer.id].isEditing">
@@ -95,12 +119,20 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="comment" *ngFor="let comment of comments">
-            <span class="badge rate"
-              [class.positive]="comment.rate > 0"
-              [class.negative]="comment.rate < 0">{{comment.rate}}</span>
+            <div class="badge rate"
+                 (click)="commentForms[comment.id].votingExpanded = !commentForms[comment.id].votingExpanded"
+                 [class.positive]="commentForms[comment.id].rate > 0"
+                 [class.negative]="commentForms[comment.id].rate < 0">
+              {{commentForms[comment.id].rate}}
+              <div class="vote-buttons" [class.expanded]="commentForms[comment.id].votingExpanded">
+                <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(null, null, comment.id)"></i>
+                <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(null, null, comment.id)"></i>
+              </div>
+            </div>
             <p class="text">{{comment.text}}</p>
             <p class="username">{{comment.user.username}}</p>
-            <p class="date">{{comment.createTime | date}}</p>
+            <p class="date">created at {{comment.createTime | date}}</p>
+            <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
             <i *ngIf="commentForms[comment.id].isOwner" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
             <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon" (click)="deleteComment(null, answer.id, comment.id)"></a>

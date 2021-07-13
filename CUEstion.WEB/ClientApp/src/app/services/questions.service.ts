@@ -194,4 +194,36 @@ export class QuestionsService {
       return this.http.delete(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, options);
     }
   }
+
+  UpvoteElement(questionId: number, answerId: number, commentId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    if (commentId != null) {
+      return this.http.put(this._serverAddress + `/questions/0/answers/0/comments/${commentId}/upvote`, null, options);
+    } else if (answerId != null) {
+      return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/upvote`, null, options);
+    } else {
+      return this.http.put(this._serverAddress + `/questions/${questionId}/upvote`, null, options);
+    }
+  }
+
+  DownvoteElement(questionId: number, answerId: number, commentId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    if (commentId != null) {
+      return this.http.put(this._serverAddress + `/questions/0/answers/0/comments/${commentId}/downvote`, null, options);
+    } else if (answerId != null) {
+      return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/downvote`, null, options);
+    } else {
+      return this.http.put(this._serverAddress + `/questions/${questionId}/downvote`, null, options);
+    }
+  }
 }

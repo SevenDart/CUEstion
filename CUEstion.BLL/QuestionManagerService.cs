@@ -362,10 +362,27 @@ namespace CUEstion.BLL
 			context.SaveChanges();
 		}
 
-		public void MarkQuestion(int questionId, int mark)
+		public void MarkQuestion(int userId, int questionId, int mark)
 		{
 			using var context = new ApplicationContext();
 
+			var questionMark = context.QuestionMarks.Find(userId, questionId);
+
+			if (questionMark != null && questionMark.Mark == mark)
+			{
+				throw new Exception("This user have already voted such.");
+			}
+			if (questionMark == null)
+			{
+				questionMark = new QuestionMark()
+				{
+					QuestionId = questionId,
+					UserId = userId
+				};
+				context.QuestionMarks.Add(questionMark);
+			}
+
+			questionMark.Mark += mark;
 			var question = context.Questions.Find(questionId);
 			var user = context.Users.Find(question.UserId);
 			question.Rate += mark;
@@ -374,10 +391,26 @@ namespace CUEstion.BLL
 			context.SaveChanges();
 		}
 
-		public void MarkAnswer(int answerId, int mark)
+		public void MarkAnswer(int userId, int answerId, int mark)
 		{
 			using var context = new ApplicationContext();
+			var AnswerMark = context.AnswerMarks.Find(userId, answerId);
 
+			if (AnswerMark != null && AnswerMark.Mark == mark)
+			{
+				throw new Exception("This user have already voted such.");
+			}
+			if (AnswerMark == null)
+			{
+				AnswerMark = new AnswerMark()
+				{
+					AnswerId = answerId,
+					UserId = userId
+				};
+				context.AnswerMarks.Add(AnswerMark);
+			}
+
+			AnswerMark.Mark += mark;
 			var answer = context.Answers.Find(answerId);
 			var user = context.Users.Find(answer.UserId);
 			answer.Rate += mark;
@@ -386,10 +419,27 @@ namespace CUEstion.BLL
 			context.SaveChanges();
 		}
 
-		public void MarkComment(int commentId, int mark)
+		public void MarkComment(int userId, int commentId, int mark)
 		{
 			using var context = new ApplicationContext();
 
+			var commentMark = context.CommentMarks.Find(userId, commentId);
+
+			if (commentMark != null && commentMark.Mark == mark)
+			{
+				throw new Exception("This user have already voted such.");
+			}
+			if (commentMark == null)
+			{
+				commentMark = new CommentMark()
+				{
+					CommentId = commentId,
+					UserId = userId
+				};
+				context.CommentMarks.Add(commentMark);
+			}
+
+			commentMark.Mark += mark;
 			var comment = context.Comments.Find(commentId);
 			var user = context.Users.Find(comment.UserId);
 			comment.Rate += mark;
@@ -409,6 +459,10 @@ namespace CUEstion.BLL
 				var dbTag = new Tag() { Name = tag };
 				context.Tags.Add(dbTag);
 			}
+			else
+			{
+				throw new Exception("Such tag already exists.");
+			}
 
 			context.SaveChanges();
 		}
@@ -421,7 +475,7 @@ namespace CUEstion.BLL
 			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == oldTag.ToLower());
 			if (foundTag == null)
 			{
-				throw new Exception();
+				throw new Exception("There is no such tag.");
 			}
 			else
 			{
@@ -439,7 +493,7 @@ namespace CUEstion.BLL
 			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 			if (foundTag == null)
 			{
-				throw new Exception();
+				throw new Exception("There is no such tag.");
 			}
 			else
 			{

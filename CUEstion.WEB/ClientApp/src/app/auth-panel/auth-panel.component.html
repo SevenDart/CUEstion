@@ -1,10 +1,19 @@
 <ng-container *ngIf="user | async as user; else authWindow">
-  <span class="badge rate"
-        [class.positive]="user.rate > 0"
-        [class.negative]="user.rate < 0">{{user.rate}}</span>
-  <a class="username">{{user.username}}</a>
-  <button mat-flat-button class="logout" (click)="logout()">LOG OUT</button>
+  <button mat-button [mat-menu-trigger-for]="menu" class="username">
+    <i class="fas fa-user-tie user-icon"></i>
+    {{user.username}}
+  </button>
+  <mat-menu #menu xPosition="before">
+    <span mat-menu-item disabled class="text">
+      Rate
+      <span class="badge rate"
+            [class.positive]="user.rate > 0"
+            [class.negative]="user.rate < 0">{{user.rate}}
+      </span>
+    </span>
+    <button mat-menu-item class="logout" (click)="logout()">Log out</button>
+  </mat-menu>
 </ng-container>
 <ng-template #authWindow>
-  <button mat-flat-button class="auth__button" (click)="openWindow()" >SIGN IN/UP</button>
+  <i class="fas fa-sign-in-alt auth__button" (click)="openWindow()"></i>
 </ng-template>

@@ -9,10 +9,10 @@
 }
 
 .question__header {
-  font-size: 50px;
+  font-size: 40px;
   font-weight: bold;
   line-height: normal;
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 
 .username {
@@ -32,13 +32,16 @@
 }
 
 .rate {
+  display: inline-flex;
   background-color: gray;
   font-size: 14px;
   margin-right: 5px;
+  cursor: pointer;
+  transition: width 0.5s;
 }
 
 .date {
-  margin-left: 5px;
+  margin-left: 15px;
   font-size: 16px;
   color: gray;
   display: inline;
@@ -167,4 +170,25 @@
 
 .comment-text {
   font-size: 16px;
+}
+
+.vote-buttons {
+  width: 0%;
+  overflow: hidden;
+  transition: width 0.5s, margin-left 0.5s;
+}
+
+.vote-buttons.expanded {
+  width: 35px;
+  margin-left: 2px;
+}
+
+.vote-button {
+  cursor: pointer;
+  margin: 0 2px;
+  line-height: normal;
+}
+
+.vote-button:hover {
+  color: lightgray;
 }

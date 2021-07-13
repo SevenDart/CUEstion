@@ -308,7 +308,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				_questionManagerService.MarkQuestion(questionId, 1);
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.MarkQuestion(userId, questionId, 1);
 				return Ok();
 			}
 			catch (Exception e)
@@ -323,7 +324,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				_questionManagerService.MarkQuestion(questionId, -1);
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.MarkQuestion(userId, questionId, -1);
 				return Ok();
 			}
 			catch (Exception e)
@@ -338,7 +340,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				_questionManagerService.MarkAnswer(answerId, 1);
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.MarkAnswer(userId, answerId, 1);
 				return Ok();
 			}
 			catch (Exception e)
@@ -353,7 +356,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				_questionManagerService.MarkAnswer(answerId, -1);
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.MarkAnswer(userId, answerId, -1);
 				return Ok();
 			}
 			catch (Exception e)
@@ -371,7 +375,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				_questionManagerService.MarkComment(commentId, 1);
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.MarkComment(userId, commentId, 1);
 				return Ok();
 			}
 			catch (Exception e)
@@ -387,7 +392,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
-				_questionManagerService.MarkComment(commentId, -1);
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.MarkComment(userId, commentId, -1);
 				return Ok();
 			}
 			catch (Exception e)

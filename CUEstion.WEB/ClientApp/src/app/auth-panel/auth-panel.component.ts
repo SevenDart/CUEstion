@@ -22,6 +22,9 @@ export class AuthPanelComponent {
     const id = localStorage.getItem('userId');
     if (id) {
       this.user = this.userService.getUser(Number(id));
+      this.user.subscribe((user: User) => {
+        console.log(user);
+      });
     }
   }
 

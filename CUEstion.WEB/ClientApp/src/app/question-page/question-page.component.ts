@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Question} from '../Models/Question';
 import {Observable, of, throwError} from 'rxjs';
 import {Answer} from '../Models/Answer';
@@ -32,12 +32,13 @@ export class QuestionPageComponent implements OnInit {
   }
 
   get isOwner() {
-    return UsersService.userId === this.questionOwnerId;
+    return UsersService.userId === this.question.user.id;
   }
-  questionOwnerId: number;
-  question: Observable<Question>;
+  questionVotingExpanded = false;
+  question: Question;
+
   questionComments: Observable<AppComment[]>;
-  answers: Observable<Answer[]>;
+  answersObs: Observable<Answer[]>;
   answerComments: Observable<AppComment[]>[] = [];
   answersForms = [];
   commentForms = [];
@@ -47,15 +48,17 @@ export class QuestionPageComponent implements OnInit {
   commentControl: FormControl = new FormControl('',
     [Validators.required, Validators.minLength(10), Validators.maxLength(200)]);
 
-  updateAnswers(questionId: number) {
-    this.answers = this.questionService.GetAnswersForQuestion(questionId);
-    this.answers.subscribe((answers: Answer[]) => {
+  updateAnswers() {
+    this.answersObs = this.questionService.GetAnswersForQuestion(this.question.id);
+    this.answersObs.subscribe((answers: Answer[]) => {
       for (const answer of answers) {
         this.answersForms[answer.id] = {
           get isOwner() {
             return UsersService.userId === answer.user.id;
           },
+          rate: answer.rate,
           isEditing: false,
+          votingExpanded: false,
           editFormControl: new FormControl('',
             [Validators.required, Validators.maxLength(500 - answer.text.length)]),
           addCommentFormControl: new FormControl('',
@@ -74,7 +77,9 @@ export class QuestionPageComponent implements OnInit {
           get isOwner() {
             return UsersService.userId === comment.user.id;
           },
+          rate: comment.rate,
           isEditing: false,
+          votingExpanded: false,
           editFormControl: new FormControl('',
             [Validators.required, Validators.maxLength(200 - comment.text.length)]),
         };
@@ -90,7 +95,9 @@ export class QuestionPageComponent implements OnInit {
           get isOwner() {
             return UsersService.userId === comment.user.id;
           },
+          rate: comment.rate,
           isEditing: false,
+          votingExpanded: false,
           editFormControl: new FormControl('',
             [Validators.required, Validators.maxLength(200 - comment.text.length)]),
         };
@@ -199,10 +206,8 @@ export class QuestionPageComponent implements OnInit {
         })
       ).subscribe( (data) => {
         if (data === null) {
-          this.question.subscribe((question: Question) => {
-            this.updateAnswers(question.id);
-            this.answersForms[answerId].editFormControl.reset();
-          });
+          this.updateAnswers();
+          this.answersForms[answerId].editFormControl.reset();
         }
       }
     );
@@ -237,9 +242,7 @@ export class QuestionPageComponent implements OnInit {
           })
         ).subscribe( (data) => {
           if (data === null) {
-            this.question.subscribe((question: Question) => {
-              this.updateAnswers(question.id);
-            });
+            this.updateAnswers();
           }
         });
       }
@@ -280,19 +283,18 @@ export class QuestionPageComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((map: ParamMap) => {
       const id: number = Number(map.get('id'));
-      this.question = this.questionService.GetQuestion(id);
-      this.question.subscribe((question: Question) => {
-        this.questionOwnerId = question.user.id;
+      const questionObs = this.questionService.GetQuestion(id);
+      questionObs.subscribe((question: Question) => {
+        this.question = question;
+        this.updateAnswers();
       });
       this.updateQuestionComments(id);
-      this.updateAnswers(id);
     });
   }
 
   addAnswer() {
-    this.question.subscribe((question: Question) => {
-      this.questionService.AddAnswer(question.id, this.answerControl.value).pipe(
-        catchError(catchError((error: HttpErrorResponse) => {
+    this.questionService.AddAnswer(this.question.id, this.answerControl.value).pipe(
+      catchError((error: HttpErrorResponse) => {
           if (error.status === 500) {
             const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
               panelClass: ['mat-toolbar', 'mat-warn'],
@@ -309,12 +311,102 @@ export class QuestionPageComponent implements OnInit {
             });
           }
         })
-      )).subscribe((data) => {
-        if (data === null) {
-          this.updateAnswers(question.id);
-          this.answerControl.reset();
-        }
-      });
+      ).subscribe((data) => {
+      if (data === null) {
+        this.updateAnswers();
+        this.answerControl.reset();
+      }
     });
   }
+
+  upvoteForElement(questionId: number, answerId: number, commentId: number) {
+    const type = (questionId !== null) ? 'question' : (answerId !== null) ? 'answer' : 'comment';
+    const result: Observable<any> = this.questionService.UpvoteElement(questionId, answerId, commentId);
+    result.pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 0) {
+          this.snackBar.open('Something is wrong, try, please, later.', '', {
+            panelClass: ['mat-toolbar', 'mat-warn']
+          });
+          return throwError(() => {
+            return new Error('something is wrong');
+          });
+        }
+        let message: string;
+        switch (error.status) {
+          case 401:
+            message = `Please, log in to upvote this ${type}.`;
+            break;
+          case 500:
+            message = `You have already upvoted this ${type}.`;
+            break;
+        }
+        const bar = this.snackBar.open(message, 'Close', {
+          panelClass: ['mat-toolbar', 'mat-warn'],
+        });
+        bar._dismissAfter(3 * 1000);
+        return of([]);
+      })
+    ).subscribe((data) => {
+      if (data === null) {
+        switch (type) {
+          case 'question':
+            this.question.rate++;
+            break;
+          case 'answer':
+            this.answersForms[answerId].rate++;
+            break;
+          case 'comment':
+            this.commentForms[commentId].rate++;
+            break;
+        }
+      }
+    });
+  }
+
+  downvoteForElement(questionId: number, answerId: number, commentId: number) {
+    const type = (questionId !== null) ? 'question' : (answerId !== null) ? 'answer' : 'comment';
+    const result = this.questionService.DownvoteElement(questionId, answerId, commentId);
+    result.pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 0) {
+          this.snackBar.open('Something is wrong, try, please, later.', '', {
+            panelClass: ['mat-toolbar', 'mat-warn']
+          });
+          return throwError(() => {
+            return new Error('something is wrong');
+          });
+        }
+        let message: string;
+        switch (error.status) {
+          case 401:
+            message = `Please, log in to downvote this ${type}.`;
+            break;
+          case 500:
+            message = `You have already downvoted this ${type}.`;
+            break;
+        }
+        const bar = this.snackBar.open(message, 'Close', {
+          panelClass: ['mat-toolbar', 'mat-warn'],
+        });
+        bar._dismissAfter(3 * 1000);
+        return of([]);
+      })
+    ).subscribe((data) => {
+      if (data === null) {
+        switch (type) {
+          case 'question':
+            this.question.rate--;
+            break;
+          case 'answer':
+            this.answersForms[answerId].rate--;
+            break;
+          case 'comment':
+            this.commentForms[commentId].rate--;
+            break;
+        }
+      }
+    });
+  }
+
 }

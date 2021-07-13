@@ -22,6 +22,7 @@ namespace CUEstion.BLL.ModelsDTO
 			Id = user.Id;
 			Email = user.Email;
 			Username = user.Username;
+			Rate = user.Rate;
 		}
 	}
 }
