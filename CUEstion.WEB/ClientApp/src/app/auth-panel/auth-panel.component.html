@@ -1,5 +1,5 @@
-<ng-container *ngIf="userObs | async as user; else authWindow">
-  <button mat-button [mat-menu-trigger-for]="menu" class="username">
+<ng-container *ngIf="user; else authWindow">
+  <button mat-button [matMenuTriggerFor]="menu" class="username" (menuOpened)="refreshUser()">
     <i class="fas fa-star user-icon admin" *ngIf="isAdmin"></i>
     <i class="fas fa-user-tie user-icon"></i>
     {{user.username}}
