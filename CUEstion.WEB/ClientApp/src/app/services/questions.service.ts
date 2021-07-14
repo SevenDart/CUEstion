@@ -226,4 +226,34 @@ export class QuestionsService {
       return this.http.put(this._serverAddress + `/questions/${questionId}/downvote`, null, options);
     }
   }
+
+  CreateTag(tag: string) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.post(this._serverAddress + `/questions/tags?tag=${tag}`, null, options);
+  }
+
+  UpdateTag(oldTag: string, newTag: string) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.put(this._serverAddress + `/questions/tags?oldTag=${oldTag}&newTag=${newTag}`, null, options);
+  }
+
+  DeleteTag(tag: string) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.delete(this._serverAddress + `/questions/tags?tag=${tag}`, options);
+  }
 }

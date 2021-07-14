@@ -1,5 +1,6 @@
 <ng-container *ngIf="user | async as user; else authWindow">
   <button mat-button [mat-menu-trigger-for]="menu" class="username">
+    <i class="fas fa-star user-icon admin" *ngIf="isAdmin"></i>
     <i class="fas fa-user-tie user-icon"></i>
     {{user.username}}
   </button>
@@ -11,9 +12,10 @@
             [class.negative]="user.rate < 0">{{user.rate}}
       </span>
     </span>
+    <button mat-menu-item *ngIf="isAdmin" (click)="openTagsWindow()">Tags</button>
     <button mat-menu-item class="logout" (click)="logout()">Log out</button>
   </mat-menu>
 </ng-container>
 <ng-template #authWindow>
-  <i class="fas fa-sign-in-alt auth__button" (click)="openWindow()"></i>
+  <i class="fas fa-sign-in-alt auth__button" (click)="openLoginWindow()">A</i>
 </ng-template>

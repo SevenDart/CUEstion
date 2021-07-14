@@ -31,6 +31,10 @@ export class QuestionPageComponent implements OnInit {
     return UsersService.userId !== null;
   }
 
+  get isAdmin() {
+    return UsersService.IsAdmin;
+  }
+
   get isOwner() {
     return UsersService.userId === this.question.user.id;
   }

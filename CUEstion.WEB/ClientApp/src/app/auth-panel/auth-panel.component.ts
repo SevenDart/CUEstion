@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {SignDialogComponent} from './sign-dialog/sign-dialog.component';
 import {Observable} from 'rxjs';
 import {UsersService} from '../services/users.service';
+import {TagEditorComponent} from '../tag-editor/tag-editor.component';
 
 @Component({
   selector: 'auth-panel',
@@ -18,17 +19,18 @@ export class AuthPanelComponent {
     this.checkId();
   }
 
+  get isAdmin() {
+    return UsersService.IsAdmin;
+  }
+
   checkId() {
     const id = localStorage.getItem('userId');
     if (id) {
       this.user = this.userService.getUser(Number(id));
-      this.user.subscribe((user: User) => {
-        console.log(user);
-      });
     }
   }
 
-  openWindow() {
+  openLoginWindow() {
     const window = this.dialog.open(SignDialogComponent, {
       width: '500px'
     });
@@ -43,6 +45,12 @@ export class AuthPanelComponent {
     localStorage.removeItem('userId');
     localStorage.removeItem('role');
     UsersService.userId = null;
+  }
+
+  openTagsWindow() {
+    const window = this.dialog.open(TagEditorComponent, {
+      width: '40%'
+    });
   }
 }
 

@@ -16,7 +16,7 @@
     <p class="username">{{question.user.username}}</p>
     <p class="date">created at {{question.createTime | date}}</p>
     <p class="date" *ngIf="question.updateTime">updated at {{question.updateTime | date}}</p>
-    <a routerLink="/question/{{question.id}}/edit" *ngIf="isOwner" class="fas fa-pen edit-icon"></a>
+    <a routerLink="/question/{{question.id}}/edit" *ngIf="isOwner || isAdmin" class="fas fa-pen edit-icon"></a>
     <p class="text">{{question.text}}</p>
     <mat-chip-list>
       <mat-chip class="question__tag" *ngFor="let tag of question.tags" selected [color]="'primary'" [routerLink]="['/home']" [queryParams]="{tags: tag}">
@@ -46,7 +46,7 @@
           <p class="date">created at {{comment.createTime | date}}</p>
           <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
-          <i *ngIf="commentForms[comment.id].isOwner" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
+          <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
           <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon" (click)="deleteComment(question.id, null, comment.id)"></a>
           <ng-container *ngIf="commentForms[comment.id].isEditing">
             <mat-form-field appearance="outline" class="comment-form">
@@ -97,7 +97,7 @@
       <p class="username">{{answer.user.username}}</p>
       <p class="date">created at {{answer.createTime | date}}</p>
       <p class="date" *ngIf="answer.updateTime">updated at {{answer.updateTime | date}}</p>
-      <i *ngIf="answersForms[answer.id].isOwner" class="fas fa-pen edit-icon" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
+      <i *ngIf="answersForms[answer.id].isOwner || isAdmin" class="fas fa-pen edit-icon" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
       <a *ngIf="answersForms[answer.id].isEditing" class="fas fa-times edit-icon" (click)="deleteAnswer(answer.id)"></a>
       <ng-container *ngIf="answersForms[answer.id].isEditing">
         <mat-form-field appearance="outline" class="text new-answer-field">
@@ -134,7 +134,7 @@
             <p class="date">created at {{comment.createTime | date}}</p>
             <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
-            <i *ngIf="commentForms[comment.id].isOwner" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
+            <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
             <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon" (click)="deleteComment(null, answer.id, comment.id)"></a>
             <ng-container *ngIf="commentForms[comment.id].isEditing">
               <mat-form-field appearance="outline" class="comment-form">

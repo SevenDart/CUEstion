@@ -35,6 +35,8 @@ import {UpdateQuestionComponent} from './update-question/update-question.compone
 import {TagSelectComponent} from './tag-select/tag-select.component';
 import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 import {MatMenuModule} from '@angular/material/menu';
+import {TagEditorComponent} from './tag-editor/tag-editor.component';
+import {MatListModule} from '@angular/material/list';
 
 
 const routes: Routes = [
@@ -63,30 +65,32 @@ const routes: Routes = [
     CreateQuestionComponent,
     UpdateQuestionComponent,
     TagSelectComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    TagEditorComponent
   ],
-    imports: [
-        BrowserModule,
-        FormsModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(routes),
-        MatButtonModule,
-        HttpClientModule,
-        MatTableModule,
-        MatChipsModule,
-        MatExpansionModule,
-        MatDividerModule,
-        MatProgressSpinnerModule,
-        MatDialogModule,
-        MatTabsModule,
-        MatIconModule,
-        MatSnackBarModule,
-        TextFieldModule,
-        MatMenuModule
-    ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes),
+    MatButtonModule,
+    HttpClientModule,
+    MatTableModule,
+    MatChipsModule,
+    MatExpansionModule,
+    MatDividerModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatIconModule,
+    MatSnackBarModule,
+    TextFieldModule,
+    MatMenuModule,
+    MatListModule
+  ],
   providers: [AuthorizationGuard],
   exports: [RouterModule],
   bootstrap: [AppComponent]

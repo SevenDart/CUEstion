@@ -55,6 +55,24 @@ namespace CUEstion.DAL.Migrations
                     b.ToTable("Answers");
                 });
 
+            modelBuilder.Entity("CUEstion.DAL.Entities.AnswerMark", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Mark")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "AnswerId");
+
+                    b.HasIndex("AnswerId");
+
+                    b.ToTable("AnswerMarks");
+                });
+
             modelBuilder.Entity("CUEstion.DAL.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -94,6 +112,24 @@ namespace CUEstion.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("CUEstion.DAL.Entities.CommentMark", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Mark")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "CommentId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CommentMarks");
                 });
 
             modelBuilder.Entity("CUEstion.DAL.Entities.FollowedQuestion", b =>
@@ -145,6 +181,24 @@ namespace CUEstion.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("CUEstion.DAL.Entities.QuestionMark", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Mark")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuestionMarks");
                 });
 
             modelBuilder.Entity("CUEstion.DAL.Entities.Tag", b =>
@@ -255,6 +309,25 @@ namespace CUEstion.DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CUEstion.DAL.Entities.AnswerMark", b =>
+                {
+                    b.HasOne("CUEstion.DAL.Entities.Answer", "Answer")
+                        .WithMany()
+                        .HasForeignKey("AnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CUEstion.DAL.Entities.Comment", b =>
                 {
                     b.HasOne("CUEstion.DAL.Entities.Answer", "Answer")
@@ -275,6 +348,25 @@ namespace CUEstion.DAL.Migrations
                     b.Navigation("Answer");
 
                     b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CUEstion.DAL.Entities.CommentMark", b =>
+                {
+                    b.HasOne("CUEstion.DAL.Entities.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
 
                     b.Navigation("User");
                 });
@@ -304,6 +396,25 @@ namespace CUEstion.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CUEstion.DAL.Entities.QuestionMark", b =>
+                {
+                    b.HasOne("CUEstion.DAL.Entities.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
 
                     b.Navigation("User");
                 });

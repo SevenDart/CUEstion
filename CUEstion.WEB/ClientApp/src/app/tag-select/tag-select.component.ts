@@ -60,6 +60,6 @@ export class TagSelectComponent {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
+    return this.allTags.filter(tag => tag.toLowerCase().startsWith(filterValue));
   }
 }

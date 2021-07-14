@@ -9,6 +9,10 @@ export class UsersService {
   constructor(private http: HttpClient) {
   }
 
+  public static get IsAdmin() {
+    return localStorage.getItem('role') === 'admin';
+  }
+
   public static userId: number = localStorage.getItem('userId') ? Number(localStorage.getItem('userId')) : null;
   private _serverAddress = 'https://localhost:44376';
 

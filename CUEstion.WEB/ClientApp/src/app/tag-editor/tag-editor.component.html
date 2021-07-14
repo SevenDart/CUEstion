@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Edit Tags</h1>
+<div mat-dialog-content>
+  <div class="new-tag">
+    <mat-form-field class="tag-search" appearance="outline">
+      <mat-label class="text">Filter</mat-label>
+      <input matInput
+             class="text"
+             [formControl]="tagSearch">
+    </mat-form-field>
+  </div>
+  <div class="tag-list">
+    <div *ngFor="let tag of filteredTags | async" class="tag">
+      <span class="text" *ngIf="!tagsForms[tag].isEditing; else editingForm">{{tag}}</span>
+      <ng-template #editingForm>
+        <mat-form-field appearance="outline" class="edit-form">
+          <mat-label>Edit tag</mat-label>
+          <input matInput
+                 [formControl]="tagsForms[tag].editControl">
+        </mat-form-field>
+        <button mat-raised-button class="edit-button" (click)="updateTag(tag, tagsForms[tag].editControl.value)" color="primary">UPDATE</button>
+      </ng-template>
+      <div class="icons">
+        <i class="fas fa-times tag-icon" (click)="deleteTag(tag)">Del</i>
+        <i class="fas fa-pen tag-icon" (click)="tagsForms[tag].isEditing = !tagsForms[tag].isEditing">edit</i>
+      </div>
+    </div>
+    <div class="tag">
+      <mat-form-field appearance="outline" class="create-form">
+        <mat-label>New tag</mat-label>
+        <input matInput
+               class="text"
+               [formControl]="newTagControl">
+      </mat-form-field>
+      <button mat-raised-button class="edit-button" (click)="createTag(newTagControl.value)" color="primary">CREATE</button>
+    </div>
+  </div>
+</div>

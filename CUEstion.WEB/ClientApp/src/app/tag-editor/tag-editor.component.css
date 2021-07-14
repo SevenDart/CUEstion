@@ -1,0 +1,59 @@
+.tag {
+  padding: 10px 5px;
+  display: flex;
+}
+
+.tag:hover {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.tag .text {
+  padding-left: 10px;
+}
+
+.tag-search {
+  width: 100%;
+}
+
+.text {
+  font-size: 18px;
+}
+
+.tag-list {
+  padding: 15px;
+  overflow-y: scroll;
+  height: 300px;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 3%;
+}
+
+.new-tag-button {
+  margin-left: 10px;
+}
+
+.icons {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row-reverse;
+}
+
+.tag-icon {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.edit-form {
+  margin-left: 10px;
+  display: inline;
+  width: 60%;
+}
+
+.create-form {
+  margin-left: 10px;
+  width:80%;
+}
+
+.edit-button {
+  margin-left: 15px;
+  padding: 5px 0;
+}
