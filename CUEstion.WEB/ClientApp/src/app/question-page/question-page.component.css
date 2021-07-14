@@ -79,6 +79,7 @@
 .question__tag {
   font-size: 12px;
   min-height: 28px;
+  cursor: pointer;
 }
 
 .answer {
