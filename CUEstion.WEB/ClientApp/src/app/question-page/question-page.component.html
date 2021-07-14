@@ -47,7 +47,11 @@
           <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
           <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" [class.active]="commentForms[comment.id].isEditing" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
-          <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon" (click)="deleteComment(question.id, null, comment.id)"></a>
+          <a *ngIf="commentForms[comment.id].isEditing"
+             class="fas fa-times edit-icon delete-icon"
+             (click)="deleteComment(question.id, null, comment.id)"
+             matTooltip="Press cross if you want to delete this comment."
+             matTooltipPosition="below"></a>
           <ng-container *ngIf="commentForms[comment.id].isEditing">
             <mat-form-field appearance="outline" class="comment-form">
               <mat-label>Edit comment</mat-label>
@@ -98,7 +102,11 @@
       <p class="date">created at {{answer.createTime | date}}</p>
       <p class="date" *ngIf="answer.updateTime">updated at {{answer.updateTime | date}}</p>
       <i *ngIf="answersForms[answer.id].isOwner || isAdmin" class="fas fa-pen edit-icon" [class.active]="answersForms[answer.id].isEditing" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
-      <a *ngIf="answersForms[answer.id].isEditing" class="fas fa-times edit-icon delete-icon" (click)="deleteAnswer(answer.id)"></a>
+      <a *ngIf="answersForms[answer.id].isEditing"
+         class="fas fa-times edit-icon delete-icon"
+         (click)="deleteAnswer(answer.id)"
+         matTooltip="Press cross if you want to delete this answer."
+         matTooltipPosition="below"></a>
       <ng-container *ngIf="answersForms[answer.id].isEditing">
         <mat-form-field appearance="outline" class="text new-answer-field">
           <mat-label>Update your answer</mat-label>
@@ -135,7 +143,10 @@
             <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
             <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" [class.active]="commentForms[comment.id].isEditing" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
-            <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon" (click)="deleteComment(null, answer.id, comment.id)"></a>
+            <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon"
+               (click)="deleteComment(null, answer.id, comment.id)"
+               matTooltip="Press cross if you want to delete this comment."
+               matTooltipPosition="below"></a>
             <ng-container *ngIf="commentForms[comment.id].isEditing">
               <mat-form-field appearance="outline" class="comment-form">
                 <mat-label>Edit comment</mat-label>

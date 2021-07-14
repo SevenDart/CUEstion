@@ -64,7 +64,7 @@ export class QuestionPageComponent implements OnInit {
           isEditing: false,
           votingExpanded: false,
           editFormControl: new FormControl('',
-            [Validators.required, Validators.maxLength(500 - answer.text.length)]),
+            [Validators.required, Validators.maxLength(500 - answer.text.length - 8)]),
           addCommentFormControl: new FormControl('',
             [Validators.required, Validators.minLength(10), Validators.maxLength(200)])
         };
@@ -85,7 +85,7 @@ export class QuestionPageComponent implements OnInit {
           isEditing: false,
           votingExpanded: false,
           editFormControl: new FormControl('',
-            [Validators.required, Validators.maxLength(200 - comment.text.length)]),
+            [Validators.required, Validators.maxLength(200 - comment.text.length - 8)]),
         };
       }
     });

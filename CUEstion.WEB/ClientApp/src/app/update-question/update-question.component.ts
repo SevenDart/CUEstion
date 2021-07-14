@@ -35,7 +35,7 @@ export class UpdateQuestionComponent {
       this.question = this.questionService.GetQuestion(id);
       this.question.subscribe((question: Question) => {
         this.selectedTags = question.tags;
-        this.questionForm.get('description').setValidators([Validators.maxLength(500 - question.text.length)]);
+        this.questionForm.get('description').setValidators([Validators.maxLength(500 - question.text.length - 8)]);
       });
     });
   }
