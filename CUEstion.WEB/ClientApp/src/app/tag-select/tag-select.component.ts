@@ -6,6 +6,7 @@ import {FormControl} from '@angular/forms';
 import {map, startWith} from 'rxjs/operators';
 import {QuestionsService} from '../services/questions.service';
 import {TooltipComponent} from '@angular/material/tooltip';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tag-select',
@@ -22,7 +23,7 @@ export class TagSelectComponent {
 
   @Output() focus = new EventEmitter<boolean>();
 
-  constructor(private questionsService: QuestionsService) {
+  constructor(private questionsService: QuestionsService, private snackBar: MatSnackBar) {
     this.questionsService.GetAllTags().subscribe((tags: string[]) => {
       this.allTags = tags;
     });
@@ -34,15 +35,19 @@ export class TagSelectComponent {
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('warningTooltip') warningTooltip: TooltipComponent;
 
-  warningEnabled = false;
-
   addTag(event: MatChipInputEvent) {
     if (!this.selectedTags.includes(event.value)) {
       if (event.value) {
         this.selectedTags.push(event.value);
+        this.allTags.splice(this.allTags.indexOf(event.value), 1);
       }
       event.chipInput.clear();
       this.tagSearch.setValue(null);
+    } else {
+      const bar = this.snackBar.open('This tag is already added.', 'Close', {
+        panelClass: ['mat-toolbar', 'mat-warn']
+      });
+      bar._dismissAfter(3000);
     }
   }
 
@@ -50,6 +55,7 @@ export class TagSelectComponent {
     const index = this.selectedTags.indexOf(tag);
 
     if (index >= 0) {
+      this.allTags.push(tag);
       this.selectedTags.splice(index, 1);
     }
   }
@@ -57,13 +63,7 @@ export class TagSelectComponent {
   selected(event: MatAutocompleteSelectedEvent): void {
     if (!this.selectedTags.includes(event.option.value)) {
       this.selectedTags.push(event.option.viewValue);
-    } else {
-      this.tagInput.nativeElement.value = '';
-      this.warningEnabled = true;
-      this.warningTooltip.show(0);
-      setTimeout(() => {
-        this.warningEnabled = false;
-      }, 2000);
+      this.allTags.splice(this.allTags.indexOf(event.option.value), 1);
     }
     this.tagInput.nativeElement.value = '';
     this.tagSearch.setValue(null);
