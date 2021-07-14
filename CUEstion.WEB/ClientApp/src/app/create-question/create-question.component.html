@@ -2,11 +2,10 @@
 	<h1 class="page__header">Create Your Question</h1>
 	<form [formGroup]="questionForm" (ngSubmit)="createQuestion()">
 				<mat-form-field appearance="outline" class="field">
-              <mat-label class="text hint-label">Print your question</mat-label>
+              <mat-label class="text hint-label">Title</mat-label>
 							<input matInput
                      formControlName="header"
                      type="text"
-                     placeholder="Enter your question"
                      class="text question__header">
 								<mat-error *ngIf="!questionForm.controls['header'].valid && questionForm.controls['header'].touched">
                   Question must contain at least 15 symbols.
