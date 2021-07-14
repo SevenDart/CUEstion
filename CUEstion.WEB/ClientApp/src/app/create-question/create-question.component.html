@@ -2,28 +2,34 @@
 	<h1 class="page__header">Create Your Question</h1>
 	<form [formGroup]="questionForm" (ngSubmit)="createQuestion()">
 				<mat-form-field appearance="outline" class="field">
-              <mat-label class="text hint-label">Title</mat-label>
-							<input matInput
-                     formControlName="header"
-                     type="text"
-                     class="text question__header">
-								<mat-error *ngIf="!questionForm.controls['header'].valid && questionForm.controls['header'].touched">
-                  Question must contain at least 15 symbols.
-                </mat-error>
+          <mat-label class="text hint-label">Title</mat-label>
+          <input matInput
+                 autocomplete="off"
+                 formControlName="header"
+                 type="text"
+                 maxlength="50"
+                 class="text question__header">
+          <mat-error *ngIf="questionForm.controls['header'].value.length < 15">
+            Title must contain at least 15 symbols.
+          </mat-error>
 					</mat-form-field>
 				<mat-form-field appearance="outline" class="field">
           <mat-label>Describe your problem</mat-label>
 	  			<textarea
             matInput
+            maxlength="500"
             cdkTextareaAutosize
             cdkAutosizeMinRows="10"
             formControlName="description"
             class="text description">
           </textarea>
-	  			<mat-error *ngIf="!questionForm.controls['description'].valid && questionForm.controls['description'].touched">
+	  			<mat-error *ngIf="questionForm.controls['description'].value.length < 60">
             Description must contain at least 60 symbols.
           </mat-error>
 			</mat-form-field>
+    <p class="tag-overview">
+      You can add some tags to your question to improve search or sorting for other users.
+    </p>
     <tag-select [selectedTags]="selectedTags"></tag-select>
     <button mat-raised-button
             type="submit"

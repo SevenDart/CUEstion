@@ -61,3 +61,8 @@ mat-chip .chip__close-icon  {
   margin: 0 auto;
   display: block;
 }
+
+.tag-overview {
+  font-size: 16px;
+  margin-top: 15px;
+}

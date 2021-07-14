@@ -86,8 +86,8 @@
         <ng-container *ngIf="isAuthed">
           <mat-form-field appearance="outline" class="comment-form">
             <mat-label>Add a comment</mat-label>
-            <input matInput [formControl]="commentControl" class="comment-text">
-            <mat-error *ngIf="!commentControl.valid && commentControl.dirty">Comment's length must be between 10 and 200 symbols.</mat-error>
+            <input matInput [formControl]="commentControl" class="comment-text" maxlength="200">
+            <mat-error *ngIf="!commentControl.valid && commentControl.dirty">Comment must contain 10 symbols at least.</mat-error>
           </mat-form-field>
           <button mat-raised-button
                   (click)="addComment(question.id, null, commentControl)"
@@ -195,8 +195,8 @@
           <ng-container *ngIf="isAuthed">
             <mat-form-field appearance="outline" class="comment-form">
               <mat-label>Add a comment</mat-label>
-              <input matInput [formControl]="answersForms[answer.id].addCommentFormControl" class="comment-text">
-              <mat-error *ngIf="!answersForms[answer.id].addCommentFormControl.valid && answersForms[answer.id].addCommentFormControl.dirty">Comment's length must be between 10 and 200 symbols.</mat-error>
+              <input matInput [formControl]="answersForms[answer.id].addCommentFormControl" class="comment-text" maxlength="200">
+              <mat-error *ngIf="!answersForms[answer.id].addCommentFormControl.valid && answersForms[answer.id].addCommentFormControl.dirty">Comment must contain 10 symbols at least.</mat-error>
             </mat-form-field>
             <button mat-raised-button
                     (click)="addComment(null, answer.id, answersForms[answer.id].addCommentFormControl)"
@@ -214,11 +214,12 @@
     <mat-form-field appearance="outline" class="text new-answer-field">
       <mat-label>Enter your answer</mat-label>
       <textarea matInput
+                maxlength="500"
                 [formControl] = "answerControl"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3">
       </textarea>
-      <mat-error *ngIf="!answerControl.valid && answerControl.dirty">Answer's length must be between 15 and 500 symbols.</mat-error>
+      <mat-error *ngIf="!answerControl.valid && answerControl.dirty">Answer's length must contain 15 symbols at least.</mat-error>
     </mat-form-field>
     <button mat-raised-button (click)="addAnswer()" [disabled]="!answerControl.valid" class="new-answer-button" [color]="'primary'">ADD</button>
   </ng-container>
