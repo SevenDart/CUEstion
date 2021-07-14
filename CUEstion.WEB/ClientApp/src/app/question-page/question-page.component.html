@@ -7,8 +7,7 @@
          [class.positive]="question.rate > 0"
          [class.negative]="question.rate < 0"
          matTooltip="Click here to vote for this question!"
-         matTooltipPosition="below"
-         matTooltipHideDelay="2000">
+         matTooltipPosition="below">
       {{question.rate}}
       <div class="vote-buttons" [class.expanded]="questionVotingExpanded">
         <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(question.id, null, null)"></i>
@@ -23,8 +22,7 @@
        *ngIf="isOwner || isAdmin"
        class="fas fa-pen edit-icon"
        matTooltip="Press here if you want to update this question."
-       matTooltipPosition="below"
-       matTooltipHideDelay="2000"></a>
+       matTooltipPosition="below"></a>
     <p class="text">{{question.text}}</p>
     <mat-chip-list>
       <mat-chip class="question__tag" *ngFor="let tag of question.tags" selected [color]="'primary'" [routerLink]="['/home']" [queryParams]="{tags: tag}">
@@ -59,14 +57,12 @@
              [class.active]="commentForms[comment.id].isEditing"
              (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"
              matTooltip="Press here if you want to update this comment."
-             matTooltipPosition="below"
-             matTooltipHideDelay="2000"></i>
+             matTooltipPosition="below"></i>
           <a *ngIf="commentForms[comment.id].isEditing"
              class="fas fa-times edit-icon delete-icon"
              (click)="deleteComment(question.id, null, comment.id)"
              matTooltip="Press cross if you want to delete this comment."
-             matTooltipPosition="below"
-             matTooltipHideDelay="2000"></a>
+             matTooltipPosition="below"></a>
           <ng-container *ngIf="commentForms[comment.id].isEditing">
             <mat-form-field appearance="outline" class="comment-form">
               <mat-label>Edit comment</mat-label>
@@ -121,14 +117,12 @@
          [class.active]="answersForms[answer.id].isEditing"
          (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"
          matTooltip="Press here if you want to update this answer."
-         matTooltipPosition="below"
-         matTooltipHideDelay="2000"></i>
+         matTooltipPosition="below"></i>
       <a *ngIf="answersForms[answer.id].isEditing"
          class="fas fa-times edit-icon delete-icon"
          (click)="deleteAnswer(answer.id)"
          matTooltip="Press cross if you want to delete this answer."
-         matTooltipPosition="below"
-         matTooltipHideDelay="2000"></a>
+         matTooltipPosition="below"></a>
       <ng-container *ngIf="answersForms[answer.id].isEditing">
         <mat-form-field appearance="outline" class="text new-answer-field">
           <mat-label>Update your answer</mat-label>
@@ -169,13 +163,11 @@
                [class.active]="commentForms[comment.id].isEditing"
                (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"
                matTooltip="Press here if you want to update this comment."
-               matTooltipPosition="below"
-               matTooltipHideDelay="2000"></i>
+               matTooltipPosition="below"></i>
             <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon"
                (click)="deleteComment(null, answer.id, comment.id)"
                matTooltip="Press cross if you want to delete this comment."
-               matTooltipPosition="below"
-               matTooltipHideDelay="2000"></a>
+               matTooltipPosition="below"></a>
             <ng-container *ngIf="commentForms[comment.id].isEditing">
               <mat-form-field appearance="outline" class="comment-form">
                 <mat-label>Edit comment</mat-label>
