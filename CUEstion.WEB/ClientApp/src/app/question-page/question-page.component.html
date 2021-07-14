@@ -37,8 +37,8 @@
                [class.negative]="commentForms[comment.id].rate < 0">
             {{commentForms[comment.id].rate}}
             <div class="vote-buttons" [class.expanded]="commentForms[comment.id].votingExpanded">
-              <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(null, null, comment.id)"></i>
-              <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(null, null, comment.id)"></i>
+              <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(question.id, null, comment.id)"></i>
+              <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(question.id, null, comment.id)"></i>
             </div>
           </div>
           <p class="text">{{comment.text}}</p>
@@ -46,8 +46,8 @@
           <p class="date">created at {{comment.createTime | date}}</p>
           <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
-          <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
-          <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon" (click)="deleteComment(question.id, null, comment.id)"></a>
+          <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" [class.active]="commentForms[comment.id].isEditing" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
+          <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon" (click)="deleteComment(question.id, null, comment.id)"></a>
           <ng-container *ngIf="commentForms[comment.id].isEditing">
             <mat-form-field appearance="outline" class="comment-form">
               <mat-label>Edit comment</mat-label>
@@ -97,8 +97,8 @@
       <p class="username">{{answer.user.username}}</p>
       <p class="date">created at {{answer.createTime | date}}</p>
       <p class="date" *ngIf="answer.updateTime">updated at {{answer.updateTime | date}}</p>
-      <i *ngIf="answersForms[answer.id].isOwner || isAdmin" class="fas fa-pen edit-icon" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
-      <a *ngIf="answersForms[answer.id].isEditing" class="fas fa-times edit-icon" (click)="deleteAnswer(answer.id)"></a>
+      <i *ngIf="answersForms[answer.id].isOwner || isAdmin" class="fas fa-pen edit-icon" [class.active]="answersForms[answer.id].isEditing" (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"></i>
+      <a *ngIf="answersForms[answer.id].isEditing" class="fas fa-times edit-icon delete-icon" (click)="deleteAnswer(answer.id)"></a>
       <ng-container *ngIf="answersForms[answer.id].isEditing">
         <mat-form-field appearance="outline" class="text new-answer-field">
           <mat-label>Update your answer</mat-label>
@@ -125,8 +125,8 @@
                  [class.negative]="commentForms[comment.id].rate < 0">
               {{commentForms[comment.id].rate}}
               <div class="vote-buttons" [class.expanded]="commentForms[comment.id].votingExpanded">
-                <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(null, null, comment.id)"></i>
-                <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(null, null, comment.id)"></i>
+                <i class="fas fa-chevron-circle-up vote-button" (click)="upvoteForElement(null, answer.id, comment.id)"></i>
+                <i class="fas fa-chevron-circle-down vote-button" (click)="downvoteForElement(null, answer.id, comment.id)"></i>
               </div>
             </div>
             <p class="text">{{comment.text}}</p>
@@ -134,8 +134,8 @@
             <p class="date">created at {{comment.createTime | date}}</p>
             <p class="date" *ngIf="comment.updateTime">updated at {{comment.updateTime | date}}</p>
 
-            <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
-            <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon" (click)="deleteComment(null, answer.id, comment.id)"></a>
+            <i *ngIf="commentForms[comment.id].isOwner || isAdmin" class="fas fa-pen edit-icon" [class.active]="commentForms[comment.id].isEditing" (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"></i>
+            <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon" (click)="deleteComment(null, answer.id, comment.id)"></a>
             <ng-container *ngIf="commentForms[comment.id].isEditing">
               <mat-form-field appearance="outline" class="comment-form">
                 <mat-label>Edit comment</mat-label>

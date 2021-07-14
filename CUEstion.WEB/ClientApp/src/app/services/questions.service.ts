@@ -108,7 +108,7 @@ export class QuestionsService {
     return this.http.post(this._serverAddress + `/questions/${questionId}/answers`, answer, options);
   }
 
-  UpdateAnswer(answerId: number, text: string) {
+  UpdateAnswer(questionId: number, answerId: number, text: string) {
     const answer = {
       id: answerId,
       text: text,
@@ -123,17 +123,17 @@ export class QuestionsService {
       })
     };
 
-    return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}`, answer, options);
+    return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}`, answer, options);
   }
 
-  DeleteAnswer(answerId: number) {
+  DeleteAnswer(questionId: number, answerId: number) {
     const options = {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + localStorage.getItem('token')
       })
     };
 
-    return this.http.delete(this._serverAddress + `/questions/0/answers/${answerId}`, options);
+    return this.http.delete(this._serverAddress + `/questions/${questionId}/answers/${answerId}`, options);
   }
 
   CreateComment(questionId: number, answerId: number, text: string) {
@@ -153,7 +153,7 @@ export class QuestionsService {
     };
 
     if (answerId != null) {
-      return this.http.post(this._serverAddress + `/questions/0/answers/${answerId}/comments`, comment, options);
+      return this.http.post(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments`, comment, options);
     } else {
       return this.http.post(this._serverAddress + `/questions/${questionId}/comments`, comment, options);
     }
@@ -175,7 +175,7 @@ export class QuestionsService {
     };
 
     if (answerId != null) {
-      return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/comments/${commentId}`, comment, options);
+      return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}`, comment, options);
     } else {
       return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, comment, options);
     }
@@ -189,7 +189,7 @@ export class QuestionsService {
     };
 
     if (answerId != null) {
-      return this.http.delete(this._serverAddress + `/questions/0/answers/${answerId}/comments/${commentId}`, options);
+      return this.http.delete(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}`, options);
     } else {
       return this.http.delete(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, options);
     }
@@ -203,9 +203,14 @@ export class QuestionsService {
     };
 
     if (commentId != null) {
-      return this.http.put(this._serverAddress + `/questions/0/answers/0/comments/${commentId}/upvote`, null, options);
+      if (answerId != null) {
+        return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}/upvote`,
+          null, options);
+      } else {
+        return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}/upvote`, null, options);
+      }
     } else if (answerId != null) {
-      return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/upvote`, null, options);
+      return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/upvote`, null, options);
     } else {
       return this.http.put(this._serverAddress + `/questions/${questionId}/upvote`, null, options);
     }
@@ -219,9 +224,14 @@ export class QuestionsService {
     };
 
     if (commentId != null) {
-      return this.http.put(this._serverAddress + `/questions/0/answers/0/comments/${commentId}/downvote`, null, options);
+      if (answerId != null) {
+        return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}/downvote`,
+          null, options);
+      } else {
+        return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}/downvote`, null, options);
+      }
     } else if (answerId != null) {
-      return this.http.put(this._serverAddress + `/questions/0/answers/${answerId}/downvote`, null, options);
+      return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/downvote`, null, options);
     } else {
       return this.http.put(this._serverAddress + `/questions/${questionId}/downvote`, null, options);
     }

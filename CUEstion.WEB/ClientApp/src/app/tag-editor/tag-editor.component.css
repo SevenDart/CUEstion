@@ -57,3 +57,11 @@
   margin-left: 15px;
   padding: 5px 0;
 }
+
+.edit-icon.active {
+  color: orange;
+}
+
+.delete-icon:hover {
+  color: red;
+}

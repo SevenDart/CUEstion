@@ -192,3 +192,11 @@
 .vote-button:hover {
   color: lightgray;
 }
+
+.edit-icon.active {
+  color: orange;
+}
+
+.delete-icon:hover {
+  color: red;
+}

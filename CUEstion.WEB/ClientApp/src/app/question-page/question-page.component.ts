@@ -110,7 +110,7 @@ export class QuestionPageComponent implements OnInit {
   }
 
   updateComment(questionId: number, answerId: number, commentId: number, originText: string) {
-    this.questionService.UpdateComment(questionId, answerId, commentId,
+    this.questionService.UpdateComment(this.question.id, answerId, commentId,
       (originText + (this.commentForms[commentId].editFormControl.value.length > 0
         ? ' [UPD.] ' + this.commentForms[commentId].editFormControl.value
         : '')))
@@ -153,7 +153,7 @@ export class QuestionPageComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.questionService.DeleteComment(questionId, answerId, commentId).pipe(
+        this.questionService.DeleteComment(this.question.id, answerId, commentId).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 500) {
               const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
@@ -186,7 +186,7 @@ export class QuestionPageComponent implements OnInit {
 
 
   updateAnswer(answerId: number, originText: string) {
-    this.questionService.UpdateAnswer(answerId,
+    this.questionService.UpdateAnswer(this.question.id, answerId,
       (originText + (this.answersForms[answerId].editFormControl.value.length > 0
         ? ' [UPD.] ' + this.answersForms[answerId].editFormControl.value
         : '')))
@@ -226,7 +226,7 @@ export class QuestionPageComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.questionService.DeleteAnswer(answerId).pipe(
+        this.questionService.DeleteAnswer(this.question.id, answerId).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 500) {
               const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
@@ -254,7 +254,7 @@ export class QuestionPageComponent implements OnInit {
   }
 
   addComment(questionId: number, answerId: number, commentControl: FormControl) {
-    this.questionService.CreateComment(questionId, answerId, commentControl.value).pipe(
+    this.questionService.CreateComment(this.question.id, answerId, commentControl.value).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 500) {
           const bar = this.snackBar.open('Something is wrong, please, try again later.', 'Close', {
@@ -324,8 +324,8 @@ export class QuestionPageComponent implements OnInit {
   }
 
   upvoteForElement(questionId: number, answerId: number, commentId: number) {
-    const type = (questionId !== null) ? 'question' : (answerId !== null) ? 'answer' : 'comment';
-    const result: Observable<any> = this.questionService.UpvoteElement(questionId, answerId, commentId);
+    const type = (commentId !== null) ? 'comment' : (answerId !== null) ? 'answer' : 'question';
+    const result: Observable<any> = this.questionService.UpvoteElement(this.question.id, answerId, commentId);
     result.pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0) {
@@ -369,7 +369,7 @@ export class QuestionPageComponent implements OnInit {
   }
 
   downvoteForElement(questionId: number, answerId: number, commentId: number) {
-    const type = (questionId !== null) ? 'question' : (answerId !== null) ? 'answer' : 'comment';
+    const type = (commentId !== null) ? 'comment' : (answerId !== null) ? 'answer' : 'question';
     const result = this.questionService.DownvoteElement(questionId, answerId, commentId);
     result.pipe(
       catchError((error: HttpErrorResponse) => {

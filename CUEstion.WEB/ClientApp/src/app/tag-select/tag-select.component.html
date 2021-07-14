@@ -1,4 +1,11 @@
-<mat-form-field appearance="outline" class="tag-select">
+<mat-form-field appearance="outline"
+                class="tag-select"
+                #warningTooltip="matTooltip"
+                matTooltip="This tag is already added."
+                matTooltipPosition="left"
+                matTooltipClass="tag-add-warning"
+                [matTooltipDisabled] = "!warningEnabled"
+                matTooltipHideDelay="2000">
   <mat-label>Tags</mat-label>
   <mat-chip-list #chipList>
     <mat-chip *ngFor="let tag of selectedTags" selectable removable (removed)="remove(tag)" class="chip">

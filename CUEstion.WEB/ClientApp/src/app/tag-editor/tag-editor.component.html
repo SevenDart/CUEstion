@@ -20,8 +20,8 @@
         <button mat-raised-button class="edit-button" (click)="updateTag(tag, tagsForms[tag].editControl.value)" color="primary">UPDATE</button>
       </ng-template>
       <div class="icons">
-        <i class="fas fa-times tag-icon" (click)="deleteTag(tag)">Del</i>
-        <i class="fas fa-pen tag-icon" (click)="tagsForms[tag].isEditing = !tagsForms[tag].isEditing">edit</i>
+        <i class="fas fa-times tag-icon delete-icon" (click)="deleteTag(tag)"></i>
+        <i class="fas fa-pen tag-icon edit-icon" [class.active]="tagsForms[tag].isEditing" (click)="tagsForms[tag].isEditing = !tagsForms[tag].isEditing"></i>
       </div>
     </div>
     <div class="tag">
