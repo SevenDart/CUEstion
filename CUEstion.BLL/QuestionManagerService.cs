@@ -206,10 +206,10 @@ namespace CUEstion.BLL
 
 			var question = context.Questions.Find(questionId);
 
-			var questionAnswers = context.Answers.Where(a => a.QuestionId == questionId);
+			var questionAnswers = context.Answers.Where(a => a.QuestionId == questionId).ToList();
 			foreach (var answer in questionAnswers)
 			{
-				var answerComments = context.Comments.Where(c => c.AnswerId == answer.Id);
+				var answerComments = context.Comments.Where(c => c.AnswerId == answer.Id).ToList();
 				foreach (var comment in answerComments)
 					context.Comments.Remove(comment);
 				context.Answers.Remove(answer);
@@ -292,7 +292,7 @@ namespace CUEstion.BLL
 
 			var answer = context.Answers.Find(answerId);
 
-			var answerComments = context.Comments.Where(c => c.AnswerId == answerId);
+			var answerComments = context.Comments.Where(c => c.AnswerId == answerId).ToList();
 			foreach (var comment in answerComments)
 			{
 				context.Comments.Remove(comment);
