@@ -47,3 +47,6 @@ mat-chip .chip__close-icon  {
   width: 98%;
 }
 
+.autocomplete-option-small {
+  font-size: 14px;
+}

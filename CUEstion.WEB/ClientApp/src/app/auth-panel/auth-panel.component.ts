@@ -13,7 +13,7 @@ import {TagEditorComponent} from '../tag-editor/tag-editor.component';
   providers: [UsersService]
 })
 export class AuthPanelComponent {
-  user: Observable<User>;
+  userObs: Observable<User>;
 
   constructor(public dialog: MatDialog, private userService: UsersService) {
     this.checkId();
@@ -26,7 +26,7 @@ export class AuthPanelComponent {
   checkId() {
     const id = localStorage.getItem('userId');
     if (id) {
-      this.user = this.userService.getUser(Number(id));
+      this.userObs = this.userService.getUser(Number(id));
     }
   }
 
@@ -40,7 +40,7 @@ export class AuthPanelComponent {
   }
 
   logout() {
-    this.user = null;
+    this.userObs = null;
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('role');
