@@ -14,7 +14,7 @@ export class QuestionsService {
   SearchQuestions(query: string, tags: string[]) {
     let url = this._serverAddress + '/questions/search' + `?query=${query}`;
     for (const tag of tags) {
-      url += `&tags=${tag}`;
+      url += `&tags=${encodeURIComponent(tag)}`;
     }
     return this.http.get<Question[]>(url);
   }
