@@ -408,6 +408,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				tag = Uri.UnescapeDataString(tag);
 				_questionManagerService.CreateTag(tag);
 				return Ok();
 			}
@@ -423,6 +424,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				oldTag = Uri.UnescapeDataString(oldTag);
+				newTag = Uri.UnescapeDataString(newTag);
 				_questionManagerService.UpdateTag(oldTag, newTag);
 				return Ok();
 			}
@@ -439,6 +442,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				tag = Uri.UnescapeDataString(tag);
 				_questionManagerService.DeleteTag(tag);
 				return Ok();
 			}
