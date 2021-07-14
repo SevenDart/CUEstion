@@ -17,8 +17,8 @@ import {Router} from '@angular/router';
 })
 export class CreateQuestionComponent {
   questionForm: FormGroup = new FormGroup({
-    header: new FormControl('', [Validators.required, Validators.minLength(15), Validators.maxLength(50)]),
-    description: new FormControl('', [Validators.required, Validators.minLength(30), Validators.maxLength(500)])
+    header: new FormControl('', [Validators.required, Validators.minLength(15), Validators.maxLength(100)]),
+    description: new FormControl('', [Validators.required, Validators.minLength(30), Validators.maxLength(3000)])
   });
 
   selectedTags: string[] = [];
