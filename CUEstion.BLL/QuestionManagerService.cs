@@ -89,7 +89,7 @@ namespace CUEstion.BLL
 					var regex = new Regex(@"\b" + s + @"\b", RegexOptions.IgnoreCase);
 					return regex.IsMatch(q.Header) || regex.IsMatch(q.Text);
 				})
-			).ToList();
+			).OrderByDescending(q => q.Rate).ToList();
 
 
 			var questionsList = new List<QuestionDTO>();
