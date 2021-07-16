@@ -1,4 +1,4 @@
-<ng-container *ngIf="user; else authWindow">
+<ng-container *ngIf="isAuthed && user; else authWindow">
   <button mat-button [matMenuTriggerFor]="menu" class="username" (menuOpened)="refreshUser()">
     <i class="fas fa-star user-icon admin" *ngIf="isAdmin"></i>
     <i class="fas fa-user-tie user-icon"></i>

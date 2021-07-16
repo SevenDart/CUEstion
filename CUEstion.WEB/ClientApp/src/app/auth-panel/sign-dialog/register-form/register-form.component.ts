@@ -58,6 +58,7 @@ export class RegisterFormComponent {
           localStorage.setItem('token', data.token);
           localStorage.setItem('role', data.role);
           localStorage.setItem('userId', data.id);
+          localStorage.setItem('expiration-time', data.expirationTime);
           this.closeRequest.emit();
         }
       });

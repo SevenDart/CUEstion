@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {SignDialogComponent} from './sign-dialog/sign-dialog.component';
 import {UsersService} from '../services/users.service';
 import {TagEditorComponent} from '../tag-editor/tag-editor.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'auth-panel',
@@ -14,8 +15,31 @@ import {TagEditorComponent} from '../tag-editor/tag-editor.component';
 export class AuthPanelComponent {
   user: User;
 
-  constructor(public dialog: MatDialog, private userService: UsersService) {
+  constructor(public dialog: MatDialog, private userService: UsersService, private snackBar: MatSnackBar) {
     this.checkId();
+  }
+
+  get isAuthed() {
+    const isExpired = UsersService.isExpired;
+    if (localStorage.getItem('userId') !== null) {
+      if (isExpired) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('expiration-time');
+        this.snackBar.open('Your authentication token expired, please, re-login to continue.', 'close', {
+          panelClass: ['mat-toolbar', 'mat-warn']
+        })._dismissAfter(3000);
+        this.dialog.open(SignDialogComponent, {
+          width: '500px'
+        }).afterClosed().subscribe(() => {
+          this.checkId();
+        });
+      }
+      return !isExpired;
+    } else {
+      return false;
+    }
   }
 
   get isAdmin() {
