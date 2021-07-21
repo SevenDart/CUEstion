@@ -413,4 +413,35 @@ export class QuestionPageComponent implements OnInit {
     });
   }
 
+  subscribeToQuestion() {
+    this.questionService.SubscribeToQuestion(this.question.id)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 500) {
+            const bar = this.snackBar.open('You have already subscribed to this question.', 'Close', {
+              panelClass: ['mat-toolbar', 'mat-warn'],
+            });
+            bar._dismissAfter(3 * 1000);
+            return of([]);
+          }
+          if (error.status === 0) {
+            this.snackBar.open('Something is wrong, try, please, later.', '', {
+              panelClass: ['mat-toolbar', 'mat-warn']
+            });
+            return throwError(() => {
+              return new Error('something is wrong');
+            });
+          }
+        })
+      ).subscribe( (data) => {
+        if (data === null) {
+          const bar = this.snackBar.open('You have subscribed to this question.', 'Close', {
+            panelClass: ['mat-toolbar', 'mat-primary'],
+          });
+          bar._dismissAfter(3 * 1000);
+        }
+      }
+    );
+  }
+
 }

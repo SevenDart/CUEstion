@@ -270,4 +270,14 @@ export class QuestionsService {
     tag = encodeURIComponent(tag);
     return this.http.delete(this._serverAddress + `/questions/tags?tag=${tag}`, options);
   }
+
+  SubscribeToQuestion(questionId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.get(this._serverAddress + `/questions/${questionId}/subscribe`, options);
+  }
 }

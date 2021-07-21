@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {User} from '../Models/User';
+import {Question} from '../Models/Question';
 
 @Injectable()
 export class UsersService {
@@ -37,5 +38,19 @@ export class UsersService {
       password: password
     };
     return this.http.post(this._serverAddress + '/users/register', authData);
+  }
+
+  getCreatedQuestions(userId: number) {
+    return this.http.get<Question[]>(this._serverAddress + `/users/${userId}/questions`);
+  }
+
+  getSubscribedQuestions() {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.get<Question[]>(this._serverAddress + `/users/subscribed`, options);
   }
 }

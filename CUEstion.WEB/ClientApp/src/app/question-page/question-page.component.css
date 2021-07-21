@@ -204,3 +204,7 @@
 .delete-icon:hover {
   color: red;
 }
+
+.subscribe-icon:hover {
+  color: green;
+}

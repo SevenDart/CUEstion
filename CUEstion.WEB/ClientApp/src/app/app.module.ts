@@ -22,6 +22,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {AppComponent } from './app.component';
+import {AuthorizationGuard} from './guards/authorization.guard';
 import {NavigationBarComponent} from './navigation-bar/navigation-bar.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {SearchFieldComponent} from './search-field/search-field.component';
@@ -34,11 +35,12 @@ import {LogInComponent} from './auth-panel/sign-dialog/log-in/log-in.component';
 import {SnackBarContentComponent} from './auth-panel/sign-dialog/snack-bar-content/snack-bar-content.component';
 import {RegisterFormComponent} from './auth-panel/sign-dialog/register-form/register-form.component';
 import {CreateQuestionComponent} from './create-question/create-question.component';
-import {AuthorizationGuard} from './guards/authorization.guard';
 import {UpdateQuestionComponent} from './update-question/update-question.component';
 import {TagSelectComponent} from './tag-select/tag-select.component';
 import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 import {TagEditorComponent} from './tag-editor/tag-editor.component';
+import {UserPageComponent} from './user-page/user-page.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 const routes: Routes = [
@@ -47,7 +49,8 @@ const routes: Routes = [
   {path: 'question/:id', component: QuestionPageComponent},
   {path: 'question/:id/edit', component: UpdateQuestionComponent, canActivate: [AuthorizationGuard]},
   {path: '', redirectTo: 'home'},
-  {path: '/', redirectTo: 'home'}
+  {path: '/', redirectTo: 'home'},
+  {path: 'user/:id', component: UserPageComponent, canActivate: [AuthorizationGuard]}
 ];
 
 
@@ -68,7 +71,8 @@ const routes: Routes = [
     UpdateQuestionComponent,
     TagSelectComponent,
     ConfirmDialogComponent,
-    TagEditorComponent
+    TagEditorComponent,
+    UserPageComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +96,8 @@ const routes: Routes = [
     TextFieldModule,
     MatMenuModule,
     MatListModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatPaginatorModule
   ],
   providers: [AuthorizationGuard],
   exports: [RouterModule],
