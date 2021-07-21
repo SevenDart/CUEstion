@@ -17,7 +17,9 @@
           <input matInput
                  [formControl]="tagsForms[tag].editControl">
         </mat-form-field>
-        <button mat-raised-button class="edit-button" (click)="updateTag(tag, tagsForms[tag].editControl.value)" color="primary">UPDATE</button>
+        <div>
+          <button mat-raised-button class="edit-button" (click)="updateTag(tag, tagsForms[tag].editControl.value)" color="primary">UPDATE</button>
+        </div>
       </ng-template>
       <div class="icons">
         <i class="fas fa-times tag-icon delete-icon" (click)="deleteTag(tag)"></i>
@@ -31,7 +33,9 @@
                class="text"
                [formControl]="newTagControl">
       </mat-form-field>
-      <button mat-raised-button class="edit-button" (click)="createTag(newTagControl.value)" color="primary">CREATE</button>
+      <div>
+        <button mat-raised-button class="edit-button" (click)="createTag(newTagControl.value)" color="primary">CREATE</button>
+      </div>
     </div>
   </div>
 </div>

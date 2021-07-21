@@ -14,7 +14,7 @@ export class QuestionsService {
   SearchQuestions(query: string, tags: string[]) {
     let url = this._serverAddress + '/questions/search' + `?query=${query}`;
     for (const tag of tags) {
-      url += `&tags=${tag}`;
+      url += `&tags=${encodeURIComponent(tag)}`;
     }
     return this.http.get<Question[]>(url);
   }
@@ -244,7 +244,8 @@ export class QuestionsService {
       })
     };
 
-    return this.http.post(this._serverAddress + `/questions/tags?tag=${tag}`, null, options);
+    tag = encodeURIComponent(tag);
+    return this.http.post(encodeURI(this._serverAddress + `/questions/tags?tag=${tag}`), null, options);
   }
 
   UpdateTag(oldTag: string, newTag: string) {
@@ -254,6 +255,8 @@ export class QuestionsService {
       })
     };
 
+    oldTag = encodeURIComponent(oldTag);
+    newTag = encodeURIComponent(newTag);
     return this.http.put(this._serverAddress + `/questions/tags?oldTag=${oldTag}&newTag=${newTag}`, null, options);
   }
 
@@ -264,6 +267,7 @@ export class QuestionsService {
       })
     };
 
+    tag = encodeURIComponent(tag);
     return this.http.delete(this._serverAddress + `/questions/tags?tag=${tag}`, options);
   }
 }

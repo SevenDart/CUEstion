@@ -9,7 +9,7 @@ namespace CUEstion.DAL.Entities
 		public int Id { get; set; }
 
 		[Required]
-		[MaxLength(500)]
+		[MaxLength(2000)]
 		public string Text { get; set; }
 
 		public int Rate { get; set; }

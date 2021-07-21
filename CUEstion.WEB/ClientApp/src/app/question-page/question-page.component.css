@@ -79,6 +79,7 @@
 .question__tag {
   font-size: 12px;
   min-height: 28px;
+  cursor: pointer;
 }
 
 .answer {
@@ -157,15 +158,18 @@
 .new-comment-button {
   display: inline;
   position: relative;
-  top: -4px;
+  top: 6px;
   margin-left: 5px;
-  padding: 4px;
+  padding: 6px;
 }
 
 .comment-form {
-  width: 91%;
-  display: inline-block;
   font-size: 14px;
+  width: 100%;
+}
+
+.comment-container {
+  display: flex;
 }
 
 .comment-text {

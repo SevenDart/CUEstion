@@ -19,7 +19,7 @@
           class="text description">
         </textarea>
         <mat-error *ngIf="!questionForm.get('description').valid && questionForm.get('description').touched">
-          Description can't be longer than 500 symbols.
+          Description can't be longer than 3000 symbols.
         </mat-error>
       </mat-form-field>
       <tag-select [selectedTags]="selectedTags"></tag-select>

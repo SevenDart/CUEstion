@@ -67,6 +67,10 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				for (int i = 0; i < tags.Length; i++)
+				{
+					tags[i] = Uri.UnescapeDataString(tags[i]);
+				}
 				var list = _questionManagerService.FilterQuestions(tags);
 				return Ok(list);
 			}
@@ -82,6 +86,10 @@ namespace CUEstion.WEB.Controllers
 			try
 			{
 				if (query == null) query = "";
+				for (int i = 0; i < tags.Length; i++)
+				{
+					tags[i] = Uri.UnescapeDataString(tags[i]);
+				}
 				var list = _questionManagerService.Search(query, tags);
 				return Ok(list);
 			}
@@ -408,6 +416,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				tag = Uri.UnescapeDataString(tag);
 				_questionManagerService.CreateTag(tag);
 				return Ok();
 			}
@@ -423,6 +432,8 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				oldTag = Uri.UnescapeDataString(oldTag);
+				newTag = Uri.UnescapeDataString(newTag);
 				_questionManagerService.UpdateTag(oldTag, newTag);
 				return Ok();
 			}
@@ -439,6 +450,7 @@ namespace CUEstion.WEB.Controllers
 		{
 			try
 			{
+				tag = Uri.UnescapeDataString(tag);
 				_questionManagerService.DeleteTag(tag);
 				return Ok();
 			}

@@ -1,12 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../Models/User';
-import {Observable} from 'rxjs';
 
 @Injectable()
 export class UsersService {
 
   constructor(private http: HttpClient) {
+  }
+
+  public static get isExpired() {
+    return Date.parse(localStorage.getItem('expiration-time')) < Date.now();
   }
 
   public static get IsAdmin() {

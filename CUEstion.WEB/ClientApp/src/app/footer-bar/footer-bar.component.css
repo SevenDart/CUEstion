@@ -6,7 +6,7 @@
 }
 
 .container-column {
-  padding: 1% 10% 0;
+  padding: 1% 10%;
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -14,12 +14,19 @@
 }
 
 .column__header {
+  position: relative;
   font-size: 18px;
 }
 
-.column__divider {
-  width: 20%;
+.column__header::after {
+  content: "";
+  display: block;
   height: 1px;
+  width: 200%;
+  position: absolute;
+  background-color: black;
+  left: -50%;
+  top: 35px;
 }
 
 .column__text {

@@ -48,7 +48,7 @@ export class QuestionPageComponent implements OnInit {
   commentForms = [];
 
   answerControl: FormControl = new FormControl('',
-    [Validators.required, Validators.minLength(15), Validators.maxLength(500)]);
+    [Validators.required, Validators.minLength(15), Validators.maxLength(2000)]);
   commentControl: FormControl = new FormControl('',
     [Validators.required, Validators.minLength(10), Validators.maxLength(200)]);
 
