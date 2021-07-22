@@ -18,14 +18,33 @@
     <p class="username">{{question.user.username}}</p>
     <p class="date">created at {{question.createTime | date}}</p>
     <p class="date" *ngIf="question.updateTime">updated at {{question.updateTime | date}}</p>
+    <ng-container *ngIf="isAuthed">
+      <i class="fas fa-folder-plus edit-icon subscribe-icon"
+       *ngIf="!isSubscribed; else removeSubscribe"
+       (click)="subscribeToQuestion()"
+       matTooltip="Press to subscribe."
+       matTooltipPosition="below"></i>
+      <ng-template #removeSubscribe>
+        <i class="fas fa-folder-minus edit-icon subscribe-icon"
+           (click)="unsubscribeFromQuestion()"
+           matTooltip="Press to unsubscribe."
+           matTooltipPosition="below"></i>
+      </ng-template>
+    </ng-container>
     <a routerLink="/question/{{question.id}}/edit"
        *ngIf="isOwner || isAdmin"
        class="fas fa-pen edit-icon"
-       matTooltip="Press here if you want to update this question."
+       matTooltip="Press to update this question."
        matTooltipPosition="below"></a>
     <p class="text">{{question.text}}</p>
     <mat-chip-list>
-      <mat-chip class="question__tag" *ngFor="let tag of question.tags" selected [color]="'primary'" [routerLink]="['/home']" [queryParams]="{tags: tag}">
+      <mat-chip class="question__tag"
+                selected
+                *ngFor="let tag of question.tags"
+                [color]="'primary'"
+                matTooltip="Press to search or subscribe."
+                matTooltipPosition="below"
+                [routerLink]="['/home']" [queryParams]="{tags: tag}">
         {{tag}}
       </mat-chip>
     </mat-chip-list>
@@ -56,12 +75,12 @@
              class="fas fa-pen edit-icon"
              [class.active]="commentForms[comment.id].isEditing"
              (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"
-             matTooltip="Press here if you want to update this comment."
+             matTooltip="Press to update this comment."
              matTooltipPosition="below"></i>
           <a *ngIf="commentForms[comment.id].isEditing"
              class="fas fa-times edit-icon delete-icon"
              (click)="deleteComment(question.id, null, comment.id)"
-             matTooltip="Press cross if you want to delete this comment."
+             matTooltip="Press to delete this comment."
              matTooltipPosition="below"></a>
 
           <div class="comment-container" *ngIf="commentForms[comment.id].isEditing">
@@ -121,12 +140,12 @@
          class="fas fa-pen edit-icon"
          [class.active]="answersForms[answer.id].isEditing"
          (click)="answersForms[answer.id].isEditing = !answersForms[answer.id].isEditing"
-         matTooltip="Press here if you want to update this answer."
+         matTooltip="Press to update this answer."
          matTooltipPosition="below"></i>
       <a *ngIf="answersForms[answer.id].isEditing"
          class="fas fa-times edit-icon delete-icon"
          (click)="deleteAnswer(answer.id)"
-         matTooltip="Press cross if you want to delete this answer."
+         matTooltip="Press to delete this answer."
          matTooltipPosition="below"></a>
       <ng-container *ngIf="answersForms[answer.id].isEditing">
         <mat-form-field appearance="outline" class="text new-answer-field">
@@ -167,11 +186,11 @@
                class="fas fa-pen edit-icon"
                [class.active]="commentForms[comment.id].isEditing"
                (click)="commentForms[comment.id].isEditing = !commentForms[comment.id].isEditing"
-               matTooltip="Press here if you want to update this comment."
+               matTooltip="Press to update this comment."
                matTooltipPosition="below"></i>
             <a *ngIf="commentForms[comment.id].isEditing" class="fas fa-times edit-icon delete-icon"
                (click)="deleteComment(null, answer.id, comment.id)"
-               matTooltip="Press cross if you want to delete this comment."
+               matTooltip="Press to delete this comment."
                matTooltipPosition="below"></a>
 
             <div class="comment-container" *ngIf="commentForms[comment.id].isEditing">

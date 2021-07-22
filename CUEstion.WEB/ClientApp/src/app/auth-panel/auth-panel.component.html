@@ -12,6 +12,7 @@
             [class.negative]="user.rate < 0">{{user.rate}}
       </span>
     </span>
+    <button mat-menu-item class="profile" routerLink="/user/{{user.id}}">Your profile</button>
     <button mat-menu-item *ngIf="isAdmin" (click)="openTagsWindow()">Tags</button>
     <button mat-menu-item class="logout" (click)="logout()">Log out</button>
   </mat-menu>

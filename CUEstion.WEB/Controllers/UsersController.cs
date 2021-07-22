@@ -3,7 +3,7 @@ using CUEstion.BLL.ModelsDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-
+using System.Security.Claims;
 
 namespace CUEstion.WEB.Controllers
 {
@@ -64,7 +64,8 @@ namespace CUEstion.WEB.Controllers
 				return Ok(new {
 					token = Tools.CreateToken(authDto.Email, authDto.Id, authDto.Role),
 					role = authDto.Role,
-					id = authDto.Id
+					id = authDto.Id,
+					expirationTime = DateTime.Now.AddHours(AuthOptions.LIFETIME)
 				});
 			}
 			catch (Exception e)
@@ -83,7 +84,8 @@ namespace CUEstion.WEB.Controllers
 				return Ok(new {
 					token = Tools.CreateToken(authDto.Email, authDto.Id, authDto.Role),
 					role = authDto.Role,
-					id = authDto.Id
+					id = authDto.Id,
+					expirationTime = DateTime.Now.AddHours(AuthOptions.LIFETIME)
 				});	
 			}
 			catch (Exception e)
@@ -138,6 +140,22 @@ namespace CUEstion.WEB.Controllers
 			catch (Exception e)
 			{
 				
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpGet("subscribed")]
+		[Authorize]
+		public IActionResult GetFollowedQuestions()
+		{
+			try
+			{
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				var list = _userManagerService.GetFollowedQuestions(userId);
+				return Ok(list);
+			}
+			catch (Exception e)
+			{
 				return StatusCode(500, new { Message = "Server ERROR occured." });
 			}
 		}

@@ -178,6 +178,37 @@ namespace CUEstion.WEB.Controllers
 			}
 		}
 
+		[HttpGet("{questionId}/unsubscribe")]
+		[Authorize]
+		public IActionResult UnsubscribeFromQuestion(int questionId)
+		{
+			try
+			{
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				_questionManagerService.UnsubscribeFromQuestion(questionId, userId);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
+		[HttpGet("{questionId}/is-subscribed")]
+		[Authorize]
+		public IActionResult IsSubscribedToQuestion(int questionId)
+		{
+			try
+			{
+				int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
+				return Ok(_questionManagerService.IsSubscribedToQuestion(questionId, userId));
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500, new { Message = "Server ERROR occured." });
+			}
+		}
+
 		[HttpGet("{questionId}/answers")]
 		public IActionResult GetAnswers(int questionId)
 		{

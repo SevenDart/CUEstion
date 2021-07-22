@@ -6,14 +6,13 @@
 </div>
 
 <div class="popular-questions">
-  <h1 class="popular-questions__header">Hot questions</h1>
+  <h1 class="popular-questions__header">Popular questions</h1>
   <table mat-table [dataSource]="popularQuestions | async" class="mat-elevation-z8 popular-questions-table">
     <ng-container matColumnDef="rate">
       <td mat-cell *matCellDef="let question"><span class="badge rate"
                                                  [class.positive]="question.rate > 0"
                                                  [class.negative]="question.rate < 0">{{question.rate}}</span></td>
     </ng-container>
-
     <ng-container matColumnDef="header">
       <td mat-cell *matCellDef="let question">
         <a routerLink="/question/{{question.id}}" class="question__header">{{question.header}}</a>
@@ -24,12 +23,6 @@
         </mat-chip-list>
       </td>
     </ng-container>
-
-    <ng-container matColumnDef="tags">
-      <td mat-cell *matCellDef="let question">
-      </td>
-    </ng-container>
-
     <ng-container matColumnDef="last-update">
       <td mat-cell *matCellDef="let question">
         {{question.updateTime ? 'updated' : 'created'}} at {{(question.updateTime ? question.updateTime : question.createTime) | date}}.

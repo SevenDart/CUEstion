@@ -1,0 +1,103 @@
+.page-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  padding: 20px;
+  background-color: white;
+  box-shadow: -1px 1px 20px grey;
+  margin-top: 30px;
+}
+
+.username {
+  font-size: 50px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.email {
+  font-size: 24px;
+  font-weight: lighter;
+}
+
+.tag-header {
+  font-size: 24px;
+  font-weight: bold;
+  clear: left;
+}
+
+.user-icon {
+  float: left;
+  font-size: 100px;
+  padding: 5px;
+  border-radius: 3%;
+  background-color: #6A1B9A;
+  color: white;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.loader {
+  margin: 0 auto;
+}
+
+.question-tabs {
+  clear: both;
+  margin: 0 auto;
+}
+
+.rate {
+  background-color: gray;
+  font-size: 24px;
+  margin-left: 10px;
+  vertical-align: top;
+}
+
+.user-container .rate {
+  padding: 6px 12px;
+}
+
+.mat-row {
+  height: 60px;
+}
+
+.questions-table .rate {
+  font-size: 14px;
+  margin-right: 15px;
+  margin-left: -5px;
+}
+
+.question__header {
+  text-decoration: none;
+  color: black;
+  font-size: 18px;
+  line-height: normal;
+  display: block;
+  margin-bottom: 5px;
+  word-break: break-all;
+}
+
+.negative {
+  background-color: red;
+}
+
+.positive {
+  background-color: green;
+}
+
+.questions-table {
+  margin: 20px auto;
+  width: 90%;
+}
+
+.mat-column-header {
+  padding: 8px 0px;
+}
+
+.mat-column-last-update {
+  text-align: right;
+}
+
+.tag {
+  font-size: 12px;
+  min-height: 24px;
+}

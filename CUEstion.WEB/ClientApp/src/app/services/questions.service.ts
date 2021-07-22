@@ -270,4 +270,34 @@ export class QuestionsService {
     tag = encodeURIComponent(tag);
     return this.http.delete(this._serverAddress + `/questions/tags?tag=${tag}`, options);
   }
+
+  SubscribeToQuestion(questionId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.get(this._serverAddress + `/questions/${questionId}/subscribe`, options);
+  }
+
+  UnsubscribeToQuestion(questionId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.get(this._serverAddress + `/questions/${questionId}/unsubscribe`, options);
+  }
+
+  IsSubscribedToQuestion(questionId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+
+    return this.http.get<boolean>(this._serverAddress + `/questions/${questionId}/is-subscribed`, options);
+  }
 }
