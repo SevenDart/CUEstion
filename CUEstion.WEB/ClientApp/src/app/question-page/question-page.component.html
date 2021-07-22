@@ -18,11 +18,19 @@
     <p class="username">{{question.user.username}}</p>
     <p class="date">created at {{question.createTime | date}}</p>
     <p class="date" *ngIf="question.updateTime">updated at {{question.updateTime | date}}</p>
-    <i class="fas fa-folder-plus edit-icon subscribe-icon"
-       *ngIf="isAuthed"
+    <ng-container *ngIf="isAuthed">
+      <i class="fas fa-folder-plus edit-icon subscribe-icon"
+       *ngIf="!isSubscribed; else removeSubscribe"
        (click)="subscribeToQuestion()"
        matTooltip="Press to subscribe."
        matTooltipPosition="below"></i>
+      <ng-template #removeSubscribe>
+        <i class="fas fa-folder-minus edit-icon subscribe-icon"
+           (click)="unsubscribeFromQuestion()"
+           matTooltip="Press to unsubscribe."
+           matTooltipPosition="below"></i>
+      </ng-template>
+    </ng-container>
     <a routerLink="/question/{{question.id}}/edit"
        *ngIf="isOwner || isAdmin"
        class="fas fa-pen edit-icon"
@@ -30,7 +38,13 @@
        matTooltipPosition="below"></a>
     <p class="text">{{question.text}}</p>
     <mat-chip-list>
-      <mat-chip class="question__tag" *ngFor="let tag of question.tags" selected [color]="'primary'" [routerLink]="['/home']" [queryParams]="{tags: tag}">
+      <mat-chip class="question__tag"
+                selected
+                *ngFor="let tag of question.tags"
+                [color]="'primary'"
+                matTooltip="Press to search or subscribe."
+                matTooltipPosition="below"
+                [routerLink]="['/home']" [queryParams]="{tags: tag}">
         {{tag}}
       </mat-chip>
     </mat-chip-list>

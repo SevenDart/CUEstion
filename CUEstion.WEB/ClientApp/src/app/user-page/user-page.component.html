@@ -7,12 +7,6 @@
          [class.negative]="user.rate < 0">{{user.rate}}</span>
     <h2 class="email">{{user.email}}</h2>
   </div>
-  <ng-container *ngIf="subscribedTags && subscribedTags.length > 0">
-    <h3 class="tag-header">Your subscribed tags:</h3>
-    <mat-chip-list>
-      <mat-chip color="primary" *ngFor="let tag of subscribedTags">{{tag}}</mat-chip>
-    </mat-chip-list>
-  </ng-container>
   <mat-tab-group class="question-tabs" dynamicHeight selectedIndex="1">
     <mat-tab label="Created questions" *ngIf="createdQuestionsDataSource" [disabled]="createdQuestionsDataSource.data.length === 0" tabindex="1">
       <table mat-table [dataSource]="createdQuestionsDataSource" class="mat-elevation-z8 questions-table">

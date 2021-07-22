@@ -25,7 +25,6 @@ namespace CUEstion.WEB
 			{
 				configuration.RootPath = "ClientApp/dist";
 			});
-			//TODO fix authentication options
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 			{
 				options.RequireHttpsMetadata = true;

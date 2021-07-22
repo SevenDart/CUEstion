@@ -39,6 +39,7 @@ export class QuestionPageComponent implements OnInit {
     return UsersService.userId === this.question.user.id;
   }
   questionVotingExpanded = false;
+  isSubscribed: boolean;
   question: Question;
 
   questionComments: Observable<AppComment[]>;
@@ -290,6 +291,9 @@ export class QuestionPageComponent implements OnInit {
       const questionObs = this.questionService.GetQuestion(id);
       questionObs.subscribe((question: Question) => {
         this.question = question;
+        this.questionService.IsSubscribedToQuestion(id).subscribe((isSubscribed: boolean) => {
+          this.isSubscribed = isSubscribed;
+        });
         this.updateAnswers();
       });
       this.updateQuestionComments(id);
@@ -435,6 +439,7 @@ export class QuestionPageComponent implements OnInit {
         })
       ).subscribe( (data) => {
         if (data === null) {
+          this.isSubscribed = true;
           const bar = this.snackBar.open('You have subscribed to this question.', 'Close', {
             panelClass: ['mat-toolbar', 'mat-primary'],
           });
@@ -444,4 +449,35 @@ export class QuestionPageComponent implements OnInit {
     );
   }
 
+  unsubscribeFromQuestion() {
+    this.questionService.UnsubscribeToQuestion(this.question.id)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 500) {
+            const bar = this.snackBar.open('You have already unsubscribed from this question.', 'Close', {
+              panelClass: ['mat-toolbar', 'mat-warn'],
+            });
+            bar._dismissAfter(3 * 1000);
+            return of([]);
+          }
+          if (error.status === 0) {
+            this.snackBar.open('Something is wrong, try, please, later.', '', {
+              panelClass: ['mat-toolbar', 'mat-warn']
+            });
+            return throwError(() => {
+              return new Error('something is wrong');
+            });
+          }
+        })
+      ).subscribe( (data) => {
+        if (data === null) {
+          const bar = this.snackBar.open('You have unsubscribed from this question.', 'Close', {
+            panelClass: ['mat-toolbar', 'mat-primary'],
+          });
+          this.isSubscribed = false;
+          bar._dismissAfter(3 * 1000);
+        }
+      }
+    );
+  }
 }

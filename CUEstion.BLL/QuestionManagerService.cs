@@ -502,5 +502,27 @@ namespace CUEstion.BLL
 
 			context.SaveChanges();
 		}
+
+		public bool IsSubscribedToQuestion(int questionId, int userId)
+		{
+			using var context = new ApplicationContext();
+
+			return context.FollowedQuestions.Contains(new FollowedQuestion() { QuestionId = questionId, UserId = userId });
+		}
+
+		public void UnsubscribeFromQuestion(int questionId, int userId)
+		{
+			using var context = new ApplicationContext();
+
+			var followedQuestion = new FollowedQuestion()
+			{
+				UserId = userId,
+				QuestionId = questionId
+			};
+
+			context.FollowedQuestions.Remove(followedQuestion);
+
+			context.SaveChanges();
+		}
 	}
 }

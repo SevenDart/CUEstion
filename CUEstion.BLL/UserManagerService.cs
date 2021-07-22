@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CUEstion.DAL.EF;
 using CUEstion.BLL.ModelsDTO;
 using CUEstion.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CUEstion.BLL
 {
@@ -136,7 +137,22 @@ namespace CUEstion.BLL
 		{
 			using var context = new ApplicationContext();
 
-			var questions = context.Questions.Where(q => q.UserId == userId);
+			var questions = context.Questions.Include(q => q.Tags).Where(q => q.UserId == userId);
+			var list = new List<QuestionDTO>();
+			foreach (var question in questions)
+			{
+				list.Add(new QuestionDTO(question));
+			}
+
+			return list;
+		}
+
+		public IEnumerable<QuestionDTO> GetFollowedQuestions(int userId)
+		{
+			using var context = new ApplicationContext();
+
+			var questions = context.FollowedQuestions.Include(fq => fq.Question).ThenInclude(q => q.Tags).Where(fq => fq.UserId == userId).Select(fq => fq.Question);
+
 			var list = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{

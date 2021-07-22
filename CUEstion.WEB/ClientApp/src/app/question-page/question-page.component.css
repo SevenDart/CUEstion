@@ -208,3 +208,30 @@
 .subscribe-icon:hover {
   color: green;
 }
+
+.tag-icons {
+  width: 0%;
+  overflow: hidden;
+  transition: width 0.5s, margin-left 0.5s;
+}
+
+.tag-icons.expanded {
+  width: 40px;
+  margin-left: 2px;
+}
+
+.tag-icon {
+  cursor: pointer;
+  margin: 0 2px;
+  line-height: normal;
+  font-size: 16px;
+  display: inline;
+}
+
+.tag-icon.subscribe-icon:hover {
+  color: lightgreen;
+}
+
+.tag-icon.search-icon:hover {
+  color: lightgray;
+}

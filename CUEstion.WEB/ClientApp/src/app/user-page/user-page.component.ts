@@ -17,7 +17,6 @@ import {MatPaginator} from '@angular/material/paginator';
 export class UserPageComponent {
   user: User;
 
-  subscribedTags: string[];
   displayedColumns = ['rate', 'header', 'last-update'];
 
   createdQuestionsDataSource: MatTableDataSource<Question> = new MatTableDataSource<Question>([]);
@@ -39,7 +38,6 @@ export class UserPageComponent {
         this.subscribedQuestionsDataSource = new MatTableDataSource<Question>(questions);
         this.subscribedQuestionsDataSource.paginator = this.subscribedPaginator;
       });
-      this.subscribedTags = [];
     });
   }
 }
