@@ -1,6 +1,6 @@
 .main-content {
   padding-top: 54px;
-  min-height: 80%;
+  min-height: 100%;
   padding-bottom: 30px;
   background: url("src/app/resources/background-2.png") repeat;
 }
