@@ -18,8 +18,12 @@ code {
 .edit-form .mat-form-field-wrapper {
   padding: 0;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .tag-add-warning {
   background: red;
