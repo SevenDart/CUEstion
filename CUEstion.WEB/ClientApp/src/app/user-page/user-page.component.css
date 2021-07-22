@@ -56,8 +56,14 @@
   padding: 6px 12px;
 }
 
+.mat-row {
+  height: 60px;
+}
+
 .questions-table .rate {
   font-size: 14px;
+  margin-right: 15px;
+  margin-left: -5px;
 }
 
 .question__header {
@@ -67,6 +73,7 @@
   line-height: normal;
   display: block;
   margin-bottom: 5px;
+  word-break: break-all;
 }
 
 .negative {

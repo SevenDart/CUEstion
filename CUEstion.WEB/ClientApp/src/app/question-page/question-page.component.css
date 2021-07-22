@@ -13,6 +13,7 @@
   font-weight: bold;
   line-height: normal;
   margin-bottom: 10px;
+  word-break: break-all;
 }
 
 .username {
@@ -29,6 +30,7 @@
   line-height: normal;
   width: 95%;
   margin-top: 10px;
+  word-break: break-all;
 }
 
 .rate {

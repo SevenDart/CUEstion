@@ -78,6 +78,7 @@ export class AuthPanelComponent {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('role');
+    localStorage.removeItem('expiration-time');
     UsersService.userId = null;
   }
 
