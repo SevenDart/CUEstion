@@ -1,7 +1,11 @@
+using CUEstion.BLL;
+using CUEstion.BLL.Interfaces;
+using CUEstion.DAL.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +24,14 @@ namespace CUEstion.WEB
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddDbContext<ApplicationContext>(
+				options =>
+					options.UseSqlServer(@"Server=localhost;Database=CUEstionDB;Trusted_Connection=True;")
+					);
+			
+			services.AddScoped<IQuestionManagerService, QuestionManagerService>();
+			services.AddScoped<IUserManagerService, UserManagerService>();
+			
 			services.AddControllersWithViews();
 			services.AddSpaStaticFiles(configuration =>
 			{
