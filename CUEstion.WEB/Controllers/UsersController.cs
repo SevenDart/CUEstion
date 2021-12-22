@@ -1,9 +1,9 @@
-﻿using CUEstion.BLL;
-using CUEstion.BLL.ModelsDTO;
+﻿using CUEstion.BLL.ModelsDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
+using CUEstion.BLL.Interfaces;
 
 namespace CUEstion.WEB.Controllers
 {
@@ -12,11 +12,11 @@ namespace CUEstion.WEB.Controllers
 	public class UsersController : ControllerBase
 	{
 
-		private UserManagerService _userManagerService;
+		private readonly IUserManagerService _userManagerService;
 
-		public UsersController()
+		public UsersController(IUserManagerService userManagerService)
 		{
-			_userManagerService = new UserManagerService();
+			_userManagerService = userManagerService;
 		}
 
 		[HttpGet]

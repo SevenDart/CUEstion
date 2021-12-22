@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using CUEstion.BLL;
+using CUEstion.BLL.Interfaces;
 using CUEstion.BLL.ModelsDTO;
 
 namespace CUEstion.WEB.Controllers
@@ -13,11 +13,11 @@ namespace CUEstion.WEB.Controllers
 	public class QuestionsController : ControllerBase
 	{
 
-		private QuestionManagerService _questionManagerService;
+		private readonly IQuestionManagerService _questionManagerService;
 
-		public QuestionsController()
+		public QuestionsController(IQuestionManagerService questionManagerService)
 		{
-			_questionManagerService = new QuestionManagerService();
+			_questionManagerService = questionManagerService;
 		}
 
 		[HttpGet]

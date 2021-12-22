@@ -17,14 +17,9 @@ namespace CUEstion.DAL.EF
 		public DbSet<AnswerMark> AnswerMarks { get; set; }
 		public DbSet<CommentMark> CommentMarks { get; set; }
 
-		public ApplicationContext() : base()
+		public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
 		{
 
-		}
-
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			optionsBuilder.UseSqlServer(@"Server=DESKTOP-KH4PKN3;Database=CUEstionDB;Trusted_Connection=True;");
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
