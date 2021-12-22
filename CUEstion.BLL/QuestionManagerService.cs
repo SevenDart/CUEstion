@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using CUEstion.BLL.Interfaces;
 using CUEstion.DAL.Entities;
 using CUEstion.DAL.EF;
 using CUEstion.BLL.ModelsDTO;
@@ -9,12 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CUEstion.BLL
 {
-	public class QuestionManagerService
+	public class QuestionManagerService: IQuestionManagerService
 	{
+		private readonly ApplicationContext _context;
+
+		public QuestionManagerService(ApplicationContext context)
+		{
+			_context = context;
+		}
+
 		public IEnumerable<QuestionDTO> GetAllQuestions()
 		{
-			using var context = new ApplicationContext();
-			var questions = context.Questions.Include(q => q.Tags).ToList();
+			var questions = _context.Questions.Include(q => q.Tags).ToList();
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{
@@ -25,15 +32,13 @@ namespace CUEstion.BLL
 
 		public IEnumerable<String> GetAllTags()
 		{
-			using var context = new ApplicationContext();
-			var tags = context.Tags.Select(t => t.Name).ToList();
+			var tags = _context.Tags.Select(t => t.Name).ToList();
 			return tags;
 		}
 
 		public IEnumerable<QuestionDTO> GetNewestQuestions(int count)
 		{
-			using var context = new ApplicationContext();
-			var questions = context.Questions.Include(q => q.Tags)
+			var questions = _context.Questions.Include(q => q.Tags)
 				.OrderByDescending(q => q.CreateTime)
 				.ThenByDescending(q => q.UpdateTime)
 				.ThenByDescending(q => q.Rate)
@@ -48,9 +53,8 @@ namespace CUEstion.BLL
 
 		public QuestionDTO GetQuestion(int questionId)
 		{
-			using var context = new ApplicationContext();
-			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q => q.Id == questionId);
-			question.User = context.Users.Find(question.UserId);
+			var question = _context.Questions.Include(q => q.Tags).FirstOrDefault(q => q.Id == questionId);
+			question.User = _context.Users.Find(question.UserId);
 			return question != null 
 				? new QuestionDTO(question) 
 				: null;
@@ -58,8 +62,6 @@ namespace CUEstion.BLL
 
 		public IEnumerable<QuestionDTO> Search(string query, string[] tags)
 		{
-			using var context = new ApplicationContext();
-
 			var words = query.Split(' ', '.', ',', ':', '?', '!');
 			var subseqs = new List<string>();
 
@@ -81,7 +83,7 @@ namespace CUEstion.BLL
 				}
 			}
 
-			var questions = context.Questions.Include(q => q.Tags).ToList()
+			var questions = _context.Questions.Include(q => q.Tags).ToList()
 				.Where(q => tags.All(t => q.Tags.Any(qTag => qTag.Name.ToLower() == t.ToLower()))).ToList();
 
 			questions = questions.Where(q =>
@@ -103,9 +105,7 @@ namespace CUEstion.BLL
 
 		public IEnumerable<QuestionDTO> FilterQuestions(string[] tags)
 		{
-			using var context = new ApplicationContext();
-
-			var questions = context.Questions.Include(q => q.Tags).ToList()
+			var questions = _context.Questions.Include(q => q.Tags).ToList()
 				.Where(q => tags.All(t => q.Tags.Any(qTag => qTag.Name.ToLower() == t.ToLower())));
 
 			var questionsList = new List<QuestionDTO>();
@@ -118,8 +118,7 @@ namespace CUEstion.BLL
 
 		public IEnumerable<QuestionDTO> GetUsersQuestions(int userId)
 		{
-			using var context = new ApplicationContext();
-			var questions = context.Questions.Include(t => t.Tags).Where(q => q.UserId == userId);
+			var questions = _context.Questions.Include(t => t.Tags).Where(q => q.UserId == userId);
 			var questionsList = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{
@@ -130,8 +129,6 @@ namespace CUEstion.BLL
 
 		public void CreateQuestion(QuestionDTO questionDto)
 		{
-			using var context = new ApplicationContext();
-
 			var question = new Question()
 			{
 				Header = questionDto.Header,
@@ -143,7 +140,7 @@ namespace CUEstion.BLL
 			question.Tags = new List<Tag>();
 			foreach (var tag in questionDto.Tags)
 			{
-				var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+				var foundTag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 				if (foundTag != null)
 				{
 					question.Tags.Add(foundTag);
@@ -151,23 +148,21 @@ namespace CUEstion.BLL
 				else
 				{
 					var dbTag = new Tag() { Name = tag };
-					context.Tags.Add(dbTag);
+					_context.Tags.Add(dbTag);
 					question.Tags.Add(dbTag);
 				}
 			}
 
-			context.Questions.Add(question);
+			_context.Questions.Add(question);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 
-			questionDto.Id = context.Questions.Max(question => question.Id);
+			questionDto.Id = _context.Questions.Max(question => question.Id);
 		}
 
 		public void UpdateQuestion(QuestionDTO questionDto)
 		{
-			using var context = new ApplicationContext();
-
-			var question = context.Questions.Include(q => q.Tags).FirstOrDefault(q=> q.Id == questionDto.Id);
+			var question = _context.Questions.Include(q => q.Tags).FirstOrDefault(q=> q.Id == questionDto.Id);
 
 			if (questionDto.Text != null) question.Text = questionDto.Text;
 			if (questionDto.Header != null) question.Header = questionDto.Header;
@@ -179,7 +174,7 @@ namespace CUEstion.BLL
 
 			foreach (var tag in addTags)
 			{
-				var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+				var foundTag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 				if (foundTag != null)
 				{
 					question.Tags.Add(foundTag);
@@ -187,7 +182,7 @@ namespace CUEstion.BLL
 				else
 				{
 					var dbTag = new Tag() { Name = tag };
-					context.Tags.Add(dbTag);
+					_context.Tags.Add(dbTag);
 					question.Tags.Add(dbTag);
 				}
 			}
@@ -197,55 +192,49 @@ namespace CUEstion.BLL
 				question.Tags.Remove(tag);
 			}
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void DeleteQuestion(int questionId)
 		{
-			using var context = new ApplicationContext();
+			var question = _context.Questions.Find(questionId);
 
-			var question = context.Questions.Find(questionId);
-
-			var questionAnswers = context.Answers.Where(a => a.QuestionId == questionId).ToList();
+			var questionAnswers = _context.Answers.Where(a => a.QuestionId == questionId).ToList();
 			foreach (var answer in questionAnswers)
 			{
-				var answerComments = context.Comments.Where(c => c.AnswerId == answer.Id).ToList();
+				var answerComments = _context.Comments.Where(c => c.AnswerId == answer.Id).ToList();
 				foreach (var comment in answerComments)
-					context.Comments.Remove(comment);
-				context.Answers.Remove(answer);
+					_context.Comments.Remove(comment);
+				_context.Answers.Remove(answer);
 			}
 
-			var questionComments = context.Comments.Where(c => c.QuestionId == questionId);
+			var questionComments = _context.Comments.Where(c => c.QuestionId == questionId);
 			foreach (var comment in questionComments)
 			{
-				context.Comments.Remove(comment);
+				_context.Comments.Remove(comment);
 			}
 
-			context.Questions.Remove(question);
+			_context.Questions.Remove(question);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void SubscribeToQuestion(int questionId, int userId)
 		{
-			using var context = new ApplicationContext();
-
 			var followedQuestion = new FollowedQuestion()
 			{
 				UserId = userId,
 				QuestionId = questionId
 			};
 
-			context.FollowedQuestions.Add(followedQuestion);
+			_context.FollowedQuestions.Add(followedQuestion);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public IEnumerable<AnswerDTO> GetAnswers(int questionId)
 		{
-			using var context = new ApplicationContext();
-
-			var answers = context.Answers.Include(a => a.User).Where(a => a.QuestionId == questionId);
+			var answers = _context.Answers.Include(a => a.User).Where(a => a.QuestionId == questionId);
 
 			var answersList = new List<AnswerDTO>();
 			foreach (var answer in answers)
@@ -258,8 +247,6 @@ namespace CUEstion.BLL
 
 		public void CreateAnswer(AnswerDTO answerDto, int questionId)
 		{
-			using var context = new ApplicationContext();
-
 			var answer = new Answer()
 			{
 				Text = answerDto.Text,
@@ -268,47 +255,41 @@ namespace CUEstion.BLL
 				UserId = answerDto.User.Id
 			};
 
-			context.Answers.Add(answer);
+			_context.Answers.Add(answer);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void UpdateAnswer(AnswerDTO answerDto)
 		{
-			using var context = new ApplicationContext();
-
-			var answer = context.Answers.Find(answerDto.Id);
+			var answer = _context.Answers.Find(answerDto.Id);
 
 			if (answerDto.Text != null) answer.Text = answerDto.Text;
 
 			answer.UpdateTime = DateTime.Now;
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void DeleteAnswer(int answerId)
 		{
-			using var context = new ApplicationContext();
+			var answer = _context.Answers.Find(answerId);
 
-			var answer = context.Answers.Find(answerId);
-
-			var answerComments = context.Comments.Where(c => c.AnswerId == answerId).ToList();
+			var answerComments = _context.Comments.Where(c => c.AnswerId == answerId).ToList();
 			foreach (var comment in answerComments)
 			{
-				context.Comments.Remove(comment);
+				_context.Comments.Remove(comment);
 			}
 
-			context.Answers.Remove(answer);
+			_context.Answers.Remove(answer);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 
 		public IEnumerable<CommentDTO> GetComments(int? questionId, int? answerId)
 		{
-			using var context = new ApplicationContext();
-
-			var comments = context.Comments.Include(c => c.User).Where(c => c.QuestionId == questionId && c.AnswerId == answerId);
+			var comments = _context.Comments.Include(c => c.User).Where(c => c.QuestionId == questionId && c.AnswerId == answerId);
 
 			var commentsList = new List<CommentDTO>();
 
@@ -322,8 +303,6 @@ namespace CUEstion.BLL
 
 		public void CreateComment(CommentDTO commentDto, int? questionId, int? answerId)
 		{
-			using var context = new ApplicationContext();
-
 			var comment = new Comment()
 			{
 				Text = commentDto.Text,
@@ -333,40 +312,34 @@ namespace CUEstion.BLL
 				UserId = commentDto.User.Id
 			};
 
-			context.Comments.Add(comment);
+			_context.Comments.Add(comment);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void UpdateComment(CommentDTO commentDto)
 		{
-			using var context = new ApplicationContext();
-
-			var comment = context.Comments.Find(commentDto.Id);
+			var comment = _context.Comments.Find(commentDto.Id);
 
 			if (commentDto.Text != null) comment.Text = commentDto.Text;
 
 			comment.UpdateTime = DateTime.Now;
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void DeleteComment(int commentId)
 		{
-			using var context = new ApplicationContext();
+			var comment = _context.Comments.Find(commentId);
 
-			var comment = context.Comments.Find(commentId);
+			_context.Comments.Remove(comment);
 
-			context.Comments.Remove(comment);
-
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void MarkQuestion(int userId, int questionId, int mark)
 		{
-			using var context = new ApplicationContext();
-
-			var questionMark = context.QuestionMarks.Find(userId, questionId);
+			var questionMark = _context.QuestionMarks.Find(userId, questionId);
 
 			if (questionMark != null && questionMark.Mark == mark)
 			{
@@ -379,22 +352,21 @@ namespace CUEstion.BLL
 					QuestionId = questionId,
 					UserId = userId
 				};
-				context.QuestionMarks.Add(questionMark);
+				_context.QuestionMarks.Add(questionMark);
 			}
 
 			questionMark.Mark += mark;
-			var question = context.Questions.Find(questionId);
-			var user = context.Users.Find(question.UserId);
+			var question = _context.Questions.Find(questionId);
+			var user = _context.Users.Find(question.UserId);
 			question.Rate += mark;
 			user.Rate += mark;
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void MarkAnswer(int userId, int answerId, int mark)
 		{
-			using var context = new ApplicationContext();
-			var AnswerMark = context.AnswerMarks.Find(userId, answerId);
+			var AnswerMark = _context.AnswerMarks.Find(userId, answerId);
 
 			if (AnswerMark != null && AnswerMark.Mark == mark)
 			{
@@ -407,23 +379,21 @@ namespace CUEstion.BLL
 					AnswerId = answerId,
 					UserId = userId
 				};
-				context.AnswerMarks.Add(AnswerMark);
+				_context.AnswerMarks.Add(AnswerMark);
 			}
 
 			AnswerMark.Mark += mark;
-			var answer = context.Answers.Find(answerId);
-			var user = context.Users.Find(answer.UserId);
+			var answer = _context.Answers.Find(answerId);
+			var user = _context.Users.Find(answer.UserId);
 			answer.Rate += mark;
 			user.Rate += mark;
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public void MarkComment(int userId, int commentId, int mark)
 		{
-			using var context = new ApplicationContext();
-
-			var commentMark = context.CommentMarks.Find(userId, commentId);
+			var commentMark = _context.CommentMarks.Find(userId, commentId);
 
 			if (commentMark != null && commentMark.Mark == mark)
 			{
@@ -436,43 +406,39 @@ namespace CUEstion.BLL
 					CommentId = commentId,
 					UserId = userId
 				};
-				context.CommentMarks.Add(commentMark);
+				_context.CommentMarks.Add(commentMark);
 			}
 
 			commentMark.Mark += mark;
-			var comment = context.Comments.Find(commentId);
-			var user = context.Users.Find(comment.UserId);
+			var comment = _context.Comments.Find(commentId);
+			var user = _context.Users.Find(comment.UserId);
 			comment.Rate += mark;
 			user.Rate += mark;
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 
 		public void CreateTag(string tag)
 		{
-			using var context = new ApplicationContext();
-
-			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+			var foundTag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 			if (foundTag == null)
 			{
 				var dbTag = new Tag() { Name = tag };
-				context.Tags.Add(dbTag);
+				_context.Tags.Add(dbTag);
 			}
 			else
 			{
 				throw new Exception("Such tag already exists.");
 			}
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 
 		public void UpdateTag(string oldTag, string newTag)
 		{
-			using var context = new ApplicationContext();
-
-			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == oldTag.ToLower());
+			var foundTag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == oldTag.ToLower());
 			if (foundTag == null)
 			{
 				throw new Exception("There is no such tag.");
@@ -482,47 +448,41 @@ namespace CUEstion.BLL
 				foundTag.Name = newTag;
 			}
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 
 		public void DeleteTag(string tag)
 		{
-			using var context = new ApplicationContext();
-
-			var foundTag = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
+			var foundTag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.ToLower());
 			if (foundTag == null)
 			{
 				throw new Exception("There is no such tag.");
 			}
 			else
 			{
-				context.Tags.Remove(foundTag);
+				_context.Tags.Remove(foundTag);
 			}
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public bool IsSubscribedToQuestion(int questionId, int userId)
 		{
-			using var context = new ApplicationContext();
-
-			return context.FollowedQuestions.Contains(new FollowedQuestion() { QuestionId = questionId, UserId = userId });
+			return _context.FollowedQuestions.Contains(new FollowedQuestion() { QuestionId = questionId, UserId = userId });
 		}
 
 		public void UnsubscribeFromQuestion(int questionId, int userId)
 		{
-			using var context = new ApplicationContext();
-
 			var followedQuestion = new FollowedQuestion()
 			{
 				UserId = userId,
 				QuestionId = questionId
 			};
 
-			context.FollowedQuestions.Remove(followedQuestion);
+			_context.FollowedQuestions.Remove(followedQuestion);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 	}
 }
