@@ -24,6 +24,8 @@ namespace CUEstion.WEB
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddControllers();
+			
 			services.AddDbContext<ApplicationContext>(
 				options =>
 					options.UseSqlServer(@"Server=localhost;Database=CUEstionDB;Trusted_Connection=True;")
@@ -32,11 +34,6 @@ namespace CUEstion.WEB
 			services.AddScoped<IQuestionManagerService, QuestionManagerService>();
 			services.AddScoped<IUserManagerService, UserManagerService>();
 			
-			services.AddControllersWithViews();
-			services.AddSpaStaticFiles(configuration =>
-			{
-				configuration.RootPath = "ClientApp/dist";
-			});
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 			{
 				options.RequireHttpsMetadata = true;
@@ -51,7 +48,18 @@ namespace CUEstion.WEB
                     ValidateIssuerSigningKey = true
                 };
 			});
-			services.AddControllers();
+
+			services.AddCors(
+				c =>
+				c.AddPolicy(
+					"defaultPolicy",
+					options => 
+									options
+									.AllowAnyHeader()
+									.AllowAnyMethod()
+									.AllowAnyOrigin()
+					)
+				);
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -62,19 +70,15 @@ namespace CUEstion.WEB
 			}
 			else
 			{
-				app.UseExceptionHandler("/Error");
-				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
-			if (!env.IsDevelopment())
-			{
-				app.UseSpaStaticFiles();
-			}
 
 			app.UseRouting();
+
+			app.UseCors("defaultPolicy");
 
 			app.UseAuthentication();
 			app.UseAuthorization();
@@ -82,16 +86,6 @@ namespace CUEstion.WEB
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
-			});
-
-			app.UseSpa(spa =>
-			{
-				spa.Options.SourcePath = "ClientApp";
-
-				if (env.IsDevelopment())
-				{
-					spa.UseAngularCliServer(npmScript: "start");
-				}
 			});
 		}
 	}
