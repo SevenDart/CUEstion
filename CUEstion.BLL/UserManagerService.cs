@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using CUEstion.BLL.Interfaces;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CUEstion.DAL.EF;
 using CUEstion.BLL.ModelsDTO;
@@ -12,12 +13,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CUEstion.BLL
 {
-	public class UserManagerService
+	public class UserManagerService : IUserManagerService
 	{
+		private readonly ApplicationContext _context;
+
+		public UserManagerService(ApplicationContext context)
+		{
+			_context = context;
+		}
+
+
 		public AuthDTO CreateUser(AuthDTO authDto)
 		{
-			using var context = new ApplicationContext();
-
 			byte[] salt = new byte[128 / 8];
 			using (var rng = RandomNumberGenerator.Create())
 			{
@@ -42,11 +49,11 @@ namespace CUEstion.BLL
 				Role = "User"
 			};
 
-			context.Users.Add(user);
+			_context.Users.Add(user);
 
-			context.SaveChanges();
+			_context.SaveChanges();
 
-			authDto.Id = context.Users.FirstOrDefault(u => u.Email == authDto.Email).Id;
+			authDto.Id = _context.Users.FirstOrDefault(u => u.Email == authDto.Email).Id;
 			authDto.Role = "User";
 
 			return authDto;
@@ -54,9 +61,7 @@ namespace CUEstion.BLL
 
 		public AuthDTO CheckAuthData(AuthDTO authDto)
 		{
-			using var context = new ApplicationContext();
-
-			var user = context.Users.FirstOrDefault(u => u.Email == authDto.Email);
+			var user = _context.Users.FirstOrDefault(u => u.Email == authDto.Email);
 
 			if (user == null)
 			{
@@ -87,22 +92,18 @@ namespace CUEstion.BLL
 
 		public void UpdateUserInfo(UserDTO userDto)
 		{
-			using var context = new ApplicationContext();
-
-			var user = context.Users.Find(userDto.Id);
+			var user = _context.Users.Find(userDto.Id);
 
 			if (userDto.Username != null) user.Username = userDto.Username;
 			if (userDto.Email != null) user.Email = userDto.Email;
 
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 
 		public UserDTO GetUser(int userId)
 		{
-			using var context = new ApplicationContext();
-
-			var user = context.Users.Find(userId);
+			var user = _context.Users.Find(userId);
 
 			return user != null 
 				? new UserDTO(user) 
@@ -111,20 +112,16 @@ namespace CUEstion.BLL
 
 		public void DeleteUser(int userId)
 		{
-			using var context = new ApplicationContext();
+			var user = _context.Users.Find(userId);
 
-			var user = context.Users.Find(userId);
+			_context.Users.Remove(user);
 
-			context.Users.Remove(user);
-
-			context.SaveChanges();
+			_context.SaveChanges();
 		}
 
 		public IEnumerable<UserDTO> GetAllUsers()
 		{
-			using var context = new ApplicationContext();
-
-			var users = context.Users.ToList();
+			var users = _context.Users.ToList();
 			var list = new List<UserDTO>();
 			foreach (var user in users)
 			{
@@ -135,9 +132,7 @@ namespace CUEstion.BLL
 
 		public IEnumerable<QuestionDTO> GetUsersQuestions(int userId)
 		{
-			using var context = new ApplicationContext();
-
-			var questions = context.Questions.Include(q => q.Tags).Where(q => q.UserId == userId);
+			var questions = _context.Questions.Include(q => q.Tags).Where(q => q.UserId == userId);
 			var list = new List<QuestionDTO>();
 			foreach (var question in questions)
 			{
@@ -149,9 +144,7 @@ namespace CUEstion.BLL
 
 		public IEnumerable<QuestionDTO> GetFollowedQuestions(int userId)
 		{
-			using var context = new ApplicationContext();
-
-			var questions = context.FollowedQuestions.Include(fq => fq.Question).ThenInclude(q => q.Tags).Where(fq => fq.UserId == userId).Select(fq => fq.Question);
+			var questions = _context.FollowedQuestions.Include(fq => fq.Question).ThenInclude(q => q.Tags).Where(fq => fq.UserId == userId).Select(fq => fq.Question);
 
 			var list = new List<QuestionDTO>();
 			foreach (var question in questions)
