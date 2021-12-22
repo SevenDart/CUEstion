@@ -21,6 +21,9 @@ export class RegisterFormComponent {
 
   constructor(private usersService: UsersService, private snackBar: MatSnackBar) {
     this.form.get('confirmPassword').setValidators([Validators.required, confirmValidator(this.form.get('password'))]);
+    this.form.get('password').valueChanges.subscribe(() => {
+      this.form.get('confirmPassword').updateValueAndValidity();
+    });
   }
 
   @Output() closeRequest = new EventEmitter();

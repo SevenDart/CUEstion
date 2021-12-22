@@ -3,16 +3,15 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Question} from '../Models/Question';
 import {Answer} from '../Models/Answer';
 import {AppComment} from '../Models/AppComment';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class QuestionsService {
-  private _serverAddress = 'https://localhost:44376';
-
   constructor(private http: HttpClient) {
   }
 
   SearchQuestions(query: string, tags: string[]) {
-    let url = this._serverAddress + '/questions/search' + `?query=${query}`;
+    let url = environment.serverAddress + '/questions/search' + `?query=${query}`;
     for (const tag of tags) {
       url += `&tags=${encodeURIComponent(tag)}`;
     }
@@ -20,27 +19,27 @@ export class QuestionsService {
   }
 
   GetHotQuestions(count: number) {
-    return this.http.get<Question[]>(this._serverAddress + '/questions/hot' + `?count=${count}`);
+    return this.http.get<Question[]>(environment.serverAddress + '/questions/hot' + `?count=${count}`);
   }
 
   GetQuestion(id: number) {
-    return this.http.get<Question>(this._serverAddress + `/questions/${id}`);
+    return this.http.get<Question>(environment.serverAddress + `/questions/${id}`);
   }
 
   GetAnswersForQuestion(id: number) {
-    return this.http.get<Answer[]>(this._serverAddress + `/questions/${id}/answers`);
+    return this.http.get<Answer[]>(environment.serverAddress + `/questions/${id}/answers`);
   }
 
   GetCommentsForQuestion(id: number) {
-    return this.http.get<AppComment[]>(this._serverAddress + `/questions/${id}/comments`);
+    return this.http.get<AppComment[]>(environment.serverAddress + `/questions/${id}/comments`);
   }
 
   GetCommentsForAnswer(questionId: number, answerId: number) {
-    return this.http.get<AppComment[]>(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments`);
+    return this.http.get<AppComment[]>(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/comments`);
   }
 
   GetAllTags() {
-    return this.http.get<string[]>(this._serverAddress + '/questions/tags');
+    return this.http.get<string[]>(environment.serverAddress + '/questions/tags');
   }
 
   CreateQuestion(header: string, description: string, tags: string[]) {
@@ -59,7 +58,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.post(this._serverAddress + '/questions', question, options);
+    return this.http.post(environment.serverAddress + '/questions', question, options);
   }
 
   UpdateQuestion(id: number, description: string, tags: string[]) {
@@ -78,7 +77,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.put(this._serverAddress + `/questions/${id}`, question, options);
+    return this.http.put(environment.serverAddress + `/questions/${id}`, question, options);
   }
 
   DeleteQuestion(questionId: number) {
@@ -88,7 +87,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.delete(this._serverAddress + `/questions/${questionId}`, options);
+    return this.http.delete(environment.serverAddress + `/questions/${questionId}`, options);
   }
 
   AddAnswer(questionId: number, text: string) {
@@ -105,7 +104,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.post(this._serverAddress + `/questions/${questionId}/answers`, answer, options);
+    return this.http.post(environment.serverAddress + `/questions/${questionId}/answers`, answer, options);
   }
 
   UpdateAnswer(questionId: number, answerId: number, text: string) {
@@ -123,7 +122,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}`, answer, options);
+    return this.http.put(environment.serverAddress + `/questions/${questionId}/answers/${answerId}`, answer, options);
   }
 
   DeleteAnswer(questionId: number, answerId: number) {
@@ -133,7 +132,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.delete(this._serverAddress + `/questions/${questionId}/answers/${answerId}`, options);
+    return this.http.delete(environment.serverAddress + `/questions/${questionId}/answers/${answerId}`, options);
   }
 
   CreateComment(questionId: number, answerId: number, text: string) {
@@ -153,9 +152,9 @@ export class QuestionsService {
     };
 
     if (answerId != null) {
-      return this.http.post(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments`, comment, options);
+      return this.http.post(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/comments`, comment, options);
     } else {
-      return this.http.post(this._serverAddress + `/questions/${questionId}/comments`, comment, options);
+      return this.http.post(environment.serverAddress + `/questions/${questionId}/comments`, comment, options);
     }
   }
 
@@ -175,9 +174,10 @@ export class QuestionsService {
     };
 
     if (answerId != null) {
-      return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}`, comment, options);
+      return this.http.put(
+        environment.serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}`, comment, options);
     } else {
-      return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, comment, options);
+      return this.http.put(environment.serverAddress + `/questions/${questionId}/comments/${commentId}`, comment, options);
     }
   }
 
@@ -189,9 +189,9 @@ export class QuestionsService {
     };
 
     if (answerId != null) {
-      return this.http.delete(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}`, options);
+      return this.http.delete(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}`, options);
     } else {
-      return this.http.delete(this._serverAddress + `/questions/${questionId}/comments/${commentId}`, options);
+      return this.http.delete(environment.serverAddress + `/questions/${questionId}/comments/${commentId}`, options);
     }
   }
 
@@ -204,15 +204,15 @@ export class QuestionsService {
 
     if (commentId != null) {
       if (answerId != null) {
-        return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}/upvote`,
+        return this.http.put(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}/upvote`,
           null, options);
       } else {
-        return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}/upvote`, null, options);
+        return this.http.put(environment.serverAddress + `/questions/${questionId}/comments/${commentId}/upvote`, null, options);
       }
     } else if (answerId != null) {
-      return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/upvote`, null, options);
+      return this.http.put(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/upvote`, null, options);
     } else {
-      return this.http.put(this._serverAddress + `/questions/${questionId}/upvote`, null, options);
+      return this.http.put(environment.serverAddress + `/questions/${questionId}/upvote`, null, options);
     }
   }
 
@@ -225,15 +225,15 @@ export class QuestionsService {
 
     if (commentId != null) {
       if (answerId != null) {
-        return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}/downvote`,
+        return this.http.put(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/comments/${commentId}/downvote`,
           null, options);
       } else {
-        return this.http.put(this._serverAddress + `/questions/${questionId}/comments/${commentId}/downvote`, null, options);
+        return this.http.put(environment.serverAddress + `/questions/${questionId}/comments/${commentId}/downvote`, null, options);
       }
     } else if (answerId != null) {
-      return this.http.put(this._serverAddress + `/questions/${questionId}/answers/${answerId}/downvote`, null, options);
+      return this.http.put(environment.serverAddress + `/questions/${questionId}/answers/${answerId}/downvote`, null, options);
     } else {
-      return this.http.put(this._serverAddress + `/questions/${questionId}/downvote`, null, options);
+      return this.http.put(environment.serverAddress + `/questions/${questionId}/downvote`, null, options);
     }
   }
 
@@ -245,7 +245,7 @@ export class QuestionsService {
     };
 
     tag = encodeURIComponent(tag);
-    return this.http.post(encodeURI(this._serverAddress + `/questions/tags?tag=${tag}`), null, options);
+    return this.http.post(encodeURI(environment.serverAddress + `/questions/tags?tag=${tag}`), null, options);
   }
 
   UpdateTag(oldTag: string, newTag: string) {
@@ -257,7 +257,7 @@ export class QuestionsService {
 
     oldTag = encodeURIComponent(oldTag);
     newTag = encodeURIComponent(newTag);
-    return this.http.put(this._serverAddress + `/questions/tags?oldTag=${oldTag}&newTag=${newTag}`, null, options);
+    return this.http.put(environment.serverAddress + `/questions/tags?oldTag=${oldTag}&newTag=${newTag}`, null, options);
   }
 
   DeleteTag(tag: string) {
@@ -268,7 +268,7 @@ export class QuestionsService {
     };
 
     tag = encodeURIComponent(tag);
-    return this.http.delete(this._serverAddress + `/questions/tags?tag=${tag}`, options);
+    return this.http.delete(environment.serverAddress + `/questions/tags?tag=${tag}`, options);
   }
 
   SubscribeToQuestion(questionId: number) {
@@ -278,7 +278,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.get(this._serverAddress + `/questions/${questionId}/subscribe`, options);
+    return this.http.get(environment.serverAddress + `/questions/${questionId}/subscribe`, options);
   }
 
   UnsubscribeToQuestion(questionId: number) {
@@ -288,7 +288,7 @@ export class QuestionsService {
       })
     };
 
-    return this.http.get(this._serverAddress + `/questions/${questionId}/unsubscribe`, options);
+    return this.http.get(environment.serverAddress + `/questions/${questionId}/unsubscribe`, options);
   }
 
   IsSubscribedToQuestion(questionId: number) {
@@ -298,6 +298,6 @@ export class QuestionsService {
       })
     };
 
-    return this.http.get<boolean>(this._serverAddress + `/questions/${questionId}/is-subscribed`, options);
+    return this.http.get<boolean>(environment.serverAddress + `/questions/${questionId}/is-subscribed`, options);
   }
 }

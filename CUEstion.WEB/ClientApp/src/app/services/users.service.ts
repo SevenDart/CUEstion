@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {User} from '../Models/User';
 import {Question} from '../Models/Question';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class UsersService {
@@ -18,18 +19,17 @@ export class UsersService {
   }
 
   public static userId: number = localStorage.getItem('userId') ? Number(localStorage.getItem('userId')) : null;
-  private _serverAddress = 'https://localhost:44376';
 
   login(email: string, password: string) {
     const authData = {
       email: email,
       password: password
     };
-    return this.http.put(this._serverAddress + '/users/login', authData);
+    return this.http.put(environment.serverAddress + '/users/login', authData);
   }
 
   getUser(userId: number) {
-    return this.http.get<User>(this._serverAddress + '/users/' + userId);
+    return this.http.get<User>(environment.serverAddress + '/users/' + userId);
   }
 
   register(email: string, password: string) {
@@ -37,11 +37,11 @@ export class UsersService {
       email: email,
       password: password
     };
-    return this.http.post(this._serverAddress + '/users/register', authData);
+    return this.http.post(environment.serverAddress + '/users/register', authData);
   }
 
   getCreatedQuestions(userId: number) {
-    return this.http.get<Question[]>(this._serverAddress + `/users/${userId}/questions`);
+    return this.http.get<Question[]>(environment.serverAddress + `/users/${userId}/questions`);
   }
 
   getSubscribedQuestions() {
@@ -51,6 +51,6 @@ export class UsersService {
       })
     };
 
-    return this.http.get<Question[]>(this._serverAddress + `/users/subscribed`, options);
+    return this.http.get<Question[]>(environment.serverAddress + `/users/subscribed`, options);
   }
 }
