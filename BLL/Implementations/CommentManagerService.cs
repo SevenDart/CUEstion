@@ -20,35 +20,61 @@ namespace BLL.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<CommentDTO>> GetComments(int? questionId, int? answerId)
+        public async Task<IEnumerable<CommentDto>> GetComments(int? questionId, int? answerId)
         {
-            var comments = await _context
-                .Comments
-                .Include(c => c.User)
-                .Where(c => c.QuestionId == questionId && c.AnswerId == answerId)
-                .ProjectToType<CommentDTO>()
-                .ToListAsync();
+            IEnumerable<CommentDto> comments;
+            if (questionId != null)
+            {
+                comments = await _context
+                    .QuestionComments
+                    .Include(c => c.User)
+                    .Where(c => c.QuestionId == questionId)
+                    .ProjectToType<CommentDto>()
+                    .ToListAsync();
+            }
+            else
+            {
+                comments = await _context
+                    .AnswerComments
+                    .Include(c => c.User)
+                    .Where(c => c.AnswerId == answerId)
+                    .ProjectToType<CommentDto>()
+                    .ToListAsync();
+            }
 
             return comments;
         }
 
-        public async Task CreateComment(CommentDTO commentDto, int? questionId, int? answerId)
+        public async Task CreateComment(CommentDto commentDto, int? questionId, int? answerId)
         {
-            var comment = new Comment()
+            Comment comment;
+            if (questionId != null)
             {
-                Text = commentDto.Text,
-                CreateTime = DateTime.Now,
-                QuestionId = questionId,
-                AnswerId = answerId,
-                UserId = commentDto.User.Id
-            };
-
+                comment = new QuestionComment()
+                {
+                    Text = commentDto.Text,
+                    CreateTime = DateTime.Now,
+                    QuestionId = questionId,
+                    UserId = commentDto.User.Id,
+                };
+            }
+            else
+            {
+                comment = new AnswerComment()
+                {
+                    Text = commentDto.Text,
+                    CreateTime = DateTime.Now,
+                    AnswerId = answerId,
+                    UserId = commentDto.User.Id,
+                };
+            }
+            
             _context.Comments.Add(comment);
-
+            
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateComment(CommentDTO commentDto)
+        public async Task UpdateComment(CommentDto commentDto)
         {
             var comment = await _context
                 .Comments
@@ -77,11 +103,13 @@ namespace BLL.Implementations
 
         public async Task MarkComment(int userId, int commentId, int mark)
         {
-            var commentMark = await _context.CommentMarks.FindAsync(userId, commentId);
+            var commentMark = await _context
+                .CommentMarks
+                .FindAsync(userId, commentId);
 
             if (commentMark != null && commentMark.Mark == mark)
             {
-                throw new Exception("This user have already voted such.");
+                throw new ApplicationException("This user have already voted such.");
             }
 
             if (commentMark == null)
@@ -94,6 +122,7 @@ namespace BLL.Implementations
                 _context.CommentMarks.Add(commentMark);
             }
 
+            //TODO add trigger
             commentMark.Mark += mark;
             var comment = await _context.Comments.FindAsync(commentId);
             var user = await _context.Users.FindAsync(comment.UserId);

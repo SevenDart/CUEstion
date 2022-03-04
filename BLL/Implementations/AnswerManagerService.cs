@@ -20,19 +20,19 @@ namespace BLL.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<AnswerDTO>> GetAnswers(int questionId)
+        public async Task<IEnumerable<AnswerDto>> GetAnswers(int questionId)
         {
             var answers = await _context
                 .Answers
                 .Include(a => a.User)
                 .Where(a => a.QuestionId == questionId)
-                .ProjectToType<AnswerDTO>()
+                .ProjectToType<AnswerDto>()
                 .ToListAsync();
 
             return answers;
         }
 
-        public async Task CreateAnswer(AnswerDTO answerDto, int questionId)
+        public async Task CreateAnswer(AnswerDto answerDto, int questionId)
         {
             var answer = new Answer()
             {
@@ -47,7 +47,7 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAnswer(AnswerDTO answerDto)
+        public async Task UpdateAnswer(AnswerDto answerDto)
         {
             var answer = await _context
                 .Answers
@@ -69,12 +69,6 @@ namespace BLL.Implementations
                 .Answers
                 .FindAsync(answerId);
 
-            var answerComments = await _context.Comments.Where(c => c.AnswerId == answerId).ToListAsync();
-            foreach (var comment in answerComments)
-            {
-                _context.Comments.Remove(comment);
-            }
-
             _context.Answers.Remove(answer);
 
             await _context.SaveChangesAsync();
@@ -82,7 +76,9 @@ namespace BLL.Implementations
         
         public async Task MarkAnswer(int userId, int answerId, int mark)
         {
-            var answerMark = await _context.AnswerMarks.FindAsync(userId, answerId);
+            var answerMark = await _context
+                .AnswerMarks
+                .FindAsync(userId, answerId);
 
             if (answerMark != null && answerMark.Mark == mark)
             {
@@ -100,6 +96,8 @@ namespace BLL.Implementations
             }
 
             answerMark.Mark += mark;
+            
+            //TODO add trigger
             var answer = await _context.Answers.FindAsync(answerId);
             var user = await _context.Users.FindAsync(answer.UserId);
             answer.Rate += mark;

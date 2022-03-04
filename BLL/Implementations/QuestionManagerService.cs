@@ -23,17 +23,17 @@ namespace BLL.Implementations
 			_tagManagerService = tagManagerService;
 		}
 
-		public async Task<IEnumerable<QuestionDTO>> GetAllQuestions()
+		public async Task<IEnumerable<QuestionDto>> GetAllQuestions()
 		{
 			var questions = await _context
 				.Questions
 				.Include(q => q.Tags)
-				.ProjectToType<QuestionDTO>()
 				.ToListAsync();
-			return questions;
+			
+			return questions.Adapt<QuestionDto[]>();
 		}
 
-		public async Task<IEnumerable<QuestionDTO>> GetNewestQuestions(int count)
+		public async Task<IEnumerable<QuestionDto>> GetNewestQuestions(int count)
 		{
 			var questions = await _context
 				.Questions
@@ -42,22 +42,24 @@ namespace BLL.Implementations
 					.ThenByDescending(q => q.UpdateTime)
 					.ThenByDescending(q => q.Rate)
 				.Take(count)
-				.ProjectToType<QuestionDTO>()
 				.ToListAsync();
-			return questions;
+			
+			return questions.Adapt<QuestionDto[]>();
 		}
 
-		public async Task<QuestionDTO> GetQuestion(int questionId)
+		public async Task<QuestionDto> GetQuestion(int questionId)
 		{
 			var question = await _context
 				.Questions
 				.Include(q => q.Tags)
 				.FirstOrDefaultAsync(q => q.Id == questionId);
+			
 			question.User = await _context.Users.FindAsync(question.UserId);
-			return question.Adapt<QuestionDTO>();
+
+			return question.Adapt<QuestionDto>();
 		}
 
-		public async Task<IEnumerable<QuestionDTO>> Search(string query, string[] tags)
+		public async Task<IEnumerable<QuestionDto>> Search(string query, string[] tags)
 		{
 			var words = query.Split(' ', '.', ',', ':', '?', '!');
 			var subseqs = new List<string>();
@@ -101,11 +103,11 @@ namespace BLL.Implementations
 				}))
 				.OrderByDescending(q => q.Rate);
 			
-			return questions.Adapt<QuestionDTO[]>();
+			return questions.Adapt<QuestionDto[]>();
 
 		}
 
-		public async Task<IEnumerable<QuestionDTO>> FilterQuestions(string[] tags)
+		public async Task<IEnumerable<QuestionDto>> FilterQuestions(string[] tags)
 		{
 			var questions = (await _context
 				.Questions
@@ -113,21 +115,21 @@ namespace BLL.Implementations
 				.ToListAsync())
 				.Where(q => tags.All(t => q.Tags.Any(qTag => string.Equals(qTag.Name, t, StringComparison.CurrentCultureIgnoreCase))));
 			
-			return questions.Adapt<QuestionDTO[]>();
+			return questions.Adapt<QuestionDto[]>();
 		}
 
-		public async Task<IEnumerable<QuestionDTO>> GetUsersQuestions(int userId)
+		public async Task<IEnumerable<QuestionDto>> GetUsersQuestions(int userId)
 		{
 			var questions = await _context
 				.Questions
 				.Include(t => t.Tags)
 				.Where(q => q.UserId == userId)
-				.ProjectToType<QuestionDTO>()
 				.ToListAsync();
-			return questions;
+			
+			return questions.Adapt<QuestionDto[]>();
 		}
 
-		public async Task CreateQuestion(QuestionDTO questionDto)
+		public async Task CreateQuestion(QuestionDto questionDto)
 		{
 			var question = new Question()
 			{
@@ -151,13 +153,18 @@ namespace BLL.Implementations
 			questionDto.Id = question.Id;
 		 }
 
-		public async Task UpdateQuestion(QuestionDTO questionDto)
+		public async Task UpdateQuestion(QuestionDto questionDto)
 		{
-			var question = _context
+			var question = await _context
 				.Questions
 				.Include(q => q.Tags)
-				.FirstOrDefault(q=> q.Id == questionDto.Id);
+				.FirstOrDefaultAsync(q=> q.Id == questionDto.Id);
 
+			if (question == null)
+			{
+				throw new NullReferenceException();
+			}
+			
 			if (questionDto.Text != null)
 			{
 				question.Text = questionDto.Text;
@@ -171,27 +178,29 @@ namespace BLL.Implementations
 
 			var deleteTags = question
 				.Tags
-				.Where(t => questionDto.Tags.FirstOrDefault(tag => string.Equals(tag, t.Name, StringComparison.CurrentCultureIgnoreCase)) == null)
+				.Where(t => questionDto.Tags.FirstOrDefault(tag => tag.ToLower() == t.Name.ToLower()) == null)
 				.ToList();
 			
 			var addTags = questionDto
 				.Tags
-				.Where(t => question.Tags.FirstOrDefault(tag => string.Equals(tag.Name, t, StringComparison.CurrentCultureIgnoreCase)) == null)
+				.Where(t => question.Tags.FirstOrDefault(tag => tag.Name.ToLower() == t.ToLower()) == null)
 				.ToList();
-
-			//TODO AddAll
+			
 			foreach (var tag in addTags)
 			{
 				var foundTag = await _tagManagerService.FindTag(tag);
+				if (foundTag == null)
+				{
+					throw new Exception($"No such tag: {tag}.");
+				}
 				question.Tags.Add(foundTag);
 			}
-
-			//TODO RemoveAll
+			
 			foreach (var tag in deleteTags)
 			{
 				question.Tags.Remove(tag);
 			}
-			
+
 
 			await _context.SaveChangesAsync();
 		}
@@ -201,35 +210,6 @@ namespace BLL.Implementations
 			var question = await _context
 				.Questions
 				.FindAsync(questionId);
-
-			var questionAnswers = await _context
-				.Answers
-				.Where(a => a.QuestionId == questionId)
-				.ToListAsync();
-			
-			//TODO Set cascade operations
-			foreach (var answer in questionAnswers)
-			{
-				var answerComments = await _context
-					.Comments
-					.Where(c => c.AnswerId == answer.Id)
-					.ToListAsync();
-				
-				foreach (var comment in answerComments)
-					_context.Comments.Remove(comment);
-				
-				_context.Answers.Remove(answer);
-			}
-
-			var questionComments = await _context
-				.Comments
-				.Where(c => c.QuestionId == questionId)
-				.ToListAsync();
-			
-			foreach (var comment in questionComments)
-			{
-				_context.Comments.Remove(comment);
-			}
 
 			_context.Questions.Remove(question);
 

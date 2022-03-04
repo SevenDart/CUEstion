@@ -1,6 +1,6 @@
 ﻿namespace BLL.ModelsDTO
 {
-	public class AuthDTO
+	public class AuthDto
 	{
 		public int Id { get; set; }
 

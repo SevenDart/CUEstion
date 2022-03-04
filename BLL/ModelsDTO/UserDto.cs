@@ -2,7 +2,7 @@
 
 namespace BLL.ModelsDTO
 {
-	public class UserDTO
+	public class UserDto
 	{
 		public int Id { get; set; }
 
@@ -12,12 +12,12 @@ namespace BLL.ModelsDTO
 
 		public int Rate { get; set; }
 
-		public UserDTO()
+		public UserDto()
 		{
 
 		}
 
-		public UserDTO(User user)
+		public UserDto(User user)
 		{
 			Id = user.Id;
 			Email = user.Email;

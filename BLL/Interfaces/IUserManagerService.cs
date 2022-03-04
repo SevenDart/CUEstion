@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BLL.ModelsDTO;
 
 namespace BLL.Interfaces
 {
     public interface IUserManagerService
     {
-        public AuthDTO CreateUser(AuthDTO authDto);
-        public AuthDTO CheckAuthData(AuthDTO authDto);
-        public void UpdateUserInfo(UserDTO userDto);
-        public UserDTO GetUser(int userId);
+        public AuthDto CreateUser(AuthDto authDto);
+        public AuthDto CheckAuthData(AuthDto authDto);
+        public void UpdateUserInfo(UserDto userDto);
+        public UserDto GetUser(int userId);
         public void DeleteUser(int userId);
-        public IEnumerable<UserDTO> GetAllUsers();
-        public IEnumerable<QuestionDTO> GetUsersQuestions(int userId);
-        public IEnumerable<QuestionDTO> GetFollowedQuestions(int userId);
+        public IEnumerable<UserDto> GetAllUsers();
+        public Task<IEnumerable<QuestionDto>> GetUsersQuestions(int userId);
+        public Task<IEnumerable<QuestionDto>> GetFollowedQuestions(int userId);
     }
 }

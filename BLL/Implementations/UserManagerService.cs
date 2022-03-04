@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.ModelsDTO;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using DAL.EF;
 using DAL.Entities;
+using Mapster;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 
-namespace BLL
+namespace BLL.Implementations
 {
 	public class UserManagerService : IUserManagerService
 	{
@@ -23,7 +25,7 @@ namespace BLL
 		}
 
 
-		public AuthDTO CreateUser(AuthDTO authDto)
+		public AuthDto CreateUser(AuthDto authDto)
 		{
 			byte[] salt = new byte[128 / 8];
 			using (var rng = RandomNumberGenerator.Create())
@@ -59,7 +61,7 @@ namespace BLL
 			return authDto;
 		}
 
-		public AuthDTO CheckAuthData(AuthDTO authDto)
+		public AuthDto CheckAuthData(AuthDto authDto)
 		{
 			var user = _context.Users.FirstOrDefault(u => u.Email == authDto.Email);
 
@@ -90,7 +92,7 @@ namespace BLL
 		}
 
 
-		public void UpdateUserInfo(UserDTO userDto)
+		public void UpdateUserInfo(UserDto userDto)
 		{
 			var user = _context.Users.Find(userDto.Id);
 
@@ -101,12 +103,12 @@ namespace BLL
 		}
 
 
-		public UserDTO GetUser(int userId)
+		public UserDto GetUser(int userId)
 		{
 			var user = _context.Users.Find(userId);
 
 			return user != null 
-				? new UserDTO(user) 
+				? new UserDto(user) 
 				: null;
 		}
 
@@ -119,40 +121,42 @@ namespace BLL
 			_context.SaveChanges();
 		}
 
-		public IEnumerable<UserDTO> GetAllUsers()
+		public IEnumerable<UserDto> GetAllUsers()
 		{
 			var users = _context.Users.ToList();
-			var list = new List<UserDTO>();
+			var list = new List<UserDto>();
 			foreach (var user in users)
 			{
-				list.Add(new UserDTO(user));
+				list.Add(new UserDto(user));
 			}
 			return list;
 		}
 
-		public IEnumerable<QuestionDTO> GetUsersQuestions(int userId)
+		public async Task<IEnumerable<QuestionDto>> GetUsersQuestions(int userId)
 		{
-			var questions = _context.Questions.Include(q => q.Tags).Where(q => q.UserId == userId);
-			var list = new List<QuestionDTO>();
-			foreach (var question in questions)
-			{
-				list.Add(new QuestionDTO(question));
-			}
+			var questions = await _context
+				.Questions
+				.Include(q => q.Tags)
+				.Where(q => q.UserId == userId)
+				.ProjectToType<QuestionDto>()
+				.ToListAsync();
 
-			return list;
+			return questions;
 		}
 
-		public IEnumerable<QuestionDTO> GetFollowedQuestions(int userId)
+		public async Task<IEnumerable<QuestionDto>> GetFollowedQuestions(int userId)
 		{
-			var questions = _context.FollowedQuestions.Include(fq => fq.Question).ThenInclude(q => q.Tags).Where(fq => fq.UserId == userId).Select(fq => fq.Question);
+			var questions = await _context
+				.FollowedQuestions
+				.Include(fq => fq.Question)
+				.ThenInclude(q => q.Tags)
+				.Where(fq => fq.UserId == userId)
+				.Select(fq => fq.Question)
+				.ProjectToType<QuestionDto>()
+				.ToListAsync();
+			
 
-			var list = new List<QuestionDTO>();
-			foreach (var question in questions)
-			{
-				list.Add(new QuestionDTO(question));
-			}
-
-			return list;
+			return questions;
 		}
 	}
 }

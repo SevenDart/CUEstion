@@ -20,30 +20,34 @@ namespace BLL.Implementations
         
         public async Task<IEnumerable<string>> GetAllTags()
         {
-            var tags = _context.Tags.Select(t => t.Name).ToListAsync();
-            return await tags;
+            var tags = await _context
+                .Tags
+                .Select(t => t.Name)
+                .ToListAsync();
+            return tags;
         }
 
-        public async Task<Tag> FindTag(string name)
+        public async Task<Tag> FindTag(string tag)
         {
-            var tag = await _context
+            var foundTag = await _context
                 .Tags
-                .FirstOrDefaultAsync(t => String.Equals(t.Name, name, StringComparison.CurrentCultureIgnoreCase));
-            return tag;
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == tag.ToLower());
+            return foundTag;
         }
 
         public async Task CreateTag(string tag)
         {
-            var foundTag = await _context.Tags.FirstOrDefaultAsync(t => String.Equals(t.Name, tag, StringComparison.CurrentCultureIgnoreCase));
-            if (foundTag == null)
-            {
-                var dbTag = new Tag() { Name = tag };
-                _context.Tags.Add(dbTag);
-            }
-            else
+            var foundTag = await _context
+                .Tags
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == tag.ToLower());
+            
+            if (foundTag != null)
             {
                 throw new Exception("Such tag already exists.");
             }
+
+            var dbTag = new Tag() { Name = tag };
+            _context.Tags.Add(dbTag);
 
             await _context.SaveChangesAsync();
         }
@@ -51,16 +55,16 @@ namespace BLL.Implementations
 
         public async Task UpdateTag(string oldTag, string newTag)
         {
-            var foundTag = await _context.Tags.FirstOrDefaultAsync(t => String.Equals(t.Name, oldTag, StringComparison.CurrentCultureIgnoreCase));
+            var foundTag = await _context
+                .Tags
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == oldTag.ToLower());
 			
             if (foundTag == null)
             {
                 throw new Exception("There is no such tag.");
             }
-            else
-            {
-                foundTag.Name = newTag;
-            }
+
+            foundTag.Name = newTag;
 
             await _context.SaveChangesAsync();
         }
@@ -68,7 +72,9 @@ namespace BLL.Implementations
 
         public async Task DeleteTag(string tag)
         {
-            var foundTag = _context.Tags.FirstOrDefault(t => String.Equals(t.Name, tag, StringComparison.CurrentCultureIgnoreCase));
+            var foundTag = await _context
+                .Tags
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == tag.ToLower());
 			
             if (foundTag == null)
             {
