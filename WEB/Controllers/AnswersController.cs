@@ -27,7 +27,7 @@ namespace WEB.Controllers
 
         [HttpPost("{questionId}/answers")]
         [Authorize]
-        public IActionResult CreateAnswer(AnswerDTO answerDto, int questionId)
+        public IActionResult CreateAnswer(AnswerDto answerDto, int questionId)
         {
             _answerManagerService.CreateAnswer(answerDto, questionId);
             return Ok();
@@ -35,7 +35,7 @@ namespace WEB.Controllers
 
         [HttpPut("{questionId}/answers/{answerId}")]
         [Authorize]
-        public IActionResult UpdateAnswer(AnswerDTO answerDto)
+        public IActionResult UpdateAnswer(AnswerDto answerDto)
         {
             _answerManagerService.UpdateAnswer(answerDto);
             return Ok();

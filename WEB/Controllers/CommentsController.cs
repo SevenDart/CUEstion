@@ -22,7 +22,7 @@ namespace WEB.Controllers
         [HttpGet("{questionId}/answers/{answerId}/comments")]
         public async Task<IActionResult> GetComments(int questionId, int? answerId)
         {
-            IEnumerable<CommentDTO> list;
+            IEnumerable<CommentDto> list;
             if (answerId == null)
                 list = await _commentManagerService.GetComments(questionId, null);
             else
@@ -33,7 +33,7 @@ namespace WEB.Controllers
         [HttpPost("{questionId}/comments")]
         [HttpPost("{questionId}/answers/{answerId}/comments")]
         [Authorize]
-        public async Task<IActionResult> CreateComment(CommentDTO commentDto, int questionId, int? answerId)
+        public async Task<IActionResult> CreateComment(CommentDto commentDto, int questionId, int? answerId)
         {
             if (answerId == null)
                 await _commentManagerService.CreateComment(commentDto, questionId, null);
@@ -46,7 +46,7 @@ namespace WEB.Controllers
         [HttpPut("{questionId}/comments/{commentId}")]
         [HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
         [Authorize]
-        public async Task<IActionResult> UpdateComment(CommentDTO commentDto)
+        public async Task<IActionResult> UpdateComment(CommentDto commentDto)
         {
             await _commentManagerService.UpdateComment(commentDto);
             return Ok();

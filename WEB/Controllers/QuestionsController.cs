@@ -69,7 +69,7 @@ namespace WEB.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateQuestion(QuestionDTO questionDto)
+        public async Task<IActionResult> CreateQuestion(QuestionDto questionDto)
         {
             await _questionManagerService.CreateQuestion(questionDto);
             return Ok(questionDto.Id);
@@ -86,7 +86,7 @@ namespace WEB.Controllers
 
         [HttpPut("{questionId}")]
         [Authorize]
-        public async Task<IActionResult> UpdateQuestion(QuestionDTO questionDto)
+        public async Task<IActionResult> UpdateQuestion(QuestionDto questionDto)
         {
             await _questionManagerService.UpdateQuestion(questionDto);
             return Ok();

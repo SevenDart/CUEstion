@@ -1,7 +1,11 @@
+using System.Linq;
 using BLL;
 using BLL.Implementations;
 using BLL.Interfaces;
+using BLL.ModelsDTO;
 using DAL.EF;
+using DAL.Entities;
+using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +40,10 @@ namespace WEB
 			services.AddScoped<ICommentManagerService, CommentManagerService>();
 			services.AddScoped<IAnswerManagerService, AnswerManagerService>();
 			services.AddScoped<IQuestionManagerService, QuestionManagerService>();
+
+			TypeAdapterConfig<Question, QuestionDto>
+				.NewConfig()
+				.Map(dest => dest.Tags, src => src.Tags.Select(t => t.Name));
 
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 			{

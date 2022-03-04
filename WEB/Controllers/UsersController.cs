@@ -53,7 +53,7 @@ namespace WEB.Controllers
 
 
 		[HttpPut("login")]
-		public IActionResult Login(AuthDTO authDto)
+		public IActionResult Login(AuthDto authDto)
 		{
 			try
 			{
@@ -75,7 +75,7 @@ namespace WEB.Controllers
 		}
 
 		[HttpPost("register")]
-		public IActionResult Register(AuthDTO authDto)
+		public IActionResult Register(AuthDto authDto)
 		{
 			try
 			{
@@ -114,7 +114,7 @@ namespace WEB.Controllers
 
 		[HttpPut("{userId}")]
 		[Authorize]
-		public IActionResult UpdateUserInfo(UserDTO userDto)
+		public IActionResult UpdateUserInfo(UserDto userDto)
 		{
 			try
 			{
