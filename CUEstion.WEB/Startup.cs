@@ -1,4 +1,5 @@
 using CUEstion.BLL;
+using CUEstion.BLL.Implementations;
 using CUEstion.BLL.Interfaces;
 using CUEstion.DAL.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,7 +21,7 @@ namespace CUEstion.WEB
 			Configuration = configuration;
 		}
 
-		public IConfiguration Configuration { get; }
+		private IConfiguration Configuration { get; }
 
 		public void ConfigureServices(IServiceCollection services)
 		{
@@ -28,7 +29,7 @@ namespace CUEstion.WEB
 			
 			services.AddDbContext<ApplicationContext>(
 				options =>
-					options.UseSqlServer(@"Server=localhost;Database=CUEstionDB;Trusted_Connection=True;")
+					options.UseSqlServer(@"Server=DESKTOP-KH4PKN3;Database=CUEstionDB;Trusted_Connection=True;TrustServerCertificate=true;")
 					);
 			
 			services.AddScoped<IQuestionManagerService, QuestionManagerService>();
