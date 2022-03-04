@@ -1,0 +1,9 @@
+﻿services:
+  server:
+    build: .
+    ports:
+    - "4000:4000"
+  client:
+    build: ./CUestion.WEB/ClientApp
+    ports:
+    - "8080:80"
