@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Entities
 {
-	public class Comment
+	public abstract class Comment
 	{
 		public int Id { get; set; }
 

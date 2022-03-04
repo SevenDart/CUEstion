@@ -10,6 +10,6 @@ namespace BLL.Interfaces
         public Task CreateComment(CommentDto commentDto, int? questionId, int? answerId);
         public Task UpdateComment(CommentDto commentDto);
         public Task DeleteComment(int commentId);
-        public Task MarkComment(int userId, int commentId, int mark);
+        public Task MarkComment(int userId, int commentId, int newMarkValue);
     }
 }

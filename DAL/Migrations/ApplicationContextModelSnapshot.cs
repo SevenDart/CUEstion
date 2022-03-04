@@ -63,7 +63,7 @@ namespace DAL.Migrations
                     b.Property<int>("AnswerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mark")
+                    b.Property<int>("MarkValue")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "AnswerId");
@@ -112,7 +112,7 @@ namespace DAL.Migrations
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mark")
+                    b.Property<int>("MarkValue")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "CommentId");
@@ -181,7 +181,7 @@ namespace DAL.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mark")
+                    b.Property<int>("MarkValue")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "QuestionId");

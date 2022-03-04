@@ -1,5 +1,4 @@
 using System.Linq;
-using BLL;
 using BLL.Implementations;
 using BLL.Interfaces;
 using BLL.ModelsDTO;
@@ -35,6 +34,7 @@ namespace WEB
 					options.UseSqlServer(@"Server=DESKTOP-KH4PKN3;Database=CUEstionDB;Trusted_Connection=True;TrustServerCertificate=true;")
 					);
 			
+			services.AddScoped<IMarkManagerService, MarkManagerService>();
 			services.AddScoped<IUserManagerService, UserManagerService>();
 			services.AddScoped<ITagManagerService, TagManagerService>();
 			services.AddScoped<ICommentManagerService, CommentManagerService>();

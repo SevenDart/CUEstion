@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-	public class AnswerMark
+	public class AnswerMark: Mark
 	{
-		public int UserId { get; set; }
-		public User User { get; set; }
-
 		public int AnswerId { get; set; }
 		public Answer Answer { get; set; }
-
-		public int Mark { get; set; }
 	}
 }

@@ -14,10 +14,12 @@ namespace BLL.Implementations
     public class AnswerManagerService : IAnswerManagerService
     {
         private readonly ApplicationContext _context;
+        private readonly IMarkManagerService _markManagerService;
 
-        public AnswerManagerService(ApplicationContext context)
+        public AnswerManagerService(ApplicationContext context, IMarkManagerService markManagerService)
         {
             _context = context;
+            _markManagerService = markManagerService;
         }
 
         public async Task<IEnumerable<AnswerDto>> GetAnswers(int questionId)
@@ -74,17 +76,12 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
         
-        public async Task MarkAnswer(int userId, int answerId, int mark)
+        public async Task MarkAnswer(int userId, int answerId, int newMarkValue)
         {
             var answerMark = await _context
                 .AnswerMarks
                 .FindAsync(userId, answerId);
-
-            if (answerMark != null && answerMark.Mark == mark)
-            {
-                throw new Exception("This user have already voted such.");
-            }
-			
+            
             if (answerMark == null)
             {
                 answerMark = new AnswerMark()
@@ -94,14 +91,11 @@ namespace BLL.Implementations
                 };
                 _context.AnswerMarks.Add(answerMark);
             }
-
-            answerMark.Mark += mark;
             
-            //TODO add trigger
+            await _markManagerService.SetMark(answerMark, newMarkValue);
+            
             var answer = await _context.Answers.FindAsync(answerId);
-            var user = await _context.Users.FindAsync(answer.UserId);
-            answer.Rate += mark;
-            user.Rate += mark;
+            answer.Rate += newMarkValue;
 
             await _context.SaveChangesAsync();
         }

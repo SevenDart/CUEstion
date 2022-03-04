@@ -14,10 +14,12 @@ namespace BLL.Implementations
     public class CommentManagerService : ICommentManagerService
     {
         private readonly ApplicationContext _context;
+        private readonly IMarkManagerService _markManagerService;
 
-        public CommentManagerService(ApplicationContext context)
+        public CommentManagerService(ApplicationContext context, IMarkManagerService markManagerService)
         {
             _context = context;
+            _markManagerService = markManagerService;
         }
 
         public async Task<IEnumerable<CommentDto>> GetComments(int? questionId, int? answerId)
@@ -101,16 +103,11 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task MarkComment(int userId, int commentId, int mark)
+        public async Task MarkComment(int userId, int commentId, int newMarkValue)
         {
             var commentMark = await _context
                 .CommentMarks
                 .FindAsync(userId, commentId);
-
-            if (commentMark != null && commentMark.Mark == mark)
-            {
-                throw new ApplicationException("This user have already voted such.");
-            }
 
             if (commentMark == null)
             {
@@ -121,13 +118,11 @@ namespace BLL.Implementations
                 };
                 _context.CommentMarks.Add(commentMark);
             }
-
-            //TODO add trigger
-            commentMark.Mark += mark;
+            
+            await _markManagerService.SetMark(commentMark, newMarkValue);
+            
             var comment = await _context.Comments.FindAsync(commentId);
-            var user = await _context.Users.FindAsync(comment.UserId);
-            comment.Rate += mark;
-            user.Rate += mark;
+            comment.Rate += newMarkValue;
 
             await _context.SaveChangesAsync();
         }

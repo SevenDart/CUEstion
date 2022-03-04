@@ -10,6 +10,6 @@ namespace BLL.Interfaces
         public Task CreateAnswer(AnswerDto answerDto, int questionId);
         public Task UpdateAnswer(AnswerDto answerDto);
         public Task DeleteAnswer(int answerId);
-        public Task MarkAnswer(int userId, int answerId, int mark);
+        public Task MarkAnswer(int userId, int answerId, int newMarkValue);
     }
 }

@@ -16,11 +16,15 @@ namespace BLL.Implementations
 	{
 		private readonly ApplicationContext _context;
 		private readonly ITagManagerService _tagManagerService;
+		private readonly IMarkManagerService _markManagerService;
 
-		public QuestionManagerService(ApplicationContext context, ITagManagerService tagManagerService)
+		public QuestionManagerService(ApplicationContext context, 
+			ITagManagerService tagManagerService, 
+			IMarkManagerService markManagerService)
 		{
 			_context = context;
 			_tagManagerService = tagManagerService;
+			_markManagerService = markManagerService;
 		}
 
 		public async Task<IEnumerable<QuestionDto>> GetAllQuestions()
@@ -230,16 +234,11 @@ namespace BLL.Implementations
 		}
 		
 
-		public async Task MarkQuestion(int userId, int questionId, int mark)
+		public async Task MarkQuestion(int userId, int questionId, int markValue)
 		{
 			var questionMark = await _context
 				.QuestionMarks
 				.FindAsync(userId, questionId);
-
-			if (questionMark != null && questionMark.Mark == mark)
-			{
-				throw new Exception("This user have already voted such.");
-			}
 			
 			if (questionMark == null)
 			{
@@ -250,13 +249,11 @@ namespace BLL.Implementations
 				};
 				_context.QuestionMarks.Add(questionMark);
 			}
+			
+			await _markManagerService.SetMark(questionMark, markValue);
 
-			//TODO add triggers
-			questionMark.Mark += mark;
 			var question = await _context.Questions.FindAsync(questionId);
-			var user = await _context.Users.FindAsync(question.UserId);
-			question.Rate += mark;
-			user.Rate += mark;
+			question.Rate += markValue;
 
 			await _context.SaveChangesAsync();
 		}
