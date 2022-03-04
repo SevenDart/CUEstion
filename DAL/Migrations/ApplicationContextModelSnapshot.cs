@@ -16,10 +16,10 @@ namespace DAL.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Answer", b =>
+            modelBuilder.Entity("DAL.Entities.Answer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace DAL.Migrations
                     b.ToTable("Answers");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.AnswerMark", b =>
+            modelBuilder.Entity("DAL.Entities.AnswerMark", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -73,21 +73,15 @@ namespace DAL.Migrations
                     b.ToTable("AnswerMarks");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("DAL.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AnswerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("QuestionId")
-                        .HasColumnType("int");
 
                     b.Property<int>("Rate")
                         .HasColumnType("int");
@@ -105,16 +99,12 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("QuestionId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.CommentMark", b =>
+            modelBuilder.Entity("DAL.Entities.CommentMark", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -132,7 +122,7 @@ namespace DAL.Migrations
                     b.ToTable("CommentMarks");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.FollowedQuestion", b =>
+            modelBuilder.Entity("DAL.Entities.FollowedQuestion", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -147,7 +137,7 @@ namespace DAL.Migrations
                     b.ToTable("FollowedQuestions");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Question", b =>
+            modelBuilder.Entity("DAL.Entities.Question", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -183,7 +173,7 @@ namespace DAL.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.QuestionMark", b =>
+            modelBuilder.Entity("DAL.Entities.QuestionMark", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -201,7 +191,7 @@ namespace DAL.Migrations
                     b.ToTable("QuestionMarks");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Tag", b =>
+            modelBuilder.Entity("DAL.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -218,7 +208,7 @@ namespace DAL.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.User", b =>
+            modelBuilder.Entity("DAL.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -291,15 +281,39 @@ namespace DAL.Migrations
                     b.ToTable("TagUser");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Answer", b =>
+            modelBuilder.Entity("DAL.Entities.AnswerComment", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Question", "Question")
+                    b.HasBaseType("DAL.Entities.Comment");
+
+                    b.Property<int?>("AnswerId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("AnswerId");
+
+                    b.ToTable("AnswerComments");
+                });
+
+            modelBuilder.Entity("DAL.Entities.QuestionComment", b =>
+                {
+                    b.HasBaseType("DAL.Entities.Comment");
+
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuestionComments");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Answer", b =>
+                {
+                    b.HasOne("DAL.Entities.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -309,15 +323,15 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.AnswerMark", b =>
+            modelBuilder.Entity("DAL.Entities.AnswerMark", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Answer", "Answer")
+                    b.HasOne("DAL.Entities.Answer", "Answer")
                         .WithMany()
                         .HasForeignKey("AnswerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,39 +342,25 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("DAL.Entities.Comment", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Answer", "Answer")
-                        .WithMany("Comments")
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("CUEstion.DAL.Entities.Question", "Question")
-                        .WithMany("Comments")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Answer");
-
-                    b.Navigation("Question");
-
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.CommentMark", b =>
+            modelBuilder.Entity("DAL.Entities.CommentMark", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Comment", "Comment")
+                    b.HasOne("DAL.Entities.Comment", "Comment")
                         .WithMany()
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -371,15 +371,15 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.FollowedQuestion", b =>
+            modelBuilder.Entity("DAL.Entities.FollowedQuestion", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Question", "Question")
+                    b.HasOne("DAL.Entities.Question", "Question")
                         .WithMany("FollowedQuestions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany("FollowedQuestions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -390,9 +390,9 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Question", b =>
+            modelBuilder.Entity("DAL.Entities.Question", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -400,15 +400,15 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.QuestionMark", b =>
+            modelBuilder.Entity("DAL.Entities.QuestionMark", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Question", "Question")
+                    b.HasOne("DAL.Entities.Question", "Question")
                         .WithMany()
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.User", "User")
+                    b.HasOne("DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -421,13 +421,13 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("QuestionTag", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Question", null)
+                    b.HasOne("DAL.Entities.Question", null)
                         .WithMany()
                         .HasForeignKey("QuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.Tag", null)
+                    b.HasOne("DAL.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -436,25 +436,55 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("TagUser", b =>
                 {
-                    b.HasOne("CUEstion.DAL.Entities.Tag", null)
+                    b.HasOne("DAL.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("InterestedTagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CUEstion.DAL.Entities.User", null)
+                    b.HasOne("DAL.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Answer", b =>
+            modelBuilder.Entity("DAL.Entities.AnswerComment", b =>
+                {
+                    b.HasOne("DAL.Entities.Answer", "Answer")
+                        .WithMany("Comments")
+                        .HasForeignKey("AnswerId");
+
+                    b.HasOne("DAL.Entities.Comment", null)
+                        .WithOne()
+                        .HasForeignKey("DAL.Entities.AnswerComment", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+                });
+
+            modelBuilder.Entity("DAL.Entities.QuestionComment", b =>
+                {
+                    b.HasOne("DAL.Entities.Comment", null)
+                        .WithOne()
+                        .HasForeignKey("DAL.Entities.QuestionComment", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.Question", "Question")
+                        .WithMany("Comments")
+                        .HasForeignKey("QuestionId");
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Answer", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.Question", b =>
+            modelBuilder.Entity("DAL.Entities.Question", b =>
                 {
                     b.Navigation("Answers");
 
@@ -463,7 +493,7 @@ namespace DAL.Migrations
                     b.Navigation("FollowedQuestions");
                 });
 
-            modelBuilder.Entity("CUEstion.DAL.Entities.User", b =>
+            modelBuilder.Entity("DAL.Entities.User", b =>
                 {
                     b.Navigation("FollowedQuestions");
                 });

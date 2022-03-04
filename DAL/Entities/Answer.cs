@@ -23,6 +23,6 @@ namespace DAL.Entities
 		public int QuestionId { get; set; }
 		public Question Question { get; set; }
 
-		public List<Comment> Comments { get; set; }
+		public List<AnswerComment> Comments { get; set; }
 	}
 }

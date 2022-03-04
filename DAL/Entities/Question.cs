@@ -26,7 +26,7 @@ namespace DAL.Entities
 
 		public List<Tag> Tags { get; set; }
 		public List<Answer> Answers { get; set; }
-		public List<Comment> Comments { get; set; }
+		public List<QuestionComment> Comments { get; set; }
 
 		public List<FollowedQuestion> FollowedQuestions { get; set; }
 	}
