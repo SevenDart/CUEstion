@@ -230,20 +230,6 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task SubscribeToQuestion(int questionId, int userId)
-        {
-            var followedQuestion = new FollowedQuestion()
-            {
-                UserId = userId,
-                QuestionId = questionId
-            };
-
-            _context.FollowedQuestions.Add(followedQuestion);
-
-            await _context.SaveChangesAsync();
-        }
-
-
         public async Task MarkQuestion(int userId, int questionId, int markValue)
         {
             var questionMark = await _context
@@ -266,31 +252,6 @@ namespace BLL.Implementations
             question.Rate += markValue;
 
             await _context.SaveChangesAsync();
-        }
-
-        public async Task UnsubscribeFromQuestion(int questionId, int userId)
-        {
-            var followedQuestion = new FollowedQuestion()
-            {
-                UserId = userId,
-                QuestionId = questionId
-            };
-
-            _context.FollowedQuestions.Remove(followedQuestion);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<bool> IsSubscribedToQuestion(int questionId, int userId)
-        {
-            var isSubscribed = await _context
-                .FollowedQuestions
-                .ContainsAsync(new FollowedQuestion()
-                {
-                    QuestionId = questionId,
-                    UserId = userId
-                });
-            return isSubscribed;
         }
     }
 }

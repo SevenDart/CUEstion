@@ -47,7 +47,7 @@ namespace BLL.Implementations
 				Username = new Regex("@.+").Replace(authDto.Email, ""),
 				Password = hashed,
 				Salt = saltHash,
-				Role = "User"
+				SystemRole = "User"
 			};
 
 			_context.Users.Add(user);
@@ -82,7 +82,7 @@ namespace BLL.Implementations
 				authDto = null;
 			else
 			{
-				authDto.Role = user.Role;
+				authDto.Role = user.SystemRole;
 				authDto.Id = user.Id;
 			}
 
@@ -122,21 +122,6 @@ namespace BLL.Implementations
 		{
 			var users = await _context.Users.ProjectToType<UserDto>().ToListAsync();
 			return users;
-		}
-
-		public async Task<IEnumerable<QuestionDto>> GetFollowedQuestions(int userId)
-		{
-			var questions = await _context
-				.FollowedQuestions
-				.Include(fq => fq.Question)
-				.ThenInclude(q => q.Tags)
-				.Where(fq => fq.UserId == userId)
-				.Select(fq => fq.Question)
-				.ProjectToType<QuestionDto>()
-				.ToListAsync();
-			
-
-			return questions;
 		}
 	}
 }

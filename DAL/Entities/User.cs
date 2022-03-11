@@ -26,11 +26,11 @@ namespace DAL.Entities
 		
 		[Required]
 		[MaxLength(10)]
-		public string Role { get; set; }
+		public string SystemRole { get; set; }
 
 		public int Rate { get; set; }
 
 		public List<Tag> InterestedTags { get; set; }
-		public List<FollowedQuestion> FollowedQuestions { get; set; }
+		public List<UserWorkspace> AccessedWorkspaces { get; set; }
 	}
 }

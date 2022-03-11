@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using BLL.Interfaces;
 
@@ -113,15 +112,6 @@ namespace WEB.Controllers
             }
             
             var list = await _questionManagerService.GetUsersQuestions(userId);
-            return Ok(list);
-        }
-
-        [HttpGet("subscribed")]
-        [Authorize]
-        public async Task<IActionResult> GetFollowedQuestions()
-        {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
-            var list = await _userManagerService.GetFollowedQuestions(userId);
             return Ok(list);
         }
     }

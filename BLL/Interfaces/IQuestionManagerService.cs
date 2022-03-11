@@ -16,9 +16,6 @@ namespace BLL.Interfaces
         public Task CreateQuestion(QuestionDto questionDto);
         public Task UpdateQuestion(QuestionDto questionDto);
         public Task DeleteQuestion(int questionId);
-        public Task SubscribeToQuestion(int questionId, int userId);
         public Task MarkQuestion(int userId, int questionId, int markValue);
-        public Task<bool> IsSubscribedToQuestion(int questionId, int userId);
-        public Task UnsubscribeFromQuestion(int questionId, int userId);
     }
 }

@@ -116,60 +116,6 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpGet("{questionId}/subscribe")]
-        [Authorize]
-        public async Task<IActionResult> SubscribeToQuestion(int questionId)
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
-            
-            try
-            {
-                await _questionManagerService.SubscribeToQuestion(questionId, userId);
-            }
-            catch (NullReferenceException)
-            {
-                return NotFound(new {Message = "No such question."});
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("{questionId}/unsubscribe")]
-        [Authorize]
-        public async Task<IActionResult> UnsubscribeFromQuestion(int questionId)
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
-
-            try
-            {
-                await _questionManagerService.UnsubscribeFromQuestion(questionId, userId);
-            }
-            catch (NullReferenceException)
-            {
-                return NotFound(new {Message = "No such question."});
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("{questionId}/is-subscribed")]
-        [Authorize]
-        public async Task<IActionResult> IsSubscribedToQuestion(int questionId)
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
-            bool isSubscribed;
-            try
-            {
-                isSubscribed = await _questionManagerService.IsSubscribedToQuestion(questionId, userId);
-            }
-            catch (NullReferenceException)
-            {
-                return NotFound(new {Message = "No such question."});
-            }
-
-            return Ok(isSubscribed);
-        }
-
 
         [HttpPut("{questionId}/upvote")]
         [Authorize]
