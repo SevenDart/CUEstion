@@ -12,7 +12,7 @@ namespace BLL.Interfaces
         public Task<QuestionDto> GetQuestion(int questionId);
         public Task<IEnumerable<QuestionDto>> Search(string query, string[] tags);
         public Task<IEnumerable<QuestionDto>> FilterQuestions(string[] tags);
-        public Task<IEnumerable<QuestionDto>> GetUsersQuestions(int userId);
+        public Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId);
         public Task CreateQuestion(QuestionDto questionDto);
         public Task UpdateQuestion(QuestionDto questionDto);
         public Task DeleteQuestion(int questionId);

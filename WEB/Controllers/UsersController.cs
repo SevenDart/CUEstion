@@ -111,7 +111,7 @@ namespace WEB.Controllers
                 return NotFound(new { Message = "User not found." });
             }
             
-            var list = await _questionManagerService.GetUsersQuestions(userId);
+            var list = await _questionManagerService.GetQuestionsCreatedByUser(userId);
             return Ok(list);
         }
     }

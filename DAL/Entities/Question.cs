@@ -20,6 +20,9 @@ namespace DAL.Entities
 
 		public int? UserId { get; set; }
 		public User User { get; set; }
+		
+		public int? WorkspaceId { get; set; }
+		public Workspace Workspace { get; set; }
 
 		public DateTime CreateTime { get; set; }
 		public DateTime? UpdateTime { get; set; }
@@ -27,7 +30,5 @@ namespace DAL.Entities
 		public List<Tag> Tags { get; set; }
 		public List<Answer> Answers { get; set; }
 		public List<QuestionComment> Comments { get; set; }
-
-		public List<FollowedQuestion> FollowedQuestions { get; set; }
 	}
 }

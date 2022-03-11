@@ -13,10 +13,12 @@ namespace WEB.Controllers
     public class QuestionsController : ControllerBase
     {
         private readonly IQuestionManagerService _questionManagerService;
+        private readonly IMarkManagerService _markManagerService;
 
-        public QuestionsController(IQuestionManagerService questionManagerService)
+        public QuestionsController(IQuestionManagerService questionManagerService, IMarkManagerService markManagerService)
         {
             _questionManagerService = questionManagerService;
+            _markManagerService = markManagerService;
         }
 
         [HttpGet]
@@ -64,23 +66,15 @@ namespace WEB.Controllers
             var question = await _questionManagerService.GetQuestion(questionId);
             return question != null
                 ? Ok(question)
-                : StatusCode(404, new {Message = "No such question."});
+                : NotFound(new {Message = $"Question with id {questionId} not found."});
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateQuestion(QuestionDto questionDto)
         {
-            try
-            {
-                await _questionManagerService.CreateQuestion(questionDto);
-            }
-            catch (NullReferenceException)
-            {
-                return NotFound(new {Message = "Tag not found."});
-            }
-
-            return Ok(questionDto.Id);
+            await _questionManagerService.CreateQuestion(questionDto);
+            return Ok(questionDto);
         }
 
 
@@ -88,15 +82,13 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteQuestion(int questionId)
         {
-            try
+            var question = await _questionManagerService.GetQuestion(questionId);
+            if (question == null)
             {
-                await _questionManagerService.DeleteQuestion(questionId);
+                return NotFound(new {Message = $"Question with id {questionId} not found."});
             }
-            catch (NullReferenceException)
-            {
-                return NotFound(new {Message = "No such question."});
-            } 
             
+            await _questionManagerService.DeleteQuestion(questionId);
             return Ok();
         }
 
@@ -104,16 +96,14 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateQuestion(QuestionDto questionDto)
         {
-            try
+            var question = await _questionManagerService.GetQuestion(questionDto.Id);
+            if (question == null)
             {
-                await _questionManagerService.UpdateQuestion(questionDto);
-            }
-            catch (NullReferenceException)
-            {
-                return NotFound(new {Message = "No such question."});
+                return NotFound(new {Message = $"Question with id {questionDto.Id} not found."});
             }
 
-            return Ok();
+            await _questionManagerService.UpdateQuestion(questionDto);
+            return Ok(questionDto);
         }
 
 
@@ -122,14 +112,21 @@ namespace WEB.Controllers
         public async Task<IActionResult> UpvoteForQuestion(int questionId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
-            try
+
+            var question = await _questionManagerService.GetQuestion(questionId);
+            if (question == null)
             {
-                await _questionManagerService.MarkQuestion(userId, questionId, 1);
+                return NotFound(new {Message = $"Question with id {questionId} not found."});
             }
-            catch (NullReferenceException)
+            
+            var currentMark = await _markManagerService.GetQuestionMarkAsync(userId, questionId);
+
+            if (currentMark != null && currentMark.MarkValue == 1)
             {
-                return NotFound(new {Message = "No such question."});
+                return Conflict(new { Message = "You can't set the same mark again." });
             }
+            
+            await _questionManagerService.MarkQuestion(userId, questionId, 1);
 
             return Ok();
         }
@@ -139,14 +136,21 @@ namespace WEB.Controllers
         public async Task<IActionResult> DownvoteForQuestion(int questionId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
-            try
+            
+            var question = await _questionManagerService.GetQuestion(questionId);
+            if (question == null)
             {
-                await _questionManagerService.MarkQuestion(userId, questionId, -1);
+                return NotFound(new {Message = $"Question with id {questionId} not found."});
             }
-            catch (NullReferenceException)
+            
+            var currentMark = await _markManagerService.GetQuestionMarkAsync(userId, questionId);
+
+            if (currentMark != null &&  currentMark.MarkValue == -1)
             {
-                return NotFound(new {Message = "No such question."});
+                return Conflict(new { Message = "You can't set the same mark again." });
             }
+            
+            await _questionManagerService.MarkQuestion(userId, questionId, -1);
 
             return Ok();
         }

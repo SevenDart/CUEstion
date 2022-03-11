@@ -125,7 +125,7 @@ namespace BLL.Implementations
             return questions.Adapt<QuestionDto[]>();
         }
 
-        public async Task<IEnumerable<QuestionDto>> GetUsersQuestions(int userId)
+        public async Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId)
         {
             var questions = await _context
                 .Questions
@@ -150,12 +150,10 @@ namespace BLL.Implementations
             foreach (var tag in questionDto.Tags)
             {
                 var foundTag = await _tagManagerService.FindTag(tag);
-                if (foundTag == null)
+                if (foundTag != null)
                 {
-                    throw new NullReferenceException();
+                    question.Tags.Add(foundTag);
                 }
-
-                question.Tags.Add(foundTag);
             }
 
             _context.Questions.Add(question);
@@ -163,6 +161,7 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
 
             questionDto.Id = question.Id;
+            questionDto.Tags = question.Tags.Select(t => t.Name).ToList();
         }
 
         public async Task UpdateQuestion(QuestionDto questionDto)
@@ -171,12 +170,7 @@ namespace BLL.Implementations
                 .Questions
                 .Include(q => q.Tags)
                 .FirstOrDefaultAsync(q => q.Id == questionDto.Id);
-
-            if (question == null)
-            {
-                throw new NullReferenceException();
-            }
-
+            
             if (questionDto.Text != null)
             {
                 question.Text = questionDto.Text;
@@ -202,12 +196,10 @@ namespace BLL.Implementations
             foreach (var tag in addTags)
             {
                 var foundTag = await _tagManagerService.FindTag(tag);
-                if (foundTag == null)
+                if (foundTag != null)
                 {
-                    throw new Exception($"No such tag: {tag}.");
+                    question.Tags.Add(foundTag);
                 }
-
-                question.Tags.Add(foundTag);
             }
 
             foreach (var tag in deleteTags)
@@ -217,6 +209,8 @@ namespace BLL.Implementations
 
 
             await _context.SaveChangesAsync();
+
+            questionDto.Tags = question.Tags.Select(t => t.Name).ToList();
         }
 
         public async Task DeleteQuestion(int questionId)
@@ -246,7 +240,7 @@ namespace BLL.Implementations
                 _context.QuestionMarks.Add(questionMark);
             }
 
-            await _markManagerService.SetMark(questionMark, markValue);
+            await _markManagerService.SetMarkAsync(questionMark, markValue);
 
             var question = await _context.Questions.FindAsync(questionId);
             question.Rate += markValue;
