@@ -63,7 +63,7 @@ namespace WEB.Controllers
         [HttpGet("{questionId}")]
         public async Task<IActionResult> GetQuestion(int questionId)
         {
-            var question = await _questionManagerService.GetQuestion(questionId);
+            var question = await _questionManagerService.GetQuestionAsync(questionId);
             return question != null
                 ? Ok(question)
                 : NotFound(new {Message = $"Question with id {questionId} not found."});
@@ -82,7 +82,7 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteQuestion(int questionId)
         {
-            var question = await _questionManagerService.GetQuestion(questionId);
+            var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
@@ -96,7 +96,7 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateQuestion(QuestionDto questionDto)
         {
-            var question = await _questionManagerService.GetQuestion(questionDto.Id);
+            var question = await _questionManagerService.GetQuestionAsync(questionDto.Id);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionDto.Id} not found."});
@@ -113,14 +113,13 @@ namespace WEB.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
 
-            var question = await _questionManagerService.GetQuestion(questionId);
+            var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
             }
             
             var currentMark = await _markManagerService.GetQuestionMarkAsync(userId, questionId);
-
             if (currentMark != null && currentMark.MarkValue == 1)
             {
                 return Conflict(new { Message = "You can't set the same mark again." });
@@ -137,14 +136,13 @@ namespace WEB.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
             
-            var question = await _questionManagerService.GetQuestion(questionId);
+            var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
             }
             
             var currentMark = await _markManagerService.GetQuestionMarkAsync(userId, questionId);
-
             if (currentMark != null &&  currentMark.MarkValue == -1)
             {
                 return Conflict(new { Message = "You can't set the same mark again." });

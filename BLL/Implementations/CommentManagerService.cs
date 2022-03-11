@@ -22,7 +22,7 @@ namespace BLL.Implementations
             _markManagerService = markManagerService;
         }
 
-        public async Task<IEnumerable<CommentDto>> GetComments(int? questionId, int? answerId)
+        public async Task<IEnumerable<CommentDto>> GetCommentsAsync(int? questionId, int? answerId)
         {
             IEnumerable<CommentDto> comments;
             if (questionId != null)
@@ -47,7 +47,28 @@ namespace BLL.Implementations
             return comments;
         }
 
-        public async Task CreateComment(CommentDto commentDto, int? questionId, int? answerId)
+        public async Task<CommentDto> GetCommentAsync(int? questionId, int? answerId)
+        {
+            Comment comment;
+            if (questionId != null)
+            {
+                comment = await _context
+                    .QuestionComments
+                    .Include(c => c.User)
+                    .FirstOrDefaultAsync(c => c.QuestionId == questionId);
+            }
+            else
+            {
+                comment = await _context
+                    .AnswerComments
+                    .Include(c => c.User)
+                    .FirstOrDefaultAsync(c => c.AnswerId == answerId);
+            }
+
+            return comment.Adapt<CommentDto>();
+        }
+
+        public async Task CreateCommentAsync(CommentDto commentDto, int? questionId, int? answerId)
         {
             Comment comment;
             if (questionId != null)
@@ -76,7 +97,7 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateComment(CommentDto commentDto)
+        public async Task UpdateCommentAsync(CommentDto commentDto)
         {
             var comment = await _context
                 .Comments
@@ -92,7 +113,7 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteComment(int commentId)
+        public async Task DeleteCommentAsync(int commentId)
         {
             var comment = await _context
                 .Comments
@@ -103,7 +124,7 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task MarkComment(int userId, int commentId, int newMarkValue)
+        public async Task MarkCommentAsync(int userId, int commentId, int newMarkValue)
         {
             var commentMark = await _context
                 .CommentMarks
@@ -119,7 +140,7 @@ namespace BLL.Implementations
                 _context.CommentMarks.Add(commentMark);
             }
             
-            await _markManagerService.SetMark(commentMark, newMarkValue);
+            await _markManagerService.SetMarkAsync(commentMark, newMarkValue);
             
             var comment = await _context.Comments.FindAsync(commentId);
             comment.Rate += newMarkValue;

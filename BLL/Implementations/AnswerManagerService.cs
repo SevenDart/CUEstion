@@ -22,7 +22,7 @@ namespace BLL.Implementations
             _markManagerService = markManagerService;
         }
 
-        public async Task<IEnumerable<AnswerDto>> GetAnswers(int questionId)
+        public async Task<IEnumerable<AnswerDto>> GetAnswersAsync(int questionId)
         {
             var answers = await _context
                 .Answers
@@ -34,7 +34,17 @@ namespace BLL.Implementations
             return answers;
         }
 
-        public async Task CreateAnswer(AnswerDto answerDto, int questionId)
+        public async Task<AnswerDto> GetAnswerAsync(int answerId)
+        {
+            var answer = await _context
+                .Answers
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.Id == answerId);
+            
+            return answer.Adapt<AnswerDto>();
+        }
+
+        public async Task CreateAnswerAsync(AnswerDto answerDto, int questionId)
         {
             var answer = new Answer()
             {
@@ -76,7 +86,7 @@ namespace BLL.Implementations
             await _context.SaveChangesAsync();
         }
         
-        public async Task MarkAnswer(int userId, int answerId, int newMarkValue)
+        public async Task MarkAnswerAsync(int userId, int answerId, int newMarkValue)
         {
             var answerMark = await _context
                 .AnswerMarks
@@ -92,7 +102,7 @@ namespace BLL.Implementations
                 _context.AnswerMarks.Add(answerMark);
             }
             
-            await _markManagerService.SetMark(answerMark, newMarkValue);
+            await _markManagerService.SetMarkAsync(answerMark, newMarkValue);
             
             var answer = await _context.Answers.FindAsync(answerId);
             answer.Rate += newMarkValue;

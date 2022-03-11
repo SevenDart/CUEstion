@@ -9,7 +9,7 @@ namespace BLL.Interfaces
     {
         public Task<IEnumerable<QuestionDto>> GetAllQuestions();
         public Task<IEnumerable<QuestionDto>> GetNewestQuestions(int count);
-        public Task<QuestionDto> GetQuestion(int questionId);
+        public Task<QuestionDto> GetQuestionAsync(int questionId);
         public Task<IEnumerable<QuestionDto>> Search(string query, string[] tags);
         public Task<IEnumerable<QuestionDto>> FilterQuestions(string[] tags);
         public Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId);

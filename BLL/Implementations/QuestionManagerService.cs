@@ -51,7 +51,7 @@ namespace BLL.Implementations
             return questions.Adapt<QuestionDto[]>();
         }
 
-        public async Task<QuestionDto> GetQuestion(int questionId)
+        public async Task<QuestionDto> GetQuestionAsync(int questionId)
         {
             var question = await _context
                 .Questions
