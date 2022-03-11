@@ -24,8 +24,7 @@ namespace BLL.Implementations
 			_context = context;
 		}
 
-
-		public AuthDto CreateUser(AuthDto authDto)
+		public async Task<AuthDto> CreateUser(AuthDto authDto)
 		{
 			byte[] salt = new byte[128 / 8];
 			using (var rng = RandomNumberGenerator.Create())
@@ -53,17 +52,17 @@ namespace BLL.Implementations
 
 			_context.Users.Add(user);
 
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 
-			authDto.Id = _context.Users.FirstOrDefault(u => u.Email == authDto.Email).Id;
+			authDto.Id = (await _context.Users.FirstOrDefaultAsync(u => u.Email == authDto.Email)).Id;
 			authDto.Role = "User";
 
 			return authDto;
 		}
 
-		public AuthDto CheckAuthData(AuthDto authDto)
+		public async Task<AuthDto> CheckAuthData(AuthDto authDto)
 		{
-			var user = _context.Users.FirstOrDefault(u => u.Email == authDto.Email);
+			var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == authDto.Email);
 
 			if (user == null)
 			{
@@ -91,57 +90,38 @@ namespace BLL.Implementations
 			return authDto;
 		}
 
-
-		public void UpdateUserInfo(UserDto userDto)
+		public async Task UpdateUserInfo(UserDto userDto)
 		{
-			var user = _context.Users.Find(userDto.Id);
+			var user = await _context.Users.FindAsync(userDto.Id);
 
 			if (userDto.Username != null) user.Username = userDto.Username;
 			if (userDto.Email != null) user.Email = userDto.Email;
 
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
-
-		public UserDto GetUser(int userId)
+		public async Task<UserDto> GetUser(int userId)
 		{
-			var user = _context.Users.Find(userId);
+			var user = await _context.Users.FindAsync(userId);
 
 			return user != null 
 				? new UserDto(user) 
 				: null;
 		}
 
-		public void DeleteUser(int userId)
+		public async Task DeleteUser(int userId)
 		{
-			var user = _context.Users.Find(userId);
+			var user = await _context.Users.FindAsync(userId);
 
 			_context.Users.Remove(user);
 
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
-		public IEnumerable<UserDto> GetAllUsers()
+		public async Task<IEnumerable<UserDto>> GetAllUsers()
 		{
-			var users = _context.Users.ToList();
-			var list = new List<UserDto>();
-			foreach (var user in users)
-			{
-				list.Add(new UserDto(user));
-			}
-			return list;
-		}
-
-		public async Task<IEnumerable<QuestionDto>> GetUsersQuestions(int userId)
-		{
-			var questions = await _context
-				.Questions
-				.Include(q => q.Tags)
-				.Where(q => q.UserId == userId)
-				.ProjectToType<QuestionDto>()
-				.ToListAsync();
-
-			return questions;
+			var users = await _context.Users.ProjectToType<UserDto>().ToListAsync();
+			return users;
 		}
 
 		public async Task<IEnumerable<QuestionDto>> GetFollowedQuestions(int userId)

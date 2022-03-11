@@ -71,7 +71,15 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> CreateQuestion(QuestionDto questionDto)
         {
-            await _questionManagerService.CreateQuestion(questionDto);
+            try
+            {
+                await _questionManagerService.CreateQuestion(questionDto);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "Tag not found."});
+            }
+
             return Ok(questionDto.Id);
         }
 
@@ -80,7 +88,15 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteQuestion(int questionId)
         {
-            await _questionManagerService.DeleteQuestion(questionId);
+            try
+            {
+                await _questionManagerService.DeleteQuestion(questionId);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            } 
+            
             return Ok();
         }
 
@@ -88,7 +104,15 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateQuestion(QuestionDto questionDto)
         {
-            await _questionManagerService.UpdateQuestion(questionDto);
+            try
+            {
+                await _questionManagerService.UpdateQuestion(questionDto);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            }
+
             return Ok();
         }
 
@@ -96,8 +120,17 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> SubscribeToQuestion(int questionId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
-            await _questionManagerService.SubscribeToQuestion(questionId, userId);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+            
+            try
+            {
+                await _questionManagerService.SubscribeToQuestion(questionId, userId);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            }
+
             return Ok();
         }
 
@@ -105,8 +138,17 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UnsubscribeFromQuestion(int questionId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
-            await _questionManagerService.UnsubscribeFromQuestion(questionId, userId);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+
+            try
+            {
+                await _questionManagerService.UnsubscribeFromQuestion(questionId, userId);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            }
+
             return Ok();
         }
 
@@ -114,8 +156,18 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> IsSubscribedToQuestion(int questionId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
-            return Ok(await _questionManagerService.IsSubscribedToQuestion(questionId, userId));
+            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+            bool isSubscribed;
+            try
+            {
+                isSubscribed = await _questionManagerService.IsSubscribedToQuestion(questionId, userId);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            }
+
+            return Ok(isSubscribed);
         }
 
 
@@ -123,8 +175,16 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UpvoteForQuestion(int questionId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
-            await _questionManagerService.MarkQuestion(userId, questionId, 1);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+            try
+            {
+                await _questionManagerService.MarkQuestion(userId, questionId, 1);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            }
+
             return Ok();
         }
 
@@ -132,8 +192,16 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> DownvoteForQuestion(int questionId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.Sid).Value);
-            await _questionManagerService.MarkQuestion(userId, questionId, -1);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+            try
+            {
+                await _questionManagerService.MarkQuestion(userId, questionId, -1);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound(new {Message = "No such question."});
+            }
+
             return Ok();
         }
     }
