@@ -63,7 +63,7 @@ namespace DAL.Migrations
                     b.Property<int>("AnswerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MarkValue")
+                    b.Property<int?>("MarkValue")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "AnswerId");
@@ -112,7 +112,7 @@ namespace DAL.Migrations
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MarkValue")
+                    b.Property<int?>("MarkValue")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "CommentId");
@@ -120,21 +120,6 @@ namespace DAL.Migrations
                     b.HasIndex("CommentId");
 
                     b.ToTable("CommentMarks");
-                });
-
-            modelBuilder.Entity("DAL.Entities.FollowedQuestion", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "QuestionId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("FollowedQuestions");
                 });
 
             modelBuilder.Entity("DAL.Entities.Question", b =>
@@ -181,7 +166,7 @@ namespace DAL.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MarkValue")
+                    b.Property<int?>("MarkValue")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "QuestionId");
@@ -228,15 +213,15 @@ namespace DAL.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<string>("Salt")
                         .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("SystemRole")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -264,21 +249,6 @@ namespace DAL.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("QuestionTag");
-                });
-
-            modelBuilder.Entity("TagUser", b =>
-                {
-                    b.Property<int>("InterestedTagsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("InterestedTagsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("TagUser");
                 });
 
             modelBuilder.Entity("DAL.Entities.AnswerComment", b =>
@@ -371,25 +341,6 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DAL.Entities.FollowedQuestion", b =>
-                {
-                    b.HasOne("DAL.Entities.Question", "Question")
-                        .WithMany("FollowedQuestions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.User", "User")
-                        .WithMany("FollowedQuestions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DAL.Entities.Question", b =>
                 {
                     b.HasOne("DAL.Entities.User", "User")
@@ -434,21 +385,6 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TagUser", b =>
-                {
-                    b.HasOne("DAL.Entities.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("InterestedTagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DAL.Entities.AnswerComment", b =>
                 {
                     b.HasOne("DAL.Entities.Answer", "Answer")
@@ -489,13 +425,6 @@ namespace DAL.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("FollowedQuestions");
-                });
-
-            modelBuilder.Entity("DAL.Entities.User", b =>
-                {
-                    b.Navigation("FollowedQuestions");
                 });
 #pragma warning restore 612, 618
         }

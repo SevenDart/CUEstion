@@ -29,8 +29,5 @@ namespace DAL.Entities
 		public string SystemRole { get; set; }
 
 		public int Rate { get; set; }
-
-		public List<Tag> InterestedTags { get; set; }
-		public List<UserWorkspace> AccessedWorkspaces { get; set; }
 	}
 }

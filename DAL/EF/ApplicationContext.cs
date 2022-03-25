@@ -20,10 +20,6 @@ namespace DAL.EF
 		public DbSet<QuestionMark> QuestionMarks { get; set; }
 		public DbSet<AnswerMark> AnswerMarks { get; set; }
 		public DbSet<CommentMark> CommentMarks { get; set; }
-		
-		public DbSet<Workspace> Workspaces { get; set; }
-		public DbSet<WorkspaceRole> WorkspaceRoles { get; set; }
-		public DbSet<UserWorkspace> UsersWorkspaces { get; set; }
 
 		public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
 		{
