@@ -16,6 +16,10 @@ namespace DAL.EF
 		public DbSet<AnswerComment> AnswerComments { get; set; }
 		
 		public DbSet<Tag> Tags { get; set; }
+		
+		public DbSet<Workspace> Workspaces { get; set; }
+		public DbSet<WorkspaceRole> WorkspaceRoles { get; set; }
+		public DbSet<WorkspaceUser> WorkspaceUsers { get; set; }
 
 		public DbSet<QuestionMark> QuestionMarks { get; set; }
 		public DbSet<AnswerMark> AnswerMarks { get; set; }
@@ -40,6 +44,13 @@ namespace DAL.EF
 			modelBuilder.Entity<Comment>().HasOne(c => c.User).WithMany().OnDelete(DeleteBehavior.SetNull);
 
 			modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+
+			modelBuilder.Entity<WorkspaceUser>().HasKey(wu => new {wu.UserId, wu.WorkspaceId});
+			modelBuilder
+				.Entity<WorkspaceUser>()
+				.HasOne(wu => wu.WorkspaceRole)
+				.WithMany(wr => wr.WorkspaceUsers)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 
 	}

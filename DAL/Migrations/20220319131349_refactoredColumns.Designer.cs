@@ -4,14 +4,16 @@ using DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220319131349_refactoredColumns")]
+    partial class refactoredColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,14 +153,9 @@ namespace DAL.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WorkspaceId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("Questions");
                 });
@@ -239,73 +236,6 @@ namespace DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("DAL.Entities.Workspace", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Workspaces");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("CanAddUsers")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanCreate")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanUpdate")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkspaceId");
-
-                    b.ToTable("WorkspaceRoles");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkspaceRoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "WorkspaceId");
-
-                    b.HasIndex("WorkspaceId");
-
-                    b.HasIndex("WorkspaceRoleId");
-
-                    b.ToTable("WorkspaceUsers");
                 });
 
             modelBuilder.Entity("QuestionTag", b =>
@@ -420,13 +350,7 @@ namespace DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany()
-                        .HasForeignKey("WorkspaceId");
-
                     b.Navigation("User");
-
-                    b.Navigation("Workspace");
                 });
 
             modelBuilder.Entity("DAL.Entities.QuestionMark", b =>
@@ -446,44 +370,6 @@ namespace DAL.Migrations
                     b.Navigation("Question");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
-                {
-                    b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Workspace");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceUser", b =>
-                {
-                    b.HasOne("DAL.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany("WorkspaceUsers")
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.WorkspaceRole", "WorkspaceRole")
-                        .WithMany("WorkspaceUsers")
-                        .HasForeignKey("WorkspaceRoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("Workspace");
-
-                    b.Navigation("WorkspaceRole");
                 });
 
             modelBuilder.Entity("QuestionTag", b =>
@@ -541,16 +427,6 @@ namespace DAL.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("DAL.Entities.Workspace", b =>
-                {
-                    b.Navigation("WorkspaceUsers");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
-                {
-                    b.Navigation("WorkspaceUsers");
                 });
 #pragma warning restore 612, 618
         }

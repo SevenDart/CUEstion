@@ -4,14 +4,16 @@ using DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220304091055_commentsInheritanceTables")]
+    partial class commentsInheritanceTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +65,7 @@ namespace DAL.Migrations
                     b.Property<int>("AnswerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MarkValue")
+                    b.Property<int>("Mark")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "AnswerId");
@@ -112,7 +114,7 @@ namespace DAL.Migrations
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MarkValue")
+                    b.Property<int>("Mark")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "CommentId");
@@ -120,6 +122,21 @@ namespace DAL.Migrations
                     b.HasIndex("CommentId");
 
                     b.ToTable("CommentMarks");
+                });
+
+            modelBuilder.Entity("DAL.Entities.FollowedQuestion", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("FollowedQuestions");
                 });
 
             modelBuilder.Entity("DAL.Entities.Question", b =>
@@ -151,14 +168,9 @@ namespace DAL.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WorkspaceId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("Questions");
                 });
@@ -171,7 +183,7 @@ namespace DAL.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MarkValue")
+                    b.Property<int>("Mark")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "QuestionId");
@@ -218,15 +230,15 @@ namespace DAL.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<string>("Salt")
                         .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("nvarchar(16)");
-
-                    b.Property<string>("SystemRole")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -239,73 +251,6 @@ namespace DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("DAL.Entities.Workspace", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Workspaces");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("CanAddUsers")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanCreate")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanUpdate")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkspaceId");
-
-                    b.ToTable("WorkspaceRoles");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkspaceRoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "WorkspaceId");
-
-                    b.HasIndex("WorkspaceId");
-
-                    b.HasIndex("WorkspaceRoleId");
-
-                    b.ToTable("WorkspaceUsers");
                 });
 
             modelBuilder.Entity("QuestionTag", b =>
@@ -321,6 +266,21 @@ namespace DAL.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("QuestionTag");
+                });
+
+            modelBuilder.Entity("TagUser", b =>
+                {
+                    b.Property<int>("InterestedTagsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("InterestedTagsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TagUser");
                 });
 
             modelBuilder.Entity("DAL.Entities.AnswerComment", b =>
@@ -413,6 +373,25 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DAL.Entities.FollowedQuestion", b =>
+                {
+                    b.HasOne("DAL.Entities.Question", "Question")
+                        .WithMany("FollowedQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.User", "User")
+                        .WithMany("FollowedQuestions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAL.Entities.Question", b =>
                 {
                     b.HasOne("DAL.Entities.User", "User")
@@ -420,13 +399,7 @@ namespace DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany()
-                        .HasForeignKey("WorkspaceId");
-
                     b.Navigation("User");
-
-                    b.Navigation("Workspace");
                 });
 
             modelBuilder.Entity("DAL.Entities.QuestionMark", b =>
@@ -448,44 +421,6 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
-                {
-                    b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Workspace");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceUser", b =>
-                {
-                    b.HasOne("DAL.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany("WorkspaceUsers")
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.WorkspaceRole", "WorkspaceRole")
-                        .WithMany("WorkspaceUsers")
-                        .HasForeignKey("WorkspaceRoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("Workspace");
-
-                    b.Navigation("WorkspaceRole");
-                });
-
             modelBuilder.Entity("QuestionTag", b =>
                 {
                     b.HasOne("DAL.Entities.Question", null)
@@ -497,6 +432,21 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TagUser", b =>
+                {
+                    b.HasOne("DAL.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("InterestedTagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -541,16 +491,13 @@ namespace DAL.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("FollowedQuestions");
                 });
 
-            modelBuilder.Entity("DAL.Entities.Workspace", b =>
+            modelBuilder.Entity("DAL.Entities.User", b =>
                 {
-                    b.Navigation("WorkspaceUsers");
-                });
-
-            modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
-                {
-                    b.Navigation("WorkspaceUsers");
+                    b.Navigation("FollowedQuestions");
                 });
 #pragma warning restore 612, 618
         }
