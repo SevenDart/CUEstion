@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -29,5 +30,7 @@ namespace DAL.Entities
 		public string SystemRole { get; set; }
 
 		public int Rate { get; set; }
+		
+		public IEnumerable<WorkspaceUser> Workspaces { get; set; }
 	}
 }

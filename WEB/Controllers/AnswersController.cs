@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WEB.Controllers
 {
     [ApiController]
-    [Route("questions")]
+    [Route("Answers")]
     public class AnswersController : ControllerBase
     {
         private readonly IAnswerManagerService _answerManagerService;

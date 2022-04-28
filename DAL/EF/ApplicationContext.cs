@@ -51,6 +51,13 @@ namespace DAL.EF
 				.HasOne(wu => wu.WorkspaceRole)
 				.WithMany(wr => wr.WorkspaceUsers)
 				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder
+				.Entity<Workspace>()
+				.HasOne(w => w.Chief)
+				.WithMany()
+				.HasForeignKey(w => w.ChiefId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 
 	}

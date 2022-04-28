@@ -8,7 +8,7 @@ using BLL.Interfaces;
 namespace WEB.Controllers
 {
     [ApiController]
-    [Route("users")]
+    [Route("Users")]
     public class UsersController : ControllerBase
     {
         private readonly IUserManagerService _userManagerService;

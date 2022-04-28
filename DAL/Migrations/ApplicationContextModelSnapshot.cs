@@ -248,10 +248,15 @@ namespace DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ChiefId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChiefId");
 
                     b.ToTable("Workspaces");
                 });
@@ -270,6 +275,9 @@ namespace DAL.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageRoles")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanUpdate")
@@ -421,7 +429,7 @@ namespace DAL.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("DAL.Entities.Workspace", "Workspace")
-                        .WithMany()
+                        .WithMany("Questions")
                         .HasForeignKey("WorkspaceId");
 
                     b.Navigation("User");
@@ -448,6 +456,17 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DAL.Entities.Workspace", b =>
+                {
+                    b.HasOne("DAL.Entities.User", "Chief")
+                        .WithMany()
+                        .HasForeignKey("ChiefId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chief");
+                });
+
             modelBuilder.Entity("DAL.Entities.WorkspaceRole", b =>
                 {
                     b.HasOne("DAL.Entities.Workspace", "Workspace")
@@ -462,7 +481,7 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.WorkspaceUser", b =>
                 {
                     b.HasOne("DAL.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Workspaces")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -543,8 +562,15 @@ namespace DAL.Migrations
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("DAL.Entities.User", b =>
+                {
+                    b.Navigation("Workspaces");
+                });
+
             modelBuilder.Entity("DAL.Entities.Workspace", b =>
                 {
+                    b.Navigation("Questions");
+
                     b.Navigation("WorkspaceUsers");
                 });
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
@@ -9,6 +10,20 @@ namespace WEB
 {
 	public static class Tools
 	{
+		public static int GetUserIdFromToken(ClaimsPrincipal claimsPrincipal)
+		{
+			var userIdClaim = claimsPrincipal
+				.Claims
+				.FirstOrDefault(claim => claim.Type == ClaimTypes.Sid);
+
+			if (userIdClaim == null)
+			{
+				throw new Exception("Token is invalid.");
+			}
+
+			return int.Parse(userIdClaim.Value);
+		}
+		
 		public static string CreateToken(string email, int id, string role)
 		{
 			var claims = new List<Claim>

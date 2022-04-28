@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WEB.Controllers
 {
+    [ApiController]
+    [Route("Comments")]
     public class CommentsController : ControllerBase
     {
         private readonly ICommentManagerService _commentManagerService;

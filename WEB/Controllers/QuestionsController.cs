@@ -9,7 +9,7 @@ using BLL.ModelsDTO;
 namespace WEB.Controllers
 {
     [ApiController]
-    [Route("questions")]
+    [Route("Questions")]
     public class QuestionsController : ControllerBase
     {
         private readonly IQuestionManagerService _questionManagerService;

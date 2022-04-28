@@ -40,6 +40,8 @@ namespace WEB
 			services.AddScoped<ICommentManagerService, CommentManagerService>();
 			services.AddScoped<IAnswerManagerService, AnswerManagerService>();
 			services.AddScoped<IQuestionManagerService, QuestionManagerService>();
+			services.AddScoped<IWorkspaceRoleManagerService, WorkspaceRoleManagerService>();
+			services.AddScoped<IWorkspaceManagerService, WorkspaceManagerService>();
 
 			TypeAdapterConfig<Question, QuestionDto>
 				.NewConfig()
@@ -71,6 +73,7 @@ namespace WEB
 									.AllowAnyOrigin()
 					)
 				);
+			services.AddSwaggerGen();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -78,6 +81,8 @@ namespace WEB
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+				app.UseSwagger();
+				app.UseSwaggerUI();
 			}
 			else
 			{

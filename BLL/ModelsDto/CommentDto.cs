@@ -19,6 +19,5 @@ namespace BLL.ModelsDTO
 		public int? AnswerId { get; set; }
 
 		public UserDto User { get; set; }
-
 	}
 }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WEB.Controllers
 {
+    [ApiController]
+    [Route("Tags")]
     public class TagsController : ControllerBase
     {
         private readonly ITagManagerService _tagManagerService;

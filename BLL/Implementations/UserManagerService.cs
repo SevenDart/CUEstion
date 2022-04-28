@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -104,9 +103,7 @@ namespace BLL.Implementations
 		{
 			var user = await _context.Users.FindAsync(userId);
 
-			return user != null 
-				? new UserDto(user) 
-				: null;
+			return user?.Adapt<UserDto>();
 		}
 
 		public async Task DeleteUser(int userId)
