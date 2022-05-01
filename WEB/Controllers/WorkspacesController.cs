@@ -28,7 +28,12 @@ namespace WEB.Controllers
         {
             var userId = Tools.GetUserIdFromToken(User);
 
-            var workspaces = await _workspaceManagerService.GetUserWorkspaces(userId);
+            if (userId == null)
+            {
+                return Forbid();
+            }
+            
+            var workspaces = await _workspaceManagerService.GetUserWorkspaces(userId.Value);
             
             return Ok(workspaces);
         }
@@ -37,8 +42,13 @@ namespace WEB.Controllers
         public async Task<IActionResult> CreateWorkspace([FromBody] WorkspaceDto workspaceDto)
         {
             var userId = Tools.GetUserIdFromToken(User);
+            
+            if (userId == null)
+            {
+                return Forbid();
+            }
 
-            var result = await _workspaceManagerService.CreateWorkspace(userId, workspaceDto);
+            var result = await _workspaceManagerService.CreateWorkspace(userId.Value, workspaceDto);
 
             return Ok(result);
         }
@@ -53,11 +63,15 @@ namespace WEB.Controllers
             }
             
             var userId = Tools.GetUserIdFromToken(User);
+            if (userId == null)
+            {
+                return Forbid();
+            }
 
             WorkspaceDto result = null;
             try
             {
-                result = await _workspaceManagerService.UpdateWorkspace(workspaceId, userId, workspaceDto);
+                result = await _workspaceManagerService.UpdateWorkspace(workspaceId, userId.Value, workspaceDto);
             }
             catch (ErrorRequestException e)
             {
@@ -77,10 +91,14 @@ namespace WEB.Controllers
             }
             
             var userId = Tools.GetUserIdFromToken(User);
+            if (userId == null)
+            {
+                return Forbid();
+            }
 
             try
             {
-                await _workspaceManagerService.DeleteWorkspace(workspaceId, userId);
+                await _workspaceManagerService.DeleteWorkspace(workspaceId, userId.Value);
             }
             catch (ErrorRequestException e)
             {
@@ -94,6 +112,10 @@ namespace WEB.Controllers
         public async Task<IActionResult> AddUserToWorkspace(int workspaceId, [FromBody] WorkspaceUserDto workspaceUserDto)
         {
             var addingUserId = Tools.GetUserIdFromToken(User);
+            if (addingUserId == null)
+            {
+                return Forbid();
+            }
             
             var workspace = await _workspaceManagerService.GetWorkspaceById(workspaceId);
             if (workspace == null)
@@ -101,7 +123,7 @@ namespace WEB.Controllers
                 return NotFound();
             }
 
-            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId, workspaceId,
+            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId.Value, workspaceId,
                 AccessRights.CanAddUsers))
             {
                 return Forbid();
@@ -124,6 +146,10 @@ namespace WEB.Controllers
         public async Task<IActionResult> RemoveUserFromWorkspace(int workspaceId, int userId)
         {
             var addingUserId = Tools.GetUserIdFromToken(User);
+            if (addingUserId == null)
+            {
+                return Forbid();
+            }
             
             var workspace = await _workspaceManagerService.GetWorkspaceById(workspaceId);
             if (workspace == null)
@@ -131,7 +157,7 @@ namespace WEB.Controllers
                 return NotFound();
             }
 
-            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId, workspaceId,
+            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId.Value, workspaceId,
                 AccessRights.CanAddUsers))
             {
                 return Forbid();
@@ -153,6 +179,10 @@ namespace WEB.Controllers
         public async Task<IActionResult> UpdateWorkspaceUser(int workspaceId, int userId, [FromBody] WorkspaceUserDto workspaceUserDto)
         {
             var addingUserId = Tools.GetUserIdFromToken(User);
+            if (addingUserId == null)
+            {
+                return Forbid();
+            }
             
             var workspace = await _workspaceManagerService.GetWorkspaceById(workspaceId);
             if (workspace == null)
@@ -160,7 +190,7 @@ namespace WEB.Controllers
                 return NotFound();
             }
 
-            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId, workspaceId,
+            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId.Value, workspaceId,
                 AccessRights.CanAddUsers))
             {
                 return Forbid();
@@ -182,6 +212,10 @@ namespace WEB.Controllers
         public async Task<IActionResult> GetAllWorkspaceUsers(int workspaceId)
         {
             var addingUserId = Tools.GetUserIdFromToken(User);
+            if (addingUserId == null)
+            {
+                return Forbid();
+            }
             
             var workspace = await _workspaceManagerService.GetWorkspaceById(workspaceId);
             if (workspace == null)
@@ -189,7 +223,7 @@ namespace WEB.Controllers
                 return NotFound();
             }
 
-            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId, workspaceId))
+            if (!await _workspaceRoleManagerService.CheckUserAccess(addingUserId.Value, workspaceId))
             {
                 return Forbid();
             }

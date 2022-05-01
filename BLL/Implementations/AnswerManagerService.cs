@@ -97,7 +97,8 @@ namespace BLL.Implementations
                 answerMark = new AnswerMark()
                 {
                     AnswerId = answerId,
-                    UserId = userId
+                    UserId = userId,
+                    MarkValue = 0
                 };
                 _context.AnswerMarks.Add(answerMark);
             }

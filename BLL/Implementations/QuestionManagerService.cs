@@ -27,17 +27,18 @@ namespace BLL.Implementations
             _markManagerService = markManagerService;
         }
 
-        public async Task<IEnumerable<QuestionDto>> GetAllQuestions()
+        public async Task<IEnumerable<QuestionDto>> GetAllQuestionsAsync(int? workspaceId)
         {
             var questions = await _context
                 .Questions
                 .Include(q => q.Tags)
+                .Where(q => q.WorkspaceId == workspaceId)
                 .ToListAsync();
 
             return questions.Adapt<QuestionDto[]>();
         }
 
-        public async Task<IEnumerable<QuestionDto>> GetNewestQuestions(int count)
+        public async Task<IEnumerable<QuestionDto>> GetNewestQuestionsAsync(int count, int? workspaceId)
         {
             var questions = await _context
                 .Questions
@@ -45,6 +46,7 @@ namespace BLL.Implementations
                 .OrderByDescending(q => q.CreateTime)
                 .ThenByDescending(q => q.UpdateTime)
                 .ThenByDescending(q => q.Rate)
+                .Where(q => q.WorkspaceId == workspaceId)
                 .Take(count)
                 .ToListAsync();
 
@@ -62,7 +64,7 @@ namespace BLL.Implementations
             return question.Adapt<QuestionDto>();
         }
 
-        public async Task<IEnumerable<QuestionDto>> Search(string query, string[] tags)
+        public async Task<IEnumerable<QuestionDto>> Search(string query, string[] tags, int? workspaceId)
         {
             var words = query.Split(' ', '.', ',', ':', '?', '!');
             var subseqs = new List<string>();
@@ -95,6 +97,7 @@ namespace BLL.Implementations
 
             IEnumerable<Question> questions = (await _context
                     .Questions
+                    .Where(q => q.WorkspaceId == workspaceId)
                     .Include(q => q.Tags)
                     .ToListAsync()
                 ).Where(q => tags.All(t =>
@@ -113,23 +116,12 @@ namespace BLL.Implementations
             return questions.Adapt<QuestionDto[]>();
         }
 
-        public async Task<IEnumerable<QuestionDto>> FilterQuestions(string[] tags)
-        {
-            var questions = (await _context
-                    .Questions
-                    .Include(q => q.Tags)
-                    .ToListAsync())
-                .Where(q => tags.All(t =>
-                    q.Tags.Any(qTag => string.Equals(qTag.Name, t, StringComparison.CurrentCultureIgnoreCase))));
-
-            return questions.Adapt<QuestionDto[]>();
-        }
-
-        public async Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId)
+        public async Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId, int? workspaceId)
         {
             var questions = await _context
                 .Questions
                 .Include(t => t.Tags)
+                .Where(q => q.WorkspaceId == workspaceId)
                 .Where(q => q.UserId == userId)
                 .ToListAsync();
 
@@ -144,7 +136,8 @@ namespace BLL.Implementations
                 Text = questionDto.Text,
                 CreateTime = DateTime.Now,
                 UserId = questionDto.User.Id,
-                Tags = new List<Tag>()
+                Tags = new List<Tag>(),
+                WorkspaceId = questionDto.WorkspaceId
             };
 
             foreach (var tag in questionDto.Tags)
@@ -235,7 +228,8 @@ namespace BLL.Implementations
                 questionMark = new QuestionMark()
                 {
                     QuestionId = questionId,
-                    UserId = userId
+                    UserId = userId,
+                    MarkValue = 0
                 };
                 _context.QuestionMarks.Add(questionMark);
             }

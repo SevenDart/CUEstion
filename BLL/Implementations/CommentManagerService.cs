@@ -135,7 +135,8 @@ namespace BLL.Implementations
                 commentMark = new CommentMark()
                 {
                     CommentId = commentId,
-                    UserId = userId
+                    UserId = userId,
+                    MarkValue = 0
                 };
                 _context.CommentMarks.Add(commentMark);
             }

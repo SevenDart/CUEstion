@@ -7,12 +7,11 @@ namespace BLL.Interfaces
 {
     public interface IQuestionManagerService
     {
-        public Task<IEnumerable<QuestionDto>> GetAllQuestions();
-        public Task<IEnumerable<QuestionDto>> GetNewestQuestions(int count);
+        public Task<IEnumerable<QuestionDto>> GetAllQuestionsAsync(int? workspaceId);
+        public Task<IEnumerable<QuestionDto>> GetNewestQuestionsAsync(int count, int? workspaceId);
         public Task<QuestionDto> GetQuestionAsync(int questionId);
-        public Task<IEnumerable<QuestionDto>> Search(string query, string[] tags);
-        public Task<IEnumerable<QuestionDto>> FilterQuestions(string[] tags);
-        public Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId);
+        public Task<IEnumerable<QuestionDto>> Search(string query, string[] tags, int? workspaceId);
+        public Task<IEnumerable<QuestionDto>> GetQuestionsCreatedByUser(int userId, int? workspaceId);
         public Task CreateQuestion(QuestionDto questionDto);
         public Task UpdateQuestion(QuestionDto questionDto);
         public Task DeleteQuestion(int questionId);

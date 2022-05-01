@@ -32,7 +32,8 @@ namespace WEB.Controllers
             }
             
             var accessingUserId = Tools.GetUserIdFromToken(User);
-            if (!await _workspaceRoleManagerService.CheckUserAccess(accessingUserId, workspaceId))
+            if (accessingUserId == null 
+                || !await _workspaceRoleManagerService.CheckUserAccess(accessingUserId.Value, workspaceId))
             {
                 return Forbid();
             }
@@ -51,7 +52,8 @@ namespace WEB.Controllers
             }
             
             var accessingUserId = Tools.GetUserIdFromToken(User);
-            if (!await _workspaceRoleManagerService.CheckUserAccess(accessingUserId, workspaceId))
+            if (accessingUserId == null 
+                || !await _workspaceRoleManagerService.CheckUserAccess(accessingUserId.Value, workspaceId))
             {
                 return Forbid();
             }
@@ -66,7 +68,8 @@ namespace WEB.Controllers
             [FromBody] WorkspaceRoleDto workspaceRoleDto)
         {
             var accessingUserId = Tools.GetUserIdFromToken(User);
-            if (!await _workspaceRoleManagerService.CheckUserAccess(accessingUserId, workspaceId, AccessRights.CanManageRoles))
+            if (accessingUserId == null 
+                || !await _workspaceRoleManagerService.CheckUserAccess(accessingUserId.Value, workspaceId, AccessRights.CanManageRoles))
             {
                 return Forbid();
             }
@@ -82,7 +85,8 @@ namespace WEB.Controllers
             [FromBody] WorkspaceRoleDto workspaceRoleDto)
         {
             var accessingUserId = Tools.GetUserIdFromToken(User);
-            if (!await _workspaceRoleManagerService.CheckUserAccess(accessingUserId, workspaceId, AccessRights.CanManageRoles))
+            if (accessingUserId == null 
+                || !await _workspaceRoleManagerService.CheckUserAccess(accessingUserId.Value, workspaceId, AccessRights.CanManageRoles))
             {
                 return Forbid();
             }
@@ -95,7 +99,8 @@ namespace WEB.Controllers
         public async Task<IActionResult> DeleteWorkspaceRole(int workspaceId, int roleId)
         {
             var accessingUserId = Tools.GetUserIdFromToken(User);
-            if (!await _workspaceRoleManagerService.CheckUserAccess(accessingUserId, workspaceId, AccessRights.CanManageRoles))
+            if (accessingUserId == null 
+                || !await _workspaceRoleManagerService.CheckUserAccess(accessingUserId.Value, workspaceId, AccessRights.CanManageRoles))
             {
                 return Forbid();
             }

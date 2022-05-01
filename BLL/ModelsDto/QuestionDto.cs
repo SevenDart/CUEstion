@@ -14,6 +14,8 @@ namespace BLL.ModelsDTO
 		public string Text { get; set; }
 
 		public int Rate { get; set; }
+		
+		public int? WorkspaceId { get; set; }
 
 		public DateTime CreateTime { get; set; }
 		public DateTime? UpdateTime { get; set; }

@@ -13,11 +13,15 @@ namespace WEB.Controllers
     {
         private readonly IUserManagerService _userManagerService;
         private readonly IQuestionManagerService _questionManagerService;
+        private readonly IWorkspaceRoleManagerService _workspaceRoleManagerService;
 
-        public UsersController(IUserManagerService userManagerService, IQuestionManagerService questionManagerService)
+        public UsersController(IUserManagerService userManagerService, 
+            IQuestionManagerService questionManagerService, 
+            IWorkspaceRoleManagerService workspaceRoleManagerService)
         {
             _userManagerService = userManagerService;
             _questionManagerService = questionManagerService;
+            _workspaceRoleManagerService = workspaceRoleManagerService;
         }
 
         [HttpGet]
@@ -103,15 +107,19 @@ namespace WEB.Controllers
 
 
         [HttpGet("{userId}/questions")]
-        public async Task<IActionResult> GetUsersQuestions(int userId)
+        public async Task<IActionResult> GetUsersQuestions(int userId, [FromQuery] int? workspaceId)
         {
-            var user = await _userManagerService.GetUser(userId);
-            if (user == null)
+            if (workspaceId != null)
             {
-                return NotFound(new { Message = "User not found." });
+                var accessingUser = Tools.GetUserIdFromToken(User);
+                if (accessingUser == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(accessingUser.Value, workspaceId.Value))
+                {
+                    return Forbid();
+                }
             }
             
-            var list = await _questionManagerService.GetQuestionsCreatedByUser(userId);
+            var list = await _questionManagerService.GetQuestionsCreatedByUser(userId, workspaceId);
             return Ok(list);
         }
     }

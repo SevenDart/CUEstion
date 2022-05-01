@@ -17,27 +17,43 @@ namespace WEB.Controllers
         private readonly IQuestionManagerService _questionManagerService;
         private readonly IAnswerManagerService _answerManagerService;
         private readonly IMarkManagerService _markManagerService;
+        private readonly IWorkspaceRoleManagerService _workspaceRoleManagerService;
 
         public CommentsController(
             ICommentManagerService commentManagerService, 
             IQuestionManagerService questionManagerService, 
             IAnswerManagerService answerManagerService, 
-            IMarkManagerService markManagerService)
+            IMarkManagerService markManagerService, 
+            IWorkspaceRoleManagerService workspaceRoleManagerService)
         {
             _commentManagerService = commentManagerService;
             _questionManagerService = questionManagerService;
             _answerManagerService = answerManagerService;
             _markManagerService = markManagerService;
+            _workspaceRoleManagerService = workspaceRoleManagerService;
         }
 
         [HttpGet("{questionId}/comments")]
         [HttpGet("{questionId}/answers/{answerId}/comments")]
         public async Task<IActionResult> GetComments(int questionId, int? answerId)
         {
+            var userId = Tools.GetUserIdFromToken(User);
+            
             var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (question.WorkspaceId != null)
+            {
+                if (userId == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(
+                        userId.Value, 
+                        question.WorkspaceId.Value))
+                {
+                    return Forbid();
+                }
             }
 
             if (answerId != null)
@@ -62,10 +78,24 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> CreateComment(CommentDto commentDto, int questionId, int? answerId)
         {
+            var userId = Tools.GetUserIdFromToken(User);
+            
             var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (question.WorkspaceId != null)
+            {
+                if (userId == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(
+                        userId.Value, 
+                        question.WorkspaceId.Value, 
+                        AccessRights.CanCreate))
+                {
+                    return Forbid();
+                }
             }
             
             if (answerId == null)
@@ -91,10 +121,24 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateComment(int questionId, int? answerId, int commentId, CommentDto commentDto)
         {
+            var userId = Tools.GetUserIdFromToken(User);
+            
             var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (question.WorkspaceId != null)
+            {
+                if (userId == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(
+                        userId.Value, 
+                        question.WorkspaceId.Value,
+                        AccessRights.CanUpdate))
+                {
+                    return Forbid();
+                }
             }
 
             if (answerId != null)
@@ -121,10 +165,24 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteComment(int questionId, int? answerId, int commentId)
         {
+            var userId = Tools.GetUserIdFromToken(User);
+            
             var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (question.WorkspaceId != null)
+            {
+                if (userId == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(
+                        userId.Value, 
+                        question.WorkspaceId.Value,
+                        AccessRights.CanDelete))
+                {
+                    return Forbid();
+                }
             }
 
             if (answerId != null)
@@ -151,12 +209,24 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> UpvoteForComment(int questionId, int? answerId, int commentId)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+            var userId = Tools.GetUserIdFromToken(User);
             
             var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (question.WorkspaceId != null)
+            {
+                if (userId == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(
+                        userId.Value, 
+                        question.WorkspaceId.Value,
+                        AccessRights.CanCreate))
+                {
+                    return Forbid();
+                }
             }
 
             if (answerId != null)
@@ -174,13 +244,13 @@ namespace WEB.Controllers
                 return NotFound(new {Message = $"Question with id {commentId} not found."});
             }
             
-            var currentMark = await _markManagerService.GetCommentMarkAsync(userId, questionId);
+            var currentMark = await _markManagerService.GetCommentMarkAsync(userId.Value, questionId);
             if (currentMark != null &&  currentMark.MarkValue == -1)
             {
                 return Conflict(new { Message = "You can't set the same mark again." });
             }
 
-            await _commentManagerService.MarkCommentAsync(userId, commentId, 1);
+            await _commentManagerService.MarkCommentAsync(userId.Value, commentId, 1);
             return Ok();
         }
 
@@ -189,12 +259,24 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> DownvoteForComment(int questionId, int? answerId, int commentId)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.Sid)!.Value);
+            var userId = Tools.GetUserIdFromToken(User);
             
             var question = await _questionManagerService.GetQuestionAsync(questionId);
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (question.WorkspaceId != null)
+            {
+                if (userId == null || 
+                    !await _workspaceRoleManagerService.CheckUserAccess(
+                        userId.Value, 
+                        question.WorkspaceId.Value,
+                        AccessRights.CanCreate))
+                {
+                    return Forbid();
+                }
             }
 
             if (answerId != null)
@@ -212,13 +294,13 @@ namespace WEB.Controllers
                 return NotFound(new {Message = $"Question with id {commentId} not found."});
             }
             
-            var currentMark = await _markManagerService.GetCommentMarkAsync(userId, questionId);
+            var currentMark = await _markManagerService.GetCommentMarkAsync(userId.Value, questionId);
             if (currentMark != null &&  currentMark.MarkValue == -1)
             {
                 return Conflict(new { Message = "You can't set the same mark again." });
             }
             
-            await _commentManagerService.MarkCommentAsync(userId, commentId, -1);
+            await _commentManagerService.MarkCommentAsync(userId.Value, commentId, -1);
             return Ok();
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using BLL.ModelsDTO;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -10,7 +11,7 @@ namespace WEB
 {
 	public static class Tools
 	{
-		public static int GetUserIdFromToken(ClaimsPrincipal claimsPrincipal)
+		public static int? GetUserIdFromToken(ClaimsPrincipal claimsPrincipal)
 		{
 			var userIdClaim = claimsPrincipal
 				.Claims
@@ -18,10 +19,29 @@ namespace WEB
 
 			if (userIdClaim == null)
 			{
-				throw new Exception("Token is invalid.");
+				return null;
 			}
 
 			return int.Parse(userIdClaim.Value);
+		}
+
+		public static SystemRoles? GetSystemRoleFromToken(ClaimsPrincipal claimsPrincipal)
+		{
+			var systemRoleClaim = claimsPrincipal
+				.Claims
+				.FirstOrDefault(claim => claim.Type == ClaimTypes.Role);
+
+			if (systemRoleClaim == null)
+			{
+				return null;
+			}
+
+			return systemRoleClaim.Value switch
+			{
+				"Admin" => SystemRoles.Admin,
+				"User" => SystemRoles.User,
+				_ => null
+			};
 		}
 		
 		public static string CreateToken(string email, int id, string role)
