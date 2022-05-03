@@ -37,6 +37,50 @@ namespace WEB.Controllers
             
             return Ok(workspaces);
         }
+
+        [HttpGet("{workspaceId}")]
+        public async Task<IActionResult> GetWorkspaceById(int workspaceId)
+        {
+            var workspace = await _workspaceManagerService.GetWorkspaceById(workspaceId);
+            if (workspace == null)
+            {
+                return NotFound();
+            }
+            
+            var userId = Tools.GetUserIdFromToken(User);
+            if (userId == null || 
+                !await _workspaceRoleManagerService.CheckUserAccess(
+                    userId.Value, 
+                    workspaceId))
+            {
+                return Forbid();
+            }
+            
+            return Ok(workspace);
+        }
+        
+        [HttpGet("{workspaceId}/users/{userId}")]
+        public async Task<IActionResult> GetWorkspaceUser(int workspaceId, int userId)
+        {
+            var workspace = await _workspaceManagerService.GetWorkspaceById(workspaceId);
+            if (workspace == null)
+            {
+                return NotFound();
+            }
+            
+            var accessingUserId = Tools.GetUserIdFromToken(User);
+            if (accessingUserId == null || 
+                !await _workspaceRoleManagerService.CheckUserAccess(
+                    accessingUserId.Value, 
+                    workspaceId))
+            {
+                return Forbid();
+            }
+
+            var workspaceUser = await _workspaceManagerService.GetWorkspaceUser(workspaceId, userId);
+            
+            return Ok(workspaceUser);
+        }
         
         [HttpPost]
         public async Task<IActionResult> CreateWorkspace([FromBody] WorkspaceDto workspaceDto)
@@ -108,7 +152,7 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpPut("{workspaceId}/add-user")]
+        [HttpPost("{workspaceId}/add-user")]
         public async Task<IActionResult> AddUserToWorkspace(int workspaceId, [FromBody] WorkspaceUserDto workspaceUserDto)
         {
             var addingUserId = Tools.GetUserIdFromToken(User);

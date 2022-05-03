@@ -9,6 +9,8 @@ namespace DAL.Entities
         
         public string Name { get; set; }
         
+        public string Description { get; set; }
+        
         [ForeignKey("Chief")]
         public int ChiefId { get; set; }
         public User Chief { get; set; }

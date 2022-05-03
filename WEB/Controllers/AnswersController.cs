@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WEB.Controllers
 {
     [ApiController]
-    [Route("Answers")]
+    [Route("Questions/{questionId}/Answers")]
     public class AnswersController : ControllerBase
     {
         private readonly IAnswerManagerService _answerManagerService;
@@ -29,7 +29,7 @@ namespace WEB.Controllers
             _workspaceRoleManagerService = workspaceRoleManagerService;
         }
 
-        [HttpGet("{questionId}/answers")]
+        [HttpGet]
         public async Task<IActionResult> GetAnswers(int questionId)
         {
             var userId = Tools.GetUserIdFromToken(User);
@@ -55,7 +55,7 @@ namespace WEB.Controllers
             return Ok(list);
         }
 
-        [HttpPost("{questionId}/answers")]
+        [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateAnswer(AnswerDto answerDto, int questionId)
         {
@@ -83,7 +83,7 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpPut("{questionId}/answers/{answerId}")]
+        [HttpPut("{answerId}")]
         [Authorize]
         public async Task<IActionResult> UpdateAnswer(int questionId, int answerId, AnswerDto answerDto)
         {
@@ -93,6 +93,12 @@ namespace WEB.Controllers
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            var answer = await _answerManagerService.GetAnswerAsync(answerId);
+            if (answer == null)
+            {
+                return NotFound(new {Message = $"Answer with id {answerId} not found."});
             }
             
             if (question.WorkspaceId != null)
@@ -106,18 +112,23 @@ namespace WEB.Controllers
                     return Forbid();
                 }
             }
-            
-            var answer = await _answerManagerService.GetAnswerAsync(answerId);
-            if (answer == null)
+            else
             {
-                return NotFound(new {Message = $"Answer with id {answerId} not found."});
+                if (userId == null
+                    || userId != answer.User.Id
+                    && Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
+                {
+                    return Forbid();
+                }
             }
+            
+            
             
             await _answerManagerService.UpdateAnswer(answerDto);
             return Ok();
         }
 
-        [HttpDelete("{questionId}/answers/{answerId}")]
+        [HttpDelete("{answerId}")]
         [Authorize]
         public async Task<IActionResult> DeleteAnswer(int answerId, int questionId)
         {
@@ -127,6 +138,12 @@ namespace WEB.Controllers
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            var answer = await _answerManagerService.GetAnswerAsync(answerId);
+            if (answer == null)
+            {
+                return NotFound(new {Message = $"Answer with id {answerId} not found."});
             }
             
             if (question.WorkspaceId != null)
@@ -140,19 +157,23 @@ namespace WEB.Controllers
                     return Forbid();
                 }
             }
-            
-            var answer = await _answerManagerService.GetAnswerAsync(answerId);
-            if (answer == null)
+            else
             {
-                return NotFound(new {Message = $"Answer with id {answerId} not found."});
+                if (userId == null
+                    || userId != answer.User.Id
+                    && Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
+                {
+                    return Forbid();
+                }
             }
-            
+
+
             await _answerManagerService.DeleteAnswer(answerId);
             return Ok();
         }
 
 
-        [HttpPut("{questionId}/answers/{answerId}/upvote")]
+        [HttpPut("{answerId}/upvote")]
         [Authorize]
         public async Task<IActionResult> UpvoteForAnswer(int questionId, int answerId)
         {
@@ -192,7 +213,7 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpPut("{questionId}/answers/{answerId}/downvote")]
+        [HttpPut("{answerId}/downvote")]
         [Authorize]
         public async Task<IActionResult> DownvoteForAnswer(int questionId, int answerId)
         {

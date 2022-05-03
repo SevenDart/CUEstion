@@ -47,24 +47,13 @@ namespace BLL.Implementations
             return comments;
         }
 
-        public async Task<CommentDto> GetCommentAsync(int? questionId, int? answerId)
+        public async Task<CommentDto> GetCommentAsync(int commentId)
         {
-            Comment comment;
-            if (questionId != null)
-            {
-                comment = await _context
-                    .QuestionComments
-                    .Include(c => c.User)
-                    .FirstOrDefaultAsync(c => c.QuestionId == questionId);
-            }
-            else
-            {
-                comment = await _context
-                    .AnswerComments
-                    .Include(c => c.User)
-                    .FirstOrDefaultAsync(c => c.AnswerId == answerId);
-            }
-
+            Comment comment = await _context
+                .Comments
+                .Include(c => c.User)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+            
             return comment.Adapt<CommentDto>();
         }
 

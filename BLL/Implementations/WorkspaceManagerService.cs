@@ -25,25 +25,36 @@ namespace BLL.Implementations
             _workspaceRoleManagerService = workspaceRoleManagerService;
         }
         
-        public async Task<IEnumerable<WorkspaceDto>> GetUserWorkspaces(int userId)
+        public async Task<IEnumerable<WorkspaceUserDto>> GetUserWorkspaces(int userId)
         {
             var workspaces = await _context
                 .WorkspaceUsers
                 .Include(wu => wu.Workspace)
+                .Include(wu => wu.WorkspaceRole)
                 .Where(wu => wu.UserId == userId)
-                .Select(wu => wu.Workspace)
                 .ToListAsync();
             
-            return workspaces.Adapt<WorkspaceDto[]>();
+            return workspaces.Adapt<WorkspaceUserDto[]>();
         }
 
         public async Task<WorkspaceDto> GetWorkspaceById(int workspaceId)
         {
             var workspace = await _context
                 .Workspaces
+                .Include(w => w.Chief)
                 .FirstOrDefaultAsync(w => w.Id == workspaceId);
 
             return workspace.Adapt<WorkspaceDto>();
+        }
+
+        public async Task<WorkspaceUserDto> GetWorkspaceUser(int workspaceId, int userId)
+        {
+            var workspaceUser = await _context
+                .WorkspaceUsers
+                .Include(w => w.WorkspaceRole)
+                .FirstOrDefaultAsync(w => w.UserId == userId && w.WorkspaceId == workspaceId);
+
+            return workspaceUser.Adapt<WorkspaceUserDto>();
         }
 
         public async Task<WorkspaceDto> CreateWorkspace(int creatorId, WorkspaceDto workspaceDto)
@@ -81,12 +92,15 @@ namespace BLL.Implementations
             }
 
             workspace.Name = (workspace.Name != workspaceDto.Name) ? workspaceDto.Name : workspace.Name;
-
+            workspace.Description = (workspace.Description != workspaceDto.Description) 
+                ? workspaceDto.Description 
+                : workspace.Description;
+            
             if (workspaceDto.ChiefId != updaterId)
             {
                 var newChiefUser = await _context
                     .WorkspaceUsers
-                    .FindAsync(workspaceId, workspaceDto.ChiefId);
+                    .FirstOrDefaultAsync(wu => wu.WorkspaceId == workspaceId && wu.UserId == workspaceDto.ChiefId);
 
                 if (newChiefUser == null)
                 {

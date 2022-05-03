@@ -251,6 +251,9 @@ namespace DAL.Migrations
                     b.Property<int>("ChiefId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 

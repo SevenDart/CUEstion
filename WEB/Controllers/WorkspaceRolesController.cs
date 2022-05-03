@@ -1,8 +1,10 @@
+using System;
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.ModelsDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WEB.Controllers
 {
@@ -105,7 +107,18 @@ namespace WEB.Controllers
                 return Forbid();
             }
 
-            await _workspaceRoleManagerService.DeleteWorkspaceRole(roleId);
+            try
+            {
+                await _workspaceRoleManagerService.DeleteWorkspaceRole(roleId);
+            }
+            catch (InvalidOperationException)
+            {
+                return Conflict("There are users with this role, change their roles first to delete role.");
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict("There are users with this role, change their roles first to delete role.");
+            }
             return Ok();
         }
     }

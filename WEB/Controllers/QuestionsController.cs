@@ -155,7 +155,7 @@ namespace WEB.Controllers
             {
                 if (accessingUserId == null
                     || accessingUserId != question.User.Id
-                    || Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
+                    && Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
                 {
                     return Forbid();
                 }
@@ -193,7 +193,7 @@ namespace WEB.Controllers
             {
                 if (accessingUserId == null
                     || accessingUserId != question.User.Id
-                    || Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
+                    && Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
                 {
                     return Forbid();
                 }

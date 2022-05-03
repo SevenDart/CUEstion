@@ -17,14 +17,14 @@ namespace WEB.Controllers
             _tagManagerService = tagManagerService;
         }
         
-        [HttpGet("tags")]
+        [HttpGet]
         public async Task<IActionResult> GetAllTags()
         {
             var list = await _tagManagerService.GetAllTags();
             return Ok(list);		
         }
         
-        [HttpPost("tags")]
+        [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateTag([FromQuery] string tag)
         {
@@ -33,7 +33,7 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpPut("tags")]
+        [HttpPut]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateTag([FromQuery] string oldTag, string newTag)
         {
@@ -44,7 +44,7 @@ namespace WEB.Controllers
         }
 
 
-        [HttpDelete("tags")]
+        [HttpDelete]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteTag([FromQuery] string tag)
         {

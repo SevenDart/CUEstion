@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.ModelsDTO;
@@ -10,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WEB.Controllers
 {
     [ApiController]
-    [Route("Comments")]
+    [Route("Questions/{questionId}")]
     public class CommentsController : ControllerBase
     {
         private readonly ICommentManagerService _commentManagerService;
@@ -33,8 +31,8 @@ namespace WEB.Controllers
             _workspaceRoleManagerService = workspaceRoleManagerService;
         }
 
-        [HttpGet("{questionId}/comments")]
-        [HttpGet("{questionId}/answers/{answerId}/comments")]
+        [HttpGet("comments")]
+        [HttpGet("answers/{answerId}/comments")]
         public async Task<IActionResult> GetComments(int questionId, int? answerId)
         {
             var userId = Tools.GetUserIdFromToken(User);
@@ -73,8 +71,8 @@ namespace WEB.Controllers
             return Ok(list);
         }
 
-        [HttpPost("{questionId}/comments")]
-        [HttpPost("{questionId}/answers/{answerId}/comments")]
+        [HttpPost("comments")]
+        [HttpPost("answers/{answerId}/comments")]
         [Authorize]
         public async Task<IActionResult> CreateComment(CommentDto commentDto, int questionId, int? answerId)
         {
@@ -116,8 +114,8 @@ namespace WEB.Controllers
         }
 
 
-        [HttpPut("{questionId}/comments/{commentId}")]
-        [HttpPut("{questionId}/answers/{answerId}/comments/{commentId}")]
+        [HttpPut("comments/{commentId}")]
+        [HttpPut("answers/{answerId}/comments/{commentId}")]
         [Authorize]
         public async Task<IActionResult> UpdateComment(int questionId, int? answerId, int commentId, CommentDto commentDto)
         {
@@ -127,6 +125,21 @@ namespace WEB.Controllers
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (answerId != null)
+            {
+                var answer = await _answerManagerService.GetAnswerAsync(answerId.Value);
+                if (answer == null)
+                {
+                    return NotFound(new {Message = $"Answer with id {answerId} not found."});
+                }
+            }
+            
+            var comment = await _commentManagerService.GetCommentAsync(commentId);
+            if (comment == null)
+            {
+                return NotFound(new {Message = $"Question with id {commentId} not found."});
             }
             
             if (question.WorkspaceId != null)
@@ -140,28 +153,22 @@ namespace WEB.Controllers
                     return Forbid();
                 }
             }
-
-            if (answerId != null)
+            else
             {
-                var answer = await _answerManagerService.GetAnswerAsync(answerId.Value);
-                if (answer == null)
+                if (userId == null
+                    || userId != comment.User.Id
+                    && Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
                 {
-                    return NotFound(new {Message = $"Answer with id {answerId} not found."});
+                    return Forbid();
                 }
             }
-            
-            var comment = await _commentManagerService.GetCommentAsync(questionId, answerId);
-            if (comment == null)
-            {
-                return NotFound(new {Message = $"Question with id {commentId} not found."});
-            }
-            
+
             await _commentManagerService.UpdateCommentAsync(commentDto);
             return Ok();
         }
 
-        [HttpDelete("{questionId}/comments/{commentId}")]
-        [HttpDelete("{questionId}/answers/{answerId}/comments/{commentId}")]
+        [HttpDelete("comments/{commentId}")]
+        [HttpDelete("answers/{answerId}/comments/{commentId}")]
         [Authorize]
         public async Task<IActionResult> DeleteComment(int questionId, int? answerId, int commentId)
         {
@@ -171,6 +178,21 @@ namespace WEB.Controllers
             if (question == null)
             {
                 return NotFound(new {Message = $"Question with id {questionId} not found."});
+            }
+            
+            if (answerId != null)
+            {
+                var answer = await _answerManagerService.GetAnswerAsync(answerId.Value);
+                if (answer == null)
+                {
+                    return NotFound(new {Message = $"Answer with id {answerId} not found."});
+                }
+            }
+            
+            var comment = await _commentManagerService.GetCommentAsync(commentId);
+            if (comment == null)
+            {
+                return NotFound(new {Message = $"Question with id {commentId} not found."});
             }
             
             if (question.WorkspaceId != null)
@@ -184,28 +206,23 @@ namespace WEB.Controllers
                     return Forbid();
                 }
             }
-
-            if (answerId != null)
+            else
             {
-                var answer = await _answerManagerService.GetAnswerAsync(answerId.Value);
-                if (answer == null)
+                if (userId == null
+                    || userId != comment.User.Id
+                    && Tools.GetSystemRoleFromToken(User) != SystemRoles.Admin)
                 {
-                    return NotFound(new {Message = $"Answer with id {answerId} not found."});
+                    return Forbid();
                 }
             }
-            
-            var comment = await _commentManagerService.GetCommentAsync(questionId, answerId);
-            if (comment == null)
-            {
-                return NotFound(new {Message = $"Question with id {commentId} not found."});
-            }
-            
+
+
             await _commentManagerService.DeleteCommentAsync(commentId);
             return Ok();
         }
 
-        [HttpPut("{questionId}/comments/{commentId}/upvote")]
-        [HttpPut("{questionId}/answers/{answerId}/comments/{commentId}/upvote")]
+        [HttpPut("comments/{commentId}/upvote")]
+        [HttpPut("answers/{answerId}/comments/{commentId}/upvote")]
         [Authorize]
         public async Task<IActionResult> UpvoteForComment(int questionId, int? answerId, int commentId)
         {
@@ -238,7 +255,7 @@ namespace WEB.Controllers
                 }
             }
             
-            var comment = await _commentManagerService.GetCommentAsync(questionId, answerId);
+            var comment = await _commentManagerService.GetCommentAsync(commentId);
             if (comment == null)
             {
                 return NotFound(new {Message = $"Question with id {commentId} not found."});
@@ -254,8 +271,8 @@ namespace WEB.Controllers
             return Ok();
         }
 
-        [HttpPut("{questionId}/comments/{commentId}/downvote")]
-        [HttpPut("{questionId}/answers/{answerId}/comments/{commentId}/downvote")]
+        [HttpPut("comments/{commentId}/downvote")]
+        [HttpPut("answers/{answerId}/comments/{commentId}/downvote")]
         [Authorize]
         public async Task<IActionResult> DownvoteForComment(int questionId, int? answerId, int commentId)
         {
@@ -288,7 +305,7 @@ namespace WEB.Controllers
                 }
             }
             
-            var comment = await _commentManagerService.GetCommentAsync(questionId, answerId);
+            var comment = await _commentManagerService.GetCommentAsync(commentId);
             if (comment == null)
             {
                 return NotFound(new {Message = $"Question with id {commentId} not found."});

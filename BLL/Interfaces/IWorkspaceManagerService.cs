@@ -7,9 +7,11 @@ namespace BLL.Interfaces
 {
     public interface IWorkspaceManagerService
     {
-        Task<IEnumerable<WorkspaceDto>> GetUserWorkspaces(int userId);
+        Task<IEnumerable<WorkspaceUserDto>> GetUserWorkspaces(int userId);
 
         Task<WorkspaceDto> GetWorkspaceById(int workspaceId);
+
+        Task<WorkspaceUserDto> GetWorkspaceUser(int workspaceId, int userId);
 
         Task<WorkspaceDto> CreateWorkspace(int creatorId, WorkspaceDto workspaceDto);
 

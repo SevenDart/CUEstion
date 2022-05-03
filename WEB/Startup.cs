@@ -46,6 +46,10 @@ namespace WEB
 			TypeAdapterConfig<Question, QuestionDto>
 				.NewConfig()
 				.Map(dest => dest.Tags, src => src.Tags.Select(t => t.Name));
+			
+			TypeAdapterConfig<WorkspaceUser, WorkspaceUserDto>
+				.NewConfig()
+				.MaxDepth(3);
 
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 			{
@@ -73,6 +77,7 @@ namespace WEB
 									.AllowAnyOrigin()
 					)
 				);
+			
 			services.AddSwaggerGen();
 		}
 
@@ -83,6 +88,7 @@ namespace WEB
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
 				app.UseSwaggerUI();
+				app.UseCors("defaultPolicy");
 			}
 			else
 			{
@@ -93,8 +99,6 @@ namespace WEB
 			app.UseStaticFiles();
 
 			app.UseRouting();
-
-			app.UseCors("defaultPolicy");
 
 			app.UseAuthentication();
 			app.UseAuthorization();
